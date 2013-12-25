@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 5:42:35.782398 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 6:25:50.89719 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 8!
+!provides: 'Morphic-Misc1' 1 9!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -89,26 +89,6 @@ PluggableScrollPane subclass: #ImagePallet
 	category: 'Morphic-Misc1'!
 !classDefinition: 'ImagePallet class' category: #'Morphic-Misc1'!
 ImagePallet class
-	instanceVariableNames: ''!
-
-!classDefinition: #MorphColorPallet category: #'Morphic-Misc1'!
-ImagePallet subclass: #MorphColorPallet
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'MorphColorPallet class' category: #'Morphic-Misc1'!
-MorphColorPallet class
-	instanceVariableNames: ''!
-
-!classDefinition: #WidgetPallet category: #'Morphic-Misc1'!
-PluggableScrollPane subclass: #WidgetPallet
-	instanceVariableNames: ''
-	classVariableNames: 'DirectWidgets ProcyWidgets'
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'WidgetPallet class' category: #'Morphic-Misc1'!
-WidgetPallet class
 	instanceVariableNames: ''!
 
 !classDefinition: #PluggableScrollBar category: #'Morphic-Misc1'!
@@ -250,9 +230,6 @@ I am a simple editor for a LayoutSpec.
 I Display a pallet of widgets to grab a copy of to drop on something else
 
 !
-
-!MorphColorPallet commentStamp: '<historical>' prior: 0!
-I am just a way of instantiating a Color Palette!
 
 !PluggableScrollBar commentStamp: '<historical>' prior: 0!
 I am a ScrollBar which can get new values from my model.!
@@ -1042,6 +1019,24 @@ buildMorphicWindow
 buttonColor
 
 	^ Theme current buttonColorFrom: self widgetsColor! !
+
+!Panel methodsFor: 'events' stamp: 'KenD 12/24/2013 18:07'!
+closeBoxHit
+	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
+
+	Preferences dismissAllOnOptionClose ifTrue:
+		[Sensor rawMacOptionKeyPressed ifTrue:
+			[^ self world closeUnchangedWindows]].
+	self delete
+! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/24/2013 18:08'!
+createCloseBox
+	"Used by some subclasses"
+	
+	^ (PluggableButtonMorph model: self action: #closeBoxHit)
+		icon: Theme current closeIcon;
+		setBalloonText: 'close this window'! !
 
 !Panel methodsFor: 'initialization' stamp: 'KenD 12/9/2013 17:05'!
 defaultBorderWidth
@@ -2489,7 +2484,7 @@ largerIcons
 	sw morphExtent: (savedExtent + extraExtent
 			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/24/2013 17:05'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/24/2013 18:11'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
@@ -2497,7 +2492,7 @@ namedColors
 	self useSmallColorDict.
 	ImagePallet namedColors.
 "
-	| ip sw sortedColors a b savedExtent extraExtent |
+	| ip sw sortedColors a b savedExtent extraExtent closeButton |
 	sortedColors := SortedCollection sortBlock: 
 		 [ :aAssoc :bAssoc |
 			a := aAssoc value.
@@ -2516,15 +2511,21 @@ namedColors
 			].
 	savedExtent := ip morphExtent.
 
-	sw := SystemWindow new.
+	sw := Panel new.
 	sw addMorph: ip;
 		setLabel: 'Pick a Color'.
+	closeButton := sw createCloseBox.
+	sw addMorphFront: closeButton.
+	closeButton morphPosition: 2@2;
+		morphExtent: sw boxExtent.
 	sw openInWorld. 
 	"openInWorld resets extent"
 	extraExtent := ScrollBar scrollbarThickness + 4
 					 @ (ScrollBar scrollbarThickness + 4 + sw labelRectangle height).
 	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
+			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"
+			
+	^ sw! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2013 16:50'!
 namedIcons
@@ -2582,65 +2583,6 @@ useXKCDColorDict
 
 	Feature require: 'XKCD-NamedColors'.
 	Color setColorNamesDict: Color xkcdColorDictionary.! !
-
-!WidgetPallet methodsFor: 'initialization' stamp: 'KenD 9/15/2013 17:23'!
-initialize
-	"Add morphs to clone"
-	
-	| column extent separation |
-	super initialize.
-	separation := 10.
-	column := PalletLayoutMorph newColumn separation: separation.
-	self class directWidgets do: [ :aClass | column addMorph: aClass initializedInstance ].
-	"self class procyWidgets do:  [ :aClass | column addMorph: aClass initializedInstanceProxy ]."
-	extent := 0 @ separation.
-	column submorphs do: [ :m | | mXtent | 
-		m setBalloonText: m class printString.
-		mXtent := m morphExtent.
-		extent := (extent x max: mXtent x) @ (extent y + separation + mXtent y).
-	].
-	column morphExtent: extent.
-	self addToScroller: column.
-	self morphExtent: extent.! !
-
-!WidgetPallet class methodsFor: 'accessing' stamp: 'KenD 9/15/2013 16:58'!
-directWidgets
-
-	^DirectWidgets ! !
-
-!WidgetPallet class methodsFor: 'class initialization' stamp: 'KenD 9/15/2013 17:25'!
-initialize
-"
-	WidgetPallet initialize.
-"
-	"DirectWidget classes supply a clonable instance"
-	DirectWidgets := { EllipseMorph. StringMorph. ImageMorph. RectangleLikeMorph.
-			BorderedRectMorph. LayoutMorph. "FillInTheBlankMorph." "MagnifierMorph."
-			OneLineEditorMorph. PartsBinMorph. }.
-	"ProxyWidget classes require a proxy for cloning"
-	ProcyWidgets := { }.! !
-
-!WidgetPallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 17:28'!
-newPallet
-	"Open a widget pallet in the current world"
-"
-	WidgetPallet newPallet.
-"
-
-	| wp sw extent |
-	wp := self new.
-	extent := wp morphExtent.
-	sw := SystemWindow new.
-	sw addMorph: wp.
-	sw setLabel: 'Pick a Widget'.
-	sw openInWorld.
-	sw morphExtent: extent + 40.
-! !
-
-!WidgetPallet class methodsFor: 'accessing' stamp: 'KenD 9/15/2013 16:59'!
-procyWidgets
-
-	^ ProcyWidgets ! !
 
 !PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 11/26/2013 21:12'!
 initialize
@@ -3644,4 +3586,3 @@ naturalHeight
 AddedCursors initialize!
 RadioButtonMorph initialize!
 FrameMorph initialize!
-WidgetPallet initialize!
