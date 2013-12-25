@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 3:23:32.971908 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 4:34:38.567818 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 5!
+!provides: 'Morphic-Misc1' 1 7!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -305,6 +305,8 @@ iVars:
 
 !SimpleNumberEntryMorph commentStamp: '<historical>' prior: 0!
 I am a simple numeric entry form.  I display and accept numeric values.
+
+See class side for examples.
 
 iVars
   entryChars - legal input characters, e.g. '1234567890ABCDEFabcdef'
@@ -3613,6 +3615,17 @@ initialize
 		font: (AbstractFont default);
 		emphasis: AbstractFont boldCode;
 		layoutSpec: (LayoutSpec keepMorphExtent).! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
+minimumExtent
+
+	^ self measureContents! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
+morphExtent: aPoint 
+	"Set the receiver's extent to value provided. Honor my minimumExtent."
+
+	super morphExtent: (aPoint max: self minimumExtent)! !
 
 !LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/15/2013 22:00'!
 naturalHeight
