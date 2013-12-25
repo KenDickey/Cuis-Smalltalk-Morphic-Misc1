@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 6:25:50.89719 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 25 December 2013 at 8:02:50.744251 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 9!
+!provides: 'Morphic-Misc1' 1 10!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -950,6 +950,28 @@ initialize
 "
 	Colors := { Color yellow. Color mustard. Color brown. }.! !
 
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:55'!
+addCloseBox
+	"Used by some subclasses"
+	
+	| closeButton |
+	closeButton := self createCloseBox.
+	self addMorphFront: closeButton.
+	closeButton morphPosition: 
+		self closeBoxLocation;
+		morphExtent: self boxExtent! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 08:01'!
+addCollapseBox
+	"Used by some subclasses"
+	
+	| collapseButton |
+	collapseButton := self createCollapseBox.
+	self addMorphFront: collapseButton.
+	collapseButton morphPosition: 
+		self collapseBoxLocation;
+		morphExtent: self boxExtent! !
+
 !Panel methodsFor: 'submorphs-add/remove' stamp: 'KenD 12/9/2013 16:44'!
 addMorph: aMorph 
 	"Add a submorph to our client area."
@@ -1030,13 +1052,31 @@ closeBoxHit
 	self delete
 ! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/24/2013 18:08'!
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:50'!
+closeBoxLocation
+
+	^ 2@2! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 08:02'!
+collapseBoxLocation
+
+	^ (self closeBoxLocation x + self boxExtent x + 2) @ self closeBoxLocation y! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:56'!
 createCloseBox
-	"Used by some subclasses"
+	"answer a round Close button"
 	
 	^ (PluggableButtonMorph model: self action: #closeBoxHit)
 		icon: Theme current closeIcon;
 		setBalloonText: 'close this window'! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:57'!
+createCollapseBox
+	"Answer a round Collapse button"
+	
+	^(PluggableButtonMorph model: self action: #collapse)
+		icon: Theme current collapseIcon;
+		setBalloonText: 'collapse this window'! !
 
 !Panel methodsFor: 'initialization' stamp: 'KenD 12/9/2013 17:05'!
 defaultBorderWidth
@@ -2484,7 +2524,7 @@ largerIcons
 	sw morphExtent: (savedExtent + extraExtent
 			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/24/2013 18:11'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/25/2013 07:59'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
@@ -2492,7 +2532,7 @@ namedColors
 	self useSmallColorDict.
 	ImagePallet namedColors.
 "
-	| ip sw sortedColors a b savedExtent extraExtent closeButton |
+	| ip sw sortedColors a b savedExtent extraExtent |
 	sortedColors := SortedCollection sortBlock: 
 		 [ :aAssoc :bAssoc |
 			a := aAssoc value.
@@ -2514,11 +2554,9 @@ namedColors
 	sw := Panel new.
 	sw addMorph: ip;
 		setLabel: 'Pick a Color'.
-	closeButton := sw createCloseBox.
-	sw addMorphFront: closeButton.
-	closeButton morphPosition: 2@2;
-		morphExtent: sw boxExtent.
-	sw openInWorld. 
+	sw addCloseBox;
+		addCollapseBox;
+		openInWorld. 
 	"openInWorld resets extent"
 	extraExtent := ScrollBar scrollbarThickness + 4
 					 @ (ScrollBar scrollbarThickness + 4 + sw labelRectangle height).
