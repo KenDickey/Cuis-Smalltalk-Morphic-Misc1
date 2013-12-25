@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 4:34:38.567818 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 24 December 2013 at 5:42:35.782398 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 7!
+!provides: 'Morphic-Misc1' 1 8!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2489,7 +2489,7 @@ largerIcons
 	sw morphExtent: (savedExtent + extraExtent
 			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2013 16:31'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/24/2013 17:05'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
@@ -2508,7 +2508,12 @@ namedColors
 	
 	ip := ImagePallet 
 			fromCollection: sortedColors
-			imageFilter: [:color | ImageMorph new image: (color icon "magnifyTo: 20 @ 20")].
+			imageFilter: [:color | | dropColorMorph |
+				dropColorMorph := DropColorMorph new.
+				dropColorMorph image: (color icon "magnifyTo: 20 @ 20");
+					color: color;
+					yourself
+			].
 	savedExtent := ip morphExtent.
 
 	sw := SystemWindow new.
@@ -2884,14 +2889,19 @@ dropAction: aDropTargetMorph
 		].
 	aDropTargetMorph delete. "Remove the DropTargetMorph. It's job is done!!"! !
 
-!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/3/2013 19:29'!
+!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
 fromColor: aColor
 
 	self 
 		color: aColor;
-		image: (self color icon magnifyTo: 32@32);
-		setProperty: #DropActionMorph toValue: #setColor
+		image: (self color icon magnifyTo: 32@32)
 	! !
+
+!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
+initialize
+
+	super initialize.
+	self setProperty: #DropActionMorph toValue: #setColor! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
 rejectDropMorphEvent: evt
