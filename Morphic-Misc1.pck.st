@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 25 December 2013 at 8:02:50.744251 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 25 December 2013 at 1:42:32.689701 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 10!
+!provides: 'Morphic-Misc1' 1 12!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -119,6 +119,16 @@ HoverHelpMorph subclass: #SignMorph
 	category: 'Morphic-Misc1'!
 !classDefinition: 'SignMorph class' category: #'Morphic-Misc1'!
 SignMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #BorderedImageMorph category: #'Morphic-Misc1'!
+ImageMorph subclass: #BorderedImageMorph
+	instanceVariableNames: 'borderWidth borderColor borderStyle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'BorderedImageMorph class' category: #'Morphic-Misc1'!
+BorderedImageMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #DropColorMorph category: #'Morphic-Misc1'!
@@ -253,6 +263,11 @@ ivar:
    object - the object I point-to/denote/stand-for
 !
 
+!BorderedImageMorph commentStamp: '<historical>' prior: 0!
+I supply a border to an ImageMorph.
+
+borderStyle is one of #simple #raised #inset!
+
 !DropColorMorph commentStamp: '<historical>' prior: 0!
 I am picked up to be dropped on another morph.
 
@@ -300,6 +315,12 @@ else the new value is remembered and displayed.!
 
 !LabelMorph commentStamp: '<historical>' prior: 0!
 I am a StringMorph used as a label!
+
+!Form methodsFor: '*morphic-misc1' stamp: 'KenD 12/25/2013 10:06'!
+icon32
+	"Answer a 32 x 32 icon of myself"
+	
+	^self magnifyTo: 32 @ 32! !
 
 !LayoutSpec methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:14'!
 privateFixedHeight
@@ -2815,6 +2836,73 @@ new
 
 	Error signal: 'USE: ', self name asString, ' forObject: anObject'
 	! !
+
+!BorderedImageMorph methodsFor: 'private' stamp: 'KenD 12/25/2013 13:39'!
+basicExtent: aPoint
+
+	extent := aPoint! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderColor
+
+	^ borderColor! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderColor: aColor
+	borderColor = aColor ifFalse: [
+		borderColor _ aColor.
+		self redrawNeeded]! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderWidth: anInteger
+	borderWidth = anInteger ifFalse: [
+		borderColor ifNil: [ borderColor _ Color black ].
+		borderWidth _ anInteger max: 0.
+		self redrawNeeded ]! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+clippingRect
+	"In own coordinates!!
+	Return the bounds to which any submorphs should be clipped if the property is set"
+	"Should be a region, like our shadow"
+	self flag: #jmvVer2.
+	^ super clippingRect insetBy: borderWidth! !
+
+!BorderedImageMorph methodsFor: 'drawing' stamp: 'KenD 12/25/2013 13:40'!
+drawOn: aCanvas
+	"A canvas is already set with a proper transformation from our coordinates to those of the Canvas target."
+
+	aCanvas  "My image is inset from the border."
+	     image: image
+		at: borderWidth @ borderWidth.
+
+	aCanvas "The border is drawn around the image."
+		frameRectangle: (0@0  extent: self morphExtent) 
+		color: borderColor 
+		borderWidth: borderWidth 
+		borderStyleSymbol: borderStyle! !
+
+!BorderedImageMorph methodsFor: 'initialization' stamp: 'KenD 12/25/2013 13:40'!
+initialize
+	"Set my defaults"
+
+	self basicExtent: 32@32. "Not nil"
+	borderWidth := 4.
+	super initialize.
+	borderColor := Color orange.
+	borderStyle := #raised.! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+layoutBounds
+	"Return the bounds for laying out children of the receiver"
+	self flag: #jmvVer2.
+	^ super layoutBounds insetBy: borderWidth! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+morphExtent
+	"Answer an extent which includes me, taking into account my borderWidth"
+
+	^ extent + borderWidth + borderWidth ! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:07'!
 aboutToBeGrabbedBy: aHand
