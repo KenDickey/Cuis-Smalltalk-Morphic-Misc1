@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 26 December 2013 at 9:46:35.866108 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1899] on 26 December 2013 at 12:05:26.29638 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 13!
+!provides: 'Morphic-Misc1' 1 14!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3314,14 +3314,20 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/26/2013 09:45'!
+!SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 12/26/2013 11:59'!
+deltaPoint
+	"Bounding box causes need to redraw text at offset delta"
+
+	^ 3@2! !
+
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/26/2013 11:58'!
 drawOn: aCanvas
 
 	self hasSelection ifTrue: [ self drawSelectionOn: aCanvas ].
 	self hasTextCursor ifTrue: [ self drawTextCursorOn: aCanvas ].
 	aCanvas
 		drawString: contents
-		in: (3@2 extent: extent - 2)
+		in: (self deltaPoint extent: extent - 2)
 		font: self fontToUse
 		color: color.
 		
@@ -3331,6 +3337,36 @@ drawOn: aCanvas
 		borderWidth: 2
 		borderStyleSymbol: #simple
 ! !
+
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/26/2013 12:05'!
+drawSelectionOn: aCanvas
+	"Offset by self deltaPoint"
+	
+	| rightX leftX bottom offset |
+	offset := self deltaPoint.
+	bottom _ self baseFont height + offset y.
+	leftX _ offset x +
+		(self fontToUse widthOfString: contents from: 1 to: editor startIndex-1).
+	leftX _ leftX min: extent x.
+	rightX _  offset x +
+		(self fontToUse widthOfString: contents from: 1 to: editor stopIndex-1).
+	rightX _ rightX min: extent x.
+
+	aCanvas
+		fillRectangle: (leftX @ 0 corner: rightX @ bottom)
+		color: (Theme current textHighlightFocused: self hasKeyboardFocus)! !
+
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/26/2013 12:02'!
+drawTextCursorOn: aCanvas
+	"Offset by self deltaPoint"
+
+	|  bottom x offset |
+	showTextCursor ifTrue: [
+		offset := self deltaPoint.
+		bottom _ self baseFont height + offset y.
+		x _ offset x + 
+			(self fontToUse widthOfString: contents from: 1 to: editor startIndex-1).
+		self displayTextCursorAtX: x top: 0 bottom: bottom emphasis: emphasis on: aCanvas ]! !
 
 !SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 11/21/2013 15:07'!
 entryChars
