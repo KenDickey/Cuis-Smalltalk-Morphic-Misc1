@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 25 December 2013 at 1:42:32.689701 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 26 December 2013 at 9:46:35.866108 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 12!
+!provides: 'Morphic-Misc1' 1 13!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3314,14 +3314,14 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/2/2013 16:33'!
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/26/2013 09:45'!
 drawOn: aCanvas
 
 	self hasSelection ifTrue: [ self drawSelectionOn: aCanvas ].
 	self hasTextCursor ifTrue: [ self drawTextCursorOn: aCanvas ].
 	aCanvas
 		drawString: contents
-		in: (2@0 extent: extent - 2)
+		in: (3@2 extent: extent - 2)
 		font: self fontToUse
 		color: color.
 		
