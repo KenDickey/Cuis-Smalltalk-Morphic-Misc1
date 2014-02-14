@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1898] on 28 December 2013 at 10:07:28.683294 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #1963] on 13 February 2014 at 7:05:01.211625 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 14!
+!provides: 'Morphic-Misc1' 1 15!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -917,22 +917,8 @@ morphContainsPoint: aPoint
 	^ (outerExtent containsPoint: aPoint)
 		and: [(innerExtent containsPoint: aPoint) not].! !
 
-!FrameMorph methodsFor: 'events' stamp: 'KenD 9/17/2013 16:06'!
-startStepping
-	"Start stepping the receiver"
-
-	| w |
-	w _ self world.
-	w ifNotNil: [
-		w startStepping: self
-			at: Time localMillisecondClock
-			selector: #step
-			arguments:nil
-			stepTime: 400.
-		self redrawNeeded ]! !
-
-!FrameMorph methodsFor: 'events-processing' stamp: 'KenD 9/15/2013 21:22'!
-step
+!FrameMorph methodsFor: 'events-processing' stamp: 'jmv 2/13/2014 14:24'!
+stepAt: millisecondClockValue
 
 	self cycleBorderColor ! !
 
@@ -1602,18 +1588,18 @@ modelYSeparation: numPixels
 	self editModel separation: (self editModel xSeparation @ numPixels).
 	self refreshSeparationtionArea.! !
 
-!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 12/17/2013 14:07'!
+!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'jmv 2/13/2014 13:49'!
 newColorArea
 	"Answer a FramedLayoutMorph showing color swatch and hex RGB entry"
 	
-	| colorArea label spec initialColor colorSwatch colorRGB hexEntry |
-	colorArea := FramedLayoutMorph newColumn.
+	| newColorArea label spec initialColor colorSwatch colorRGB hexEntry |
+	newColorArea := FramedLayoutMorph newColumn.
 	label := LabelMorph contents: 'Color'.
 	initialColor := self editModel color.
 	colorSwatch := initialColor iconOrThumbnailOfSize: 64.
 	colorRGB := SimpleNumberEntryMorph hexRGBEntry.
 	spec := LayoutSpec fixedHeight:
-		(2 * colorArea borderWidth)
+		(2 * newColorArea borderWidth)
 		+ (label naturalHeight)
 		+ (colorSwatch height)
 		+ 28 "hexEntry height"
@@ -1631,12 +1617,9 @@ newColorArea
 		layoutSpec: (LayoutSpec fixedHeight: 28). "@@@Tune@@@"
 		
 	"Setup"
-	colorRGB valueAccessor: [ :model | | backgroundColor |
-		backgroundColor := model color.
-		( '16r', 
-	    ((backgroundColor red    * 255) rounded printPaddedWith: $0 to: 2 base: 16) ,
-	    ((backgroundColor green * 255) rounded printPaddedWith: $0 to: 2 base: 16) , 
-	    ((backgroundColor blue   * 255) rounded printPaddedWith: $0 to: 2 base: 16) ) asNumber
+	colorRGB valueAccessor: [ :someModel | | backgroundColor |
+		backgroundColor := someModel color.
+		( '16r',  backgroundColor hexStringRGB) asNumber
 	].
 	colorRGB valueUpdator: [ :integerRGB |
 			self modelColor: (Color 
@@ -1646,7 +1629,7 @@ newColorArea
 	].
 	colorRGB refreshValueFrom: self editModel.
 		
-	^ colorArea
+	^ newColorArea
 		layoutSpec: spec;
 		padding: #center;
 		addMorph: label;
@@ -2445,11 +2428,6 @@ collection: aNameImageCollection filter: imageSelector
 	self morphExtent:  (layoutExtent min: ((DisplayScreen actualScreenSize) // 2)).
 
 ! !
-
-!ImagePallet methodsFor: 'accessing' stamp: 'KenD 9/13/2013 16:33'!
-imageDictionary
-
-	^ imageDictionary ! !
 
 !ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 10/17/2013 16:36'!
 layoutImages: numAcross extent: layoutExtent
@@ -3530,7 +3508,7 @@ hexEntryOfSize: numChars
 				ifFalse: [ nil ]]
 			toString: [ :n | n printStringHex ]! !
 
-!SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 12/2/2013 16:18'!
+!SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'jmv 2/13/2014 13:52'!
 hexRGBEntry
 	"Answer 0.FFFFFF or nil"
 
@@ -3542,7 +3520,8 @@ hexRGBEntry
 				(str size <= 6)
 				ifTrue: [[ ('16r', str asUppercase) asNumber ] on: Error do: [ nil ]]
 				ifFalse: [ nil ]]
-			toString: [ :n | n printPaddedWith: $0 to: 6 base: 16 ]! !
+			toString: [ :n |
+				n printStringBase: 16 length: 6 padded: true ]! !
 
 !SimpleNumberEntryMorph class methodsFor: 'new-morph participation' stamp: 'KenD 12/6/2013 19:07'!
 includeInNewMorphMenu
