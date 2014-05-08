@@ -22,4 +22,10 @@ Basic morphs used by various packages
   SignMorph 
   SimpleNumberEntryMorph 
 
--- KenD
+
+After loading this package, one can select a morph, open its menu from the halo, and edit its LayoutSpec.
+If the morph is a LayoutMorph, one can also open an editor for the LayoutMorph from the halo menu. 
+
+One package which requires this one is the Color Editor in https://github.com/KenDickey/Cuis-Smalltalk-ColorEditor
+
+=======
