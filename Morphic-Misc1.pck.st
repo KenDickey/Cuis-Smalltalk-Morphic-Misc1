@@ -1,6 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #1963] on 13 February 2014 at 7:05:01.211625 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2049] on 24 July 2014 at 8:29:12.291414 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 15!
+!provides: 'Morphic-Misc1' 1 16!
+!requires: 'Cuis-Base' 42 2049 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -1119,20 +1120,20 @@ drawClassicFrameOn: aCanvas color: titleColor
 	The look is that the title area is inside the window"
 	aCanvas fillRectangle: (borderWidth@borderWidth extent: extent x - (2*borderWidth)@ self labelHeight) color: titleColor! !
 
-!Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 17:08'!
+!Panel methodsFor: 'drawing' stamp: 'KenD 7/24/2014 20:21'!
 drawLabelOn: aCanvas
 
 	Theme current embossedTitles
 		ifFalse: [
 			aCanvas
 				drawString: labelString
-				in: self labelRectangle
+				at: self labelRectangle topLeft
 				font: Preferences windowTitleFont
 				color: Theme current windowLabel ]
 		ifTrue: [
 			aCanvas
 				drawStringEmbossed: labelString
-				in: self labelRectangleForEmbossed
+				at: self labelRectangleForEmbossed topLeft
 				font: Preferences windowTitleFont
 				color: Theme current windowLabel ]! !
 
@@ -1185,12 +1186,12 @@ initialize
 	"by default"
 	self beColumn! !
 
-!Panel methodsFor: 'change reporting' stamp: 'KenD 12/9/2013 17:09'!
+!Panel methodsFor: 'change reporting' stamp: 'KenD 7/24/2014 20:00'!
 invalidateTitleArea
 
 	"not really pretty... also invalidating the top border, regardless of it being above or below the title area
 	(Different themes use various looks, this covers them all)"
-	self invalidateRect: (0@0 extent: extent x @ (self labelHeight + borderWidth))! !
+	self invalidateLocalRect: (0@0 extent: extent x @ (self labelHeight + borderWidth))! !
 
 !Panel methodsFor: 'testing' stamp: 'KenD 12/9/2013 16:45'!
 is: aSymbol
@@ -1244,12 +1245,12 @@ labelRectangleForEmbossed
 	
 ! !
 
-!Panel methodsFor: 'geometry' stamp: 'KenD 12/9/2013 17:06'!
+!Panel methodsFor: 'geometry' stamp: 'KenD 7/24/2014 20:14'!
 layoutBounds
 	"Return the bounds for laying out children of the receiver"
 	"Exclude the label area"
 
-	^ super layoutBounds insetBy: (0 @ (self labelHeight) corner: 0 @ 0)! !
+	^  (0@0 extent: self morphExtent) insetBy: (0 @ (self labelHeight) corner: 0 @ 0)! !
 
 !Panel methodsFor: 'layout' stamp: 'KenD 12/9/2013 16:47'!
 layoutMorph
@@ -2870,11 +2871,11 @@ initialize
 	borderColor := Color orange.
 	borderStyle := #raised.! !
 
-!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/24/2014 20:15'!
 layoutBounds
 	"Return the bounds for laying out children of the receiver"
-	self flag: #jmvVer2.
-	^ super layoutBounds insetBy: borderWidth! !
+
+	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
 
 !BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
 morphExtent
@@ -3067,12 +3068,11 @@ initialize
 	borderWidth    := self defaultBorderWidth.
 	frameSelector := self defaultFrameSelector.! !
 
-!FramedLayoutMorph methodsFor: 'geometry' stamp: 'KenD 12/11/2013 14:44'!
+!FramedLayoutMorph methodsFor: 'geometry' stamp: 'KenD 7/24/2014 20:15'!
 layoutBounds
 	"Return the bounds for laying out children of the receiver"
 	
-	self flag: #jmvVer2.
-	^ super layoutBounds insetBy: borderWidth! !
+	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
 
 !PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 9/14/2013 16:00'!
 aboutToGrab: aMorph
@@ -3300,14 +3300,14 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 12/2/2013 16:33'!
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 7/24/2014 20:24'!
 drawOn: aCanvas
 
 	self hasSelection ifTrue: [ self drawSelectionOn: aCanvas ].
 	self hasTextCursor ifTrue: [ self drawTextCursorOn: aCanvas ].
 	aCanvas
 		drawString: contents
-		in: (2@0 extent: extent - 2)
+		at: (2@0 extent: extent - 2) topLeft
 		font: self fontToUse
 		color: color.
 		

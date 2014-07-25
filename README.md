@@ -1,6 +1,10 @@
 Morphic-Misc1
 =============
 
+Feature require: "Morphic-Misc1".
+
+Tested: Cuis 4.2  2049
+
 Basic morphs used by various packages 
 
   BorderedImageMorph 
