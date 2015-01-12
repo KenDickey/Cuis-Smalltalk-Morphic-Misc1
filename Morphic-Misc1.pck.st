@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2049] on 24 July 2014 at 8:29:12.291414 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2147] on 11 January 2015 at 5:22:33.197915 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 16!
-!requires: 'Cuis-Base' 42 2049 nil!
+!provides: 'Morphic-Misc1' 1 18!
+!requires: 'Cuis-Base' 42 2079 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2673,11 +2673,15 @@ initialize
 
 ! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 12/3/2013 19:26'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 1/11/2015 17:21'!
 openFor: aMorph
 
 	targetMorph := aMorph.
+	"Don't let Layout obfiscate view below"
+	(self layoutMorph) color: (Color teal alpha: 0.3).
+
 	"Nota Bene: must set my extent before asking about label"
+
 	self 
 		morphExtent: aMorph morphExtent + self boxExtent;
 		setLabel: ('DropTarget for: ', (aMorph printStringLimitedTo: 64));
