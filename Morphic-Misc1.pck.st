@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2147] on 11 January 2015 at 5:22:33.197915 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2198] on 28 February 2015 at 11:09:03.731143 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 18!
-!requires: 'Cuis-Base' 42 2079 nil!
+!provides: 'Morphic-Misc1' 1 19!
+!requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3303,6 +3303,11 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	
 	^ false! !
+
+!SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 2/28/2015 11:04'!
+disablesEdition
+
+	^ self hasProperty: #disablesEdition! !
 
 !SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 7/24/2014 20:24'!
 drawOn: aCanvas
