@@ -1,9 +1,11 @@
 Morphic-Misc1
 =============
+Tested: Cuis 4.2  2198
 
-Feature require: "Morphic-Misc1".
-
-Tested: Cuis 4.2  2049
+To load the package
+````Smalltalk
+	Feature require:  'Morphic-Misc1'.
+````
 
 Basic morphs used by various packages 
 
