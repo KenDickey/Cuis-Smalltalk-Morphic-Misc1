@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2198] on 28 February 2015 at 11:09:03.731143 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2198] on 28 February 2015 at 11:32:40.013408 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 19!
+!provides: 'Morphic-Misc1' 1 20!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -631,6 +631,12 @@ morphExtent: aPoint
 	self redrawNeeded.
 	extent _ (innerExtent max: self minimumExtent).
 	self redrawNeeded! !
+
+!LineMorph methodsFor: 'geometry' stamp: 'KenD 2/28/2015 11:31'!
+morphExtentInWorld: newExtent
+	"world coordinates"
+	self flag: #jmvVer2.
+	self morphExtent: (self internalizeDistanceFromWorld: newExtent)! !
 
 !LineMorph methodsFor: 'private' stamp: 'KenD 9/27/2013 15:45'!
 rect
