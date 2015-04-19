@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 18 April 2015 at 9:26:03.78903 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 19 April 2015 at 4:54:15.97425 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 24!
+!provides: 'Morphic-Misc1' 1 27!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -44,7 +44,7 @@ FrameMorph class
 
 !classDefinition: #Panel category: #'Morphic-Misc1'!
 PluggableMorph subclass: #Panel
-	instanceVariableNames: 'labelString widgetsColor layoutMorph'
+	instanceVariableNames: 'labelString widgetsColor layoutMorph stayUp pinButton'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -969,23 +969,25 @@ initialize
 "
 	Colors := { Color yellow. Color mustard. Color brown. }.! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:55'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
 addCloseBox
 	"Used by some subclasses"
 	
 	| closeButton |
 	closeButton := self createCloseBox.
+	"@@ FIXME: use layout for title area @@"
 	self addMorphFront: closeButton.
 	closeButton morphPosition: 
 		self closeBoxLocation;
 		morphExtent: self boxExtent! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 08:01'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
 addCollapseBox
 	"Used by some subclasses"
 	
 	| collapseButton |
 	collapseButton := self createCollapseBox.
+	"@@ FIXME: use layout for title area @@"
 	self addMorphFront: collapseButton.
 	collapseButton morphPosition: 
 		self collapseBoxLocation;
@@ -1002,6 +1004,18 @@ addMorph: aMorph layoutSpec: aLayoutSpec
 	"Add a submorph to our client area."
 
 	layoutMorph addMorph: aMorph layoutSpec: aLayoutSpec! !
+
+!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
+addPinBox
+	"Used by some subclasses"
+	
+	| pinButton |
+	pinButton := self createPinBox.
+	"@@ FIXME: use layout for title area @@"
+	self addMorphFront: pinButton.
+	pinButton morphPosition: 
+		self pinBoxLocation;
+		morphExtent: self boxExtent! !
 
 !Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 17:08'!
 addPossiblyUncoveredAreasIn: aRectangle to: aCollection
@@ -1042,7 +1056,7 @@ beRow
 			layoutMorph _ LayoutMorph newRow.
 			self addMorphFront: layoutMorph ]! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/9/2013 17:02'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 12/9/2013 17:02'!
 boxExtent
 	"answer the extent to use in all the buttons. 
 	 
@@ -1061,27 +1075,27 @@ buttonColor
 
 	^ Theme current buttonColorFrom: self widgetsColor! !
 
-!Panel methodsFor: 'events' stamp: 'KenD 12/24/2013 18:07'!
+!Panel methodsFor: 'events' stamp: 'KenD 4/19/2015 07:32'!
 closeBoxHit
 	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
 
 	Preferences dismissAllOnOptionClose ifTrue:
 		[Sensor rawMacOptionKeyPressed ifTrue:
 			[^ self world closeUnchangedWindows]].
-	self delete
+	self delete  "closeBox overrides stayUp"
 ! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:50'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:50'!
 closeBoxLocation
 
 	^ 2@2! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 08:02'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 08:02'!
 collapseBoxLocation
 
 	^ (self closeBoxLocation x + self boxExtent x + 2) @ self closeBoxLocation y! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:56'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:56'!
 createCloseBox
 	"answer a round Close button"
 	
@@ -1089,7 +1103,7 @@ createCloseBox
 		icon: Theme current closeIcon;
 		setBalloonText: 'close this window'! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/25/2013 07:57'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:57'!
 createCollapseBox
 	"Answer a round Collapse button"
 	
@@ -1097,13 +1111,16 @@ createCollapseBox
 		icon: Theme current collapseIcon;
 		setBalloonText: 'collapse this window'! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 4/3/2015 18:16'!
+!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 14:14'!
 createPinBox
 	"Answer a round PushPin button"
 	
-	^(PluggableButtonMorph model: self action: #stayUp)
+	pinButton := 
+		(PluggableButtonMorph model: self action: #pinBoxHit)
 		icon: Theme current pushPinIcon;
-		setBalloonText: 'keep this window'! !
+		setBalloonText: 'keep this window';
+		yourself.
+	^ self pinButton! !
 
 !Panel methodsFor: 'initialization' stamp: 'KenD 12/9/2013 17:05'!
 defaultBorderWidth
@@ -1139,9 +1156,9 @@ drawClassicFrameOn: aCanvas color: titleColor
 	The look is that the title area is inside the window"
 	aCanvas fillRectangle: (borderWidth@borderWidth extent: extent x - (2*borderWidth)@ self labelHeight) color: titleColor! !
 
-!Panel methodsFor: 'drawing' stamp: 'KenD 7/24/2014 20:21'!
+!Panel methodsFor: 'drawing' stamp: 'KenD 4/19/2015 15:24'!
 drawLabelOn: aCanvas
-
+	"@@ FIXME: use layout for title area @@"
 	Theme current embossedTitles
 		ifFalse: [
 			aCanvas
@@ -1194,13 +1211,14 @@ drawRoundedFrameOn: aCanvas color: widgetsColor
 		gradientBottom: bottomFactor
 		insideColor: color! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/17/2013 19:20'!
+!Panel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 07:30'!
 initialize
 	"Initialize a system window. Add label, stripes, etc., if desired"
 
 	super initialize.
 	labelString ifNil: [ labelString _ 'Untitled Window'].
 	extent := self defaultExtent.
+	stayUp := false. "UI push pin to change"
 
 	"by default"
 	self beColumn! !
@@ -1335,6 +1353,24 @@ openInWorld
 	super openInWorld.
 	^ self! !
 
+!Panel methodsFor: 'events' stamp: 'KenD 4/19/2015 14:09'!
+pinBoxHit
+	"The user clicked on the push pin. Subclasses should add actions and invoke me"
+	
+	self stayUp: true
+	! !
+
+!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 14:31'!
+pinBoxLocation
+
+	^ ((self morphExtent x) - 20) @ 2! !
+
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 14:12'!
+pinButton
+	"private"
+	
+	^ pinButton! !
+
 !Panel methodsFor: 'printing' stamp: 'KenD 12/9/2013 16:40'!
 printOn: aStream 
 
@@ -1373,6 +1409,19 @@ setLabel: aString
 
 	labelString _ aString.
 	self invalidateTitleArea! !
+
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 07:30'!
+stayUp
+
+	^ stayUp! !
+
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 14:11'!
+stayUp: aBoolean
+
+	stayUp := aBoolean.
+	aBoolean
+		ifTrue: [ self pinButton hide ] 
+		ifFalse: [ self pinButton show ] ! !
 
 !Panel methodsFor: 'GUI building' stamp: 'KenD 12/9/2013 18:42'!
 textBackgroundColor
@@ -1441,10 +1490,13 @@ open: model label: aString
 		openInWorld;
 		yourself! !
 
-!EditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 19:00'!
+!EditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 15:22'!
 cancelAndForgetEverything
 
-	self delete! !
+	editModel := nil.
+	self stayUp 
+		ifFalse: [ self delete ]
+		ifTrue: [ self refreshView ]! !
 
 !EditPanel methodsFor: 'accessing' stamp: 'KenD 12/17/2013 19:25'!
 editModel
@@ -1501,6 +1553,11 @@ newButtonArea
 
 	! !
 
+!EditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 15:21'!
+refreshView
+
+	self subclassResponsibility ! !
+
 !EditPanel methodsFor: 'event handling' stamp: 'KenD 12/18/2013 19:38'!
 replaceArea: oldArea with: newArea
 	"Replace oldArea in its container with newArea and clean up any ActionMaps"
@@ -1511,13 +1568,13 @@ replaceArea: oldArea with: newArea
 	].
 ! !
 
-!EditPanel methodsFor: 'event handling' stamp: 'KenD 4/18/2015 20:55'!
+!EditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 13:48'!
 showHalo
 
 	| aMorph |
 	aMorph := self model.
 	(aMorph isKindOf: Morph)
-	ifFalse: [ self error: 'showHalo needs a Morph to show!!' ] "subclass must override"
+	ifFalse: [ self subclassResponsibility ] "subclass must override if model not Morph"
 	ifTrue: [ aMorph isInWorld ifTrue: [ aMorph addHalo ] ]! !
 
 !EditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 19:01'!
@@ -1586,6 +1643,12 @@ directionArea
 directionArea: newDirectonArea
 
 	directionArea := newDirectonArea! !
+
+!LayoutMorphEditPanel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 14:23'!
+initialize
+
+	super initialize.
+	self addCloseBox; addPinBox; addCollapseBox; yourself! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 12:35'!
 modelBeColumn
@@ -1886,6 +1949,14 @@ refreshSeparationtionArea
 	self separationArea: newArea 
 	! !
 
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 15:19'!
+refreshView
+
+	self refreshColorArea; 
+		refreshDirectionArea; 
+		refreshPaddingArea; 
+		refreshSeparationtionArea! !
+
 !LayoutMorphEditPanel methodsFor: 'accessing' stamp: 'KenD 12/16/2013 15:29'!
 separationArea
 
@@ -1905,7 +1976,7 @@ setPadRadio: radio fromPadFactor: factor
 		[1.0] -> [ (radio buttons at: 3) select ].
 	} otherwise: [ (radio buttons at: 4) select ]! !
 
-!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/18/2013 21:57'!
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:47'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -1916,9 +1987,14 @@ updateMasterFromCopy
 	original padding: editCopy padding.
 	original separation: ( editCopy xSeparation @ editCopy ySeparation ).
 	original color: editCopy color.
-	original layoutSubmorphs; redrawNeeded.
+	original  layoutSubmorphs; redrawNeeded.
+	original owner ifNotNil: [ :container | container layoutSubmorphs; redrawNeeded ].
+	self editModel: nil.
 	
-	self delete! !
+	self stayUp 
+		ifFalse: [ self delete ] 
+		ifTrue: [ self refreshView ]
+! !
 
 !LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 12/18/2013 20:41'!
 addFixedHeightEntryMorphTo: radio
@@ -2030,6 +2106,12 @@ heightSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
+
+!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 14:24'!
+initialize
+
+	super initialize.
+	self addCloseBox; addPinBox; addCollapseBox; yourself! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 20:22'!
 modelPadding: numPixels
@@ -2380,6 +2462,13 @@ refreshPaddingArea
 	self paddingArea: newArea 
 	! !
 
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 15:20'!
+refreshView
+
+	self refreshHeightArea; 
+		refreshPaddingArea;
+		refreshWidthArea! !
+
 !LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 12/17/2013 20:35'!
 refreshWidthArea
 	"Update my view"
@@ -2412,7 +2501,7 @@ showHalo
 	aMorph := self model morph.
 	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
 
-!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/18/2013 21:59'!
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:52'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -2424,9 +2513,13 @@ updateMasterFromCopy
 	original proportionalWidth: editCopy privateProportionalWidth 
 			  minimum: editCopy privateFixedWidth.
 	original minorDirectionPadding: editCopy minorDirectionPadding.
-	self owner ifNotNil: [ self owner layoutSubmorphs. self owner redrawNeeded ].
+	self editModel: nil.
+	original morph layoutSubmorphs; redrawNeeded.
+	original morph owner ifNotNil: [ :owner | owner layoutSubmorphs; redrawNeeded ].
 	
-	self delete    "My job is done"! !
+	self stayUp 
+		ifFalse: [ self delete ] 
+		ifTrue: [ self refreshView ]! !
 
 !LayoutSpecEditPanel methodsFor: 'accessing' stamp: 'KenD 12/17/2013 19:50'!
 widthArea
