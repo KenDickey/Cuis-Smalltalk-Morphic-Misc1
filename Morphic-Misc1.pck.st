@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 8:53:22.711689 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 3:09:52.387194 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 30!
+!provides: 'Morphic-Misc1' 1 32!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -44,7 +44,7 @@ FrameMorph class
 
 !classDefinition: #Panel category: #'Morphic-Misc1'!
 PluggableMorph subclass: #Panel
-	instanceVariableNames: 'labelString widgetsColor titleMorph layoutMorph stayUp pinButton'
+	instanceVariableNames: 'widgetsColor titleMorph layoutMorph stayUp'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -1330,13 +1330,13 @@ printOn: aStream
 		print: self label;
 		nextPutAll: ')'! !
 
-!Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 16:49'!
+!Panel methodsFor: 'label' stamp: 'KenD 4/25/2015 12:54'!
 relabel
 
 	| newLabel |
 	newLabel _ FillInTheBlankMorph 
 		request: 'New title for this window'
-		initialAnswer: labelString.
+		initialAnswer: self labelString.
 	newLabel isEmpty ifTrue: [^self].
 	self setLabel: newLabel! !
 
@@ -3406,14 +3406,14 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:51'!
+!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/25/2015 15:09'!
 addButton: nameSym action: actionSym baloonText: toolHelpString themeName: iconName
 	"add a a button morph to me"
 	
 	self addMorph: 
 		((PluggableButtonMorph model: self action: actionSym)
 			icon: (Theme current perform: iconName);
-			setBalloonText:toolHelpString;
+			setBalloonText: toolHelpString;
 			iconName: nameSym;
 			yourself)
 		layoutSpec: (LayoutSpec keepMorphExtent)! !
@@ -3564,22 +3564,25 @@ windowMenuButtonClicked
 	self owner windowMenuButtonClicked
 ! !
 
-!TitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:03'!
-submorphOrder
-	"Aside from #title, all are named buttons.  Any button may be absent"
+!TitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/25/2015 12:57'!
+buttonNames
 
-	^ #( close collapse expand worldMenu title pin )! !
+	^ #( close collapse expand worldMenu pin )! !
 
 !TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 17:05'!
 title: aString
 
 	^ self title: aString buttonsNamed: #()! !
 
-!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 20:21'!
+!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/25/2015 13:18'!
 title: aString buttonsNamed: aSymbolCollection
 
-	((self submorphOrder) includesAllOf: aSymbolCollection)
-		ifFalse: [ self error: 'Bad button name in ', aSymbolCollection printString ].
+	((self buttonNames) includesAllOf: aSymbolCollection)
+		ifFalse: [ | stdNames outliers |
+			stdNames := self buttonNames.
+			outliers := aSymbolCollection reject: [ :name | stdNames includes: name ].
+			self error: 'Bad button name(s): ', outliers printString 
+		].
 	^ (self newRow) title: aString buttonsNamed: aSymbolCollection
 ! !
 
