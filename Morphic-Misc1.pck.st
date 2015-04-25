@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 24 April 2015 at 6:30:56.857049 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 8:53:22.711689 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 29!
+!provides: 'Morphic-Misc1' 1 30!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1154,6 +1154,11 @@ expandButtonClicked
 	self expand
 ! !
 
+!Panel methodsFor: 'GUI building' stamp: 'KenD 4/25/2015 08:51'!
+hideButtons
+
+	self titleMorph hideButtons ! !
+
 !Panel methodsFor: 'initialization' stamp: 'KenD 4/24/2015 18:23'!
 initialize
 	"Initialize a system window. Add label, stripes, etc., if desired"
@@ -1355,6 +1360,11 @@ setLabel: aString
 	self titleMorph titleString: aString.
 	self invalidateTitleArea! !
 
+!Panel methodsFor: 'GUI building' stamp: 'KenD 4/25/2015 08:45'!
+showButtonsNamed: aSymbolCollection
+
+	self titleMorph showButtonsNamed: aSymbolCollection ! !
+
 !Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 07:30'!
 stayUp
 
@@ -1426,11 +1436,9 @@ open: model
 
 	^self open: model label: nil! !
 
-!Panel class methodsFor: 'instance creation' stamp: 'KenD 4/24/2015 18:15'!
+!Panel class methodsFor: 'instance creation' stamp: 'KenD 4/25/2015 08:43'!
 open: model label: aString
-"
-	self open: nil label: 'Test Me !!!!'.
-"
+
 	|  window |
 	window _ self new.
 	window
@@ -2590,7 +2598,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2013 16:49'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:38'!
 largerIcons
 "
 	ImagePallet largerIcons.
@@ -2615,11 +2623,11 @@ largerIcons
 	sw setLabel: 'Pick an Icon'.
 	sw openInWorld.
 	extraExtent := ScrollBar scrollbarThickness + 3
-					 @ (ScrollBar scrollbarThickness + 3 + sw labelRectangle height).
+					 @ (ScrollBar scrollbarThickness + 3 + sw boxExtent y).
 	sw morphExtent: (savedExtent + extraExtent
 			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/25/2013 07:59'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:46'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
@@ -2648,9 +2656,8 @@ namedColors
 
 	sw := Panel new.
 	sw addMorph: ip;
-		setLabel: 'Pick a Color'.
-	sw addCloseBox;
-		addCollapseBox;
+		setLabel: 'Pick a Color';
+	     showButtonsNamed: #( close collapse );
 		openInWorld. 
 	"openInWorld resets extent"
 	extraExtent := ScrollBar scrollbarThickness + 4
@@ -2660,7 +2667,7 @@ namedColors
 			
 	^ sw! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2013 16:50'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:48'!
 namedIcons
 "
 	ImagePallet namedIcons.
@@ -2686,7 +2693,7 @@ namedIcons
 	sw setLabel: 'Pick an Icon'.
 	sw openInWorld.
 	extraExtent := ScrollBar scrollbarThickness + 4
-					 @ (ScrollBar scrollbarThickness + 4 + sw labelRectangle height).
+					 @ (ScrollBar scrollbarThickness + 4 + sw boxExtent y).
 	sw 	morphExtent: savedExtent + extraExtent.   "openInWorld algorithm resets extent"! !
 
 !ImagePallet class methodsFor: 'instance creation' stamp: 'KenD 9/13/2013 16:10'!
