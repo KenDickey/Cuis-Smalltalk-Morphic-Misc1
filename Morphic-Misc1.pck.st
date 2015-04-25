@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 19 April 2015 at 4:54:15.97425 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 24 April 2015 at 6:30:56.857049 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 27!
+!provides: 'Morphic-Misc1' 1 29!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -44,7 +44,7 @@ FrameMorph class
 
 !classDefinition: #Panel category: #'Morphic-Misc1'!
 PluggableMorph subclass: #Panel
-	instanceVariableNames: 'labelString widgetsColor layoutMorph stayUp pinButton'
+	instanceVariableNames: 'labelString widgetsColor titleMorph layoutMorph stayUp pinButton'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -172,6 +172,16 @@ LayoutMorph subclass: #RadioGroup
 RadioGroup class
 	instanceVariableNames: ''!
 
+!classDefinition: #TitleMorph category: #'Morphic-Misc1'!
+LayoutMorph subclass: #TitleMorph
+	instanceVariableNames: 'titleString'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'TitleMorph class' category: #'Morphic-Misc1'!
+TitleMorph class
+	instanceVariableNames: ''!
+
 !classDefinition: #SimpleNumberEntryMorph category: #'Morphic-Misc1'!
 OneLineEditorMorph subclass: #SimpleNumberEntryMorph
 	instanceVariableNames: 'entryChars numCharsToHold theValue validator toString valueAccessor valueUpdator'
@@ -295,6 +305,17 @@ iVars:
  buttonOnLeft -- if True, button image then label else label then button image
  buttons - cached array of buttons
 !
+
+!TitleMorph commentStamp: '<historical>' prior: 0!
+I hold and layout title section of windows/panels.
+
+My owner gets messages for standard buttons.
+
+As my instances are created before my owner is set, I delegate events to my owner.
+
+To simplify management, all buttons are present but hidden unless requested.
+
+See Panel, LayoutMorphEditPanel and LayoutSpecEditPanel as usage examples!
 
 !SimpleNumberEntryMorph commentStamp: '<historical>' prior: 0!
 I am a simple numeric entry form.  I display and accept numeric values.
@@ -969,30 +990,6 @@ initialize
 "
 	Colors := { Color yellow. Color mustard. Color brown. }.! !
 
-!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
-addCloseBox
-	"Used by some subclasses"
-	
-	| closeButton |
-	closeButton := self createCloseBox.
-	"@@ FIXME: use layout for title area @@"
-	self addMorphFront: closeButton.
-	closeButton morphPosition: 
-		self closeBoxLocation;
-		morphExtent: self boxExtent! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
-addCollapseBox
-	"Used by some subclasses"
-	
-	| collapseButton |
-	collapseButton := self createCollapseBox.
-	"@@ FIXME: use layout for title area @@"
-	self addMorphFront: collapseButton.
-	collapseButton morphPosition: 
-		self collapseBoxLocation;
-		morphExtent: self boxExtent! !
-
 !Panel methodsFor: 'submorphs-add/remove' stamp: 'KenD 12/9/2013 16:44'!
 addMorph: aMorph 
 	"Add a submorph to our client area."
@@ -1004,18 +1001,6 @@ addMorph: aMorph layoutSpec: aLayoutSpec
 	"Add a submorph to our client area."
 
 	layoutMorph addMorph: aMorph layoutSpec: aLayoutSpec! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 15:23'!
-addPinBox
-	"Used by some subclasses"
-	
-	| pinButton |
-	pinButton := self createPinBox.
-	"@@ FIXME: use layout for title area @@"
-	self addMorphFront: pinButton.
-	pinButton morphPosition: 
-		self pinBoxLocation;
-		morphExtent: self boxExtent! !
 
 !Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 17:08'!
 addPossiblyUncoveredAreasIn: aRectangle to: aCollection
@@ -1056,7 +1041,7 @@ beRow
 			layoutMorph _ LayoutMorph newRow.
 			self addMorphFront: layoutMorph ]! !
 
-!Panel methodsFor: 'title buttons' stamp: 'KenD 12/9/2013 17:02'!
+!Panel methodsFor: 'geometry' stamp: 'KenD 4/24/2015 16:28'!
 boxExtent
 	"answer the extent to use in all the buttons. 
 	 
@@ -1075,8 +1060,8 @@ buttonColor
 
 	^ Theme current buttonColorFrom: self widgetsColor! !
 
-!Panel methodsFor: 'events' stamp: 'KenD 4/19/2015 07:32'!
-closeBoxHit
+!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:45'!
+closeButtonClicked
 	"The user clicked on the close-box control in the window title.  For Mac users only, the Mac convention of option-click-on-close-box is obeyed if the mac option key is down."
 
 	Preferences dismissAllOnOptionClose ifTrue:
@@ -1085,42 +1070,11 @@ closeBoxHit
 	self delete  "closeBox overrides stayUp"
 ! !
 
-!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:50'!
-closeBoxLocation
-
-	^ 2@2! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 08:02'!
-collapseBoxLocation
-
-	^ (self closeBoxLocation x + self boxExtent x + 2) @ self closeBoxLocation y! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:56'!
-createCloseBox
-	"answer a round Close button"
+!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:45'!
+collapseButtonClicked
 	
-	^ (PluggableButtonMorph model: self action: #closeBoxHit)
-		icon: Theme current closeIcon;
-		setBalloonText: 'close this window'! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 12/25/2013 07:57'!
-createCollapseBox
-	"Answer a round Collapse button"
-	
-	^(PluggableButtonMorph model: self action: #collapse)
-		icon: Theme current collapseIcon;
-		setBalloonText: 'collapse this window'! !
-
-!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 14:14'!
-createPinBox
-	"Answer a round PushPin button"
-	
-	pinButton := 
-		(PluggableButtonMorph model: self action: #pinBoxHit)
-		icon: Theme current pushPinIcon;
-		setBalloonText: 'keep this window';
-		yourself.
-	^ self pinButton! !
+	self collapse
+! !
 
 !Panel methodsFor: 'initialization' stamp: 'KenD 12/9/2013 17:05'!
 defaultBorderWidth
@@ -1156,24 +1110,7 @@ drawClassicFrameOn: aCanvas color: titleColor
 	The look is that the title area is inside the window"
 	aCanvas fillRectangle: (borderWidth@borderWidth extent: extent x - (2*borderWidth)@ self labelHeight) color: titleColor! !
 
-!Panel methodsFor: 'drawing' stamp: 'KenD 4/19/2015 15:24'!
-drawLabelOn: aCanvas
-	"@@ FIXME: use layout for title area @@"
-	Theme current embossedTitles
-		ifFalse: [
-			aCanvas
-				drawString: labelString
-				at: self labelRectangle topLeft
-				font: Preferences windowTitleFont
-				color: Theme current windowLabel ]
-		ifTrue: [
-			aCanvas
-				drawStringEmbossed: labelString
-				at: self labelRectangleForEmbossed topLeft
-				font: Preferences windowTitleFont
-				color: Theme current windowLabel ]! !
-
-!Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 19:04'!
+!Panel methodsFor: 'drawing' stamp: 'KenD 4/24/2015 16:08'!
 drawOn: aCanvas
 
 	| titleColor roundCorners |
@@ -1188,7 +1125,7 @@ drawOn: aCanvas
 			"No round corners. No title gradient."
 			self drawClassicFrameOn: aCanvas color: titleColor ].
 
-	self drawLabelOn: aCanvas! !
+	self titleMorph ifNotNil: [ :titleMorph | titleMorph drawOn: aCanvas ].! !
 
 !Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 17:08'!
 drawRoundedFrameOn: aCanvas color: widgetsColor
@@ -1211,14 +1148,26 @@ drawRoundedFrameOn: aCanvas color: widgetsColor
 		gradientBottom: bottomFactor
 		insideColor: color! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 07:30'!
+!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:45'!
+expandButtonClicked
+	
+	self expand
+! !
+
+!Panel methodsFor: 'initialization' stamp: 'KenD 4/24/2015 18:23'!
 initialize
 	"Initialize a system window. Add label, stripes, etc., if desired"
 
 	super initialize.
-	labelString ifNil: [ labelString _ 'Untitled Window'].
+	titleMorph := TitleMorph title: 'Untitled'.
 	extent := self defaultExtent.
 	stayUp := false. "UI push pin to change"
+	titleMorph 
+			layoutSpec: (LayoutSpec morphHeightProportionalWidth: 1.0);
+			morphExtent: extent x @ (self labelHeight + borderWidth);
+			layoutSubmorphs.
+
+	super addMorph: titleMorph.
 
 	"by default"
 	self beColumn! !
@@ -1239,10 +1188,10 @@ isOpaqueMorph
 	"Not really used, as we also reimplement #addPossiblyUncoveredAreasIn:to:"
 	^ (Theme current roundWindowCorners or: [ color mightBeTranslucent ]) not! !
 
-!Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 16:49'!
+!Panel methodsFor: 'label' stamp: 'KenD 4/24/2015 15:48'!
 label
 
-	^ labelString! !
+	^ self titleMorph titleString ! !
 
 !Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 16:49'!
 labelHeight
@@ -1289,12 +1238,12 @@ layoutBounds
 
 	^  (0@0 extent: self morphExtent) insetBy: (0 @ (self labelHeight) corner: 0 @ 0)! !
 
-!Panel methodsFor: 'layout' stamp: 'KenD 12/9/2013 16:47'!
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:54'!
 layoutMorph
 
 	^ layoutMorph! !
 
-!Panel methodsFor: 'layout' stamp: 'KenD 12/9/2013 16:48'!
+!Panel methodsFor: 'layout' stamp: 'KenD 4/24/2015 18:18'!
 layoutSubmorphs
 	"Compute a new layout of submorphs based on the given layout bounds."
 
@@ -1305,6 +1254,7 @@ layoutSubmorphs
 			morphPosition: myBounds origin;
 			morphExtent: myBounds extent 
 	].
+	titleMorph ifNotNil: [ titleMorph layoutSubmorphs ].
 	
 	layoutNeeded _ false! !
 
@@ -1339,11 +1289,11 @@ minPaneWidthForReframe
 
 	^ ScrollBar scrollbarThickness * 3! !
 
-!Panel methodsFor: 'geometry' stamp: 'KenD 12/9/2013 17:06'!
-morphExtent: aPoint 
-	"Set the receiver's extent to value provided. Honor my minimumExtent."
+!Panel methodsFor: 'change reporting' stamp: 'KenD 4/24/2015 18:20'!
+morphExtent: newExtent
 
-	super morphExtent: (aPoint max: self minimumExtent)! !
+	super morphExtent: newExtent.
+	self titleMorph morphExtent: extent x @ (self labelHeight + borderWidth)! !
 
 !Panel methodsFor: 'initialization' stamp: 'KenD 4/18/2015 18:30'!
 openInWorld
@@ -1353,31 +1303,26 @@ openInWorld
 	super openInWorld.
 	^ self! !
 
-!Panel methodsFor: 'events' stamp: 'KenD 4/19/2015 14:09'!
-pinBoxHit
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:41'!
+pinButton
+	"private"
+	
+	^ titleMorph pinButton ! !
+
+!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:46'!
+pinButtonClicked
 	"The user clicked on the push pin. Subclasses should add actions and invoke me"
 	
 	self stayUp: true
 	! !
 
-!Panel methodsFor: 'title buttons' stamp: 'KenD 4/19/2015 14:31'!
-pinBoxLocation
-
-	^ ((self morphExtent x) - 20) @ 2! !
-
-!Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 14:12'!
-pinButton
-	"private"
-	
-	^ pinButton! !
-
-!Panel methodsFor: 'printing' stamp: 'KenD 12/9/2013 16:40'!
+!Panel methodsFor: 'printing' stamp: 'KenD 4/24/2015 16:04'!
 printOn: aStream 
 
 	super printOn: aStream.
 	aStream nextPutAll: '('.
 	aStream
-		print: labelString asString;
+		print: self label;
 		nextPutAll: ')'! !
 
 !Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 16:49'!
@@ -1404,10 +1349,10 @@ replaceArea: oldArea with: newArea
 
 ! !
 
-!Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 16:49'!
+!Panel methodsFor: 'label' stamp: 'KenD 4/24/2015 15:53'!
 setLabel: aString
 
-	labelString _ aString.
+	self titleMorph titleString: aString.
 	self invalidateTitleArea! !
 
 !Panel methodsFor: 'accessing' stamp: 'KenD 4/19/2015 07:30'!
@@ -1427,6 +1372,11 @@ stayUp: aBoolean
 textBackgroundColor
 
 	^ Theme current paneBackgroundFrom: self widgetsColor! !
+
+!Panel methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:44'!
+titleMorph 
+
+	^ titleMorph! !
 
 !Panel methodsFor: 'label' stamp: 'KenD 12/9/2013 17:02'!
 update: aSymbol
@@ -1465,12 +1415,18 @@ windowColor
 	
 	^ Theme current transcript  "model class windowColor"! !
 
+!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:09'!
+windowMenuBoxClicked
+	
+	self subclassResponsibility 
+! !
+
 !Panel class methodsFor: 'instance creation' stamp: 'KenD 12/9/2013 18:53'!
 open: model
 
 	^self open: model label: nil! !
 
-!Panel class methodsFor: 'instance creation' stamp: 'KenD 12/21/2013 17:13'!
+!Panel class methodsFor: 'instance creation' stamp: 'KenD 4/24/2015 18:15'!
 open: model label: aString
 "
 	self open: nil label: 'Test Me !!!!'.
@@ -1583,11 +1539,12 @@ updateMasterFromCopy
 	
 	self subclassResponsibility ! !
 
-!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 4/18/2015 21:25'!
+!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 4/24/2015 16:49'!
 buildMorphicWindow
 	
 	| controlArea leftCol rightCol  |	
-	labelString := self model printStringLimitedTo: 28.
+	self setLabel: (self model printStringLimitedTo: 30).
+	self titleMorph showButtonsNamed: #( close pin collapse ).
 		
 	directionArea    := self newDirectionArea.
 	paddingArea     := self newPaddingArea.
@@ -1643,12 +1600,6 @@ directionArea
 directionArea: newDirectonArea
 
 	directionArea := newDirectonArea! !
-
-!LayoutMorphEditPanel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 14:23'!
-initialize
-
-	super initialize.
-	self addCloseBox; addPinBox; addCollapseBox; yourself! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 12:35'!
 modelBeColumn
@@ -2051,11 +2002,12 @@ auxHeight
 
 	^ 48 "pixels"! !
 
-!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 12/18/2013 19:24'!
+!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 4/24/2015 16:48'!
 buildMorphicWindow
 
 	| controlsArea |
-	labelString := self model printStringLimitedTo: 30.
+	self setLabel: (self model printStringLimitedTo: 30).
+	self titleMorph showButtonsNamed: #( close pin collapse ); layoutSubmorphs.
 		
 	widthArea     := self newWidthArea.
 	heightArea    := self newHeightArea.
@@ -2106,12 +2058,6 @@ heightSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
-
-!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 4/19/2015 14:24'!
-initialize
-
-	super initialize.
-	self addCloseBox; addPinBox; addCollapseBox; yourself! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 20:22'!
 modelPadding: numPixels
@@ -3452,6 +3398,183 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	
 	^ false! !
+
+!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:51'!
+addButton: nameSym action: actionSym baloonText: toolHelpString themeName: iconName
+	"add a a button morph to me"
+	
+	self addMorph: 
+		((PluggableButtonMorph model: self action: actionSym)
+			icon: (Theme current perform: iconName);
+			setBalloonText:toolHelpString;
+			iconName: nameSym;
+			yourself)
+		layoutSpec: (LayoutSpec keepMorphExtent)! !
+
+!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
+buttonNamed: aSymbol
+
+	^ self submorphs  
+		detect: [ :aMorph | 
+			(aMorph isKindOf: PluggableButtonMorph) 
+				and: [ aMorph iconName = aSymbol ] 
+		]
+		ifNone: [ ^ nil ]! !
+
+!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 08:01'!
+buttonNamesShown
+
+	| names |
+	names := OrderedCollection new.
+
+	self submorphsDo: [ :aMorph |
+		((aMorph isKindOf: PluggableButtonMorph) 
+		  and: [ aMorph visible ])
+			ifTrue: [ names add: aMorph iconName ]
+	].
+
+	^ names! !
+
+!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+closeButtonClicked
+	"Delegate action to owner"
+	
+	self owner closeButtonClicked
+! !
+
+!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+collapseButtonClicked	"Delegate action to owner"
+
+	self owner collapseButtonClicked
+! !
+
+!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 16:28'!
+color
+	"I take on the color of my title bar"
+
+	^ Color transparent ! !
+
+!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:30'!
+expandButtonClicked
+	"Delegate action to owner"
+	
+	self owner expandButtonClicked
+! !
+
+!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
+hideButtons
+
+	self submorphsDo: [ :m | (m isKindOf: PluggableButtonMorph) ifTrue: [ m hide ] ]! !
+
+!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:49'!
+initialize
+
+	super initialize.
+	titleString := 'Untitled'.
+	self separation: 4@0.! !
+
+!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
+pinButton
+
+	^ self buttonNamed: #pin! !
+
+!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+pinButtonClicked
+	"Delegate action to owner"
+		
+	self owner pinButtonClicked 
+	! !
+
+!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 08:02'!
+reset
+	"Remove old and place new tItle and button Morphs"
+	
+	| buttonsShown |
+	buttonsShown := self buttonNamesShown.
+	self removeAllMorphs. "Clear out old morphs"
+	
+   #( ( close  closeButtonClicked 'close this window' closeIcon )
+	   ( collapse collapseButtonClicked 'collapse this window' collapseIcon )
+	   ( expand expandButtonClicked 'expand this window' expandIcon )
+	   ( windowMenu windowMenuButtonClicked 'window menu' windowMenuIcon )
+	) do: [ :rowArgs | 
+		self perform: #addButton:action:baloonText:themeName: 
+		withArguments: rowArgs ].
+	
+	self addMorph: (StringMorph 
+						contents: self titleString 
+						font: Preferences windowTitleFont ).
+	
+	self  
+		addButton: #pin 
+		action: #pinButtonClicked 
+		baloonText:  'pin (keep) this window' 
+		themeName: #pushPinIcon .
+		
+	self hideButtons.
+	self showButtonsNamed: buttonsShown.
+	
+	! !
+
+!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:56'!
+showButtonsNamed: aSymbolColleciton
+
+	aSymbolColleciton 
+			do: [ :aName |
+				(self buttonNamed: aName)
+					ifNotNil: [ :aButton | aButton show ]
+			].
+! !
+
+!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:50'!
+title: aString buttonsNamed: aSymbolColleciton
+	"Set me up"
+	
+	self titleString: aString. "places title and buttons"
+	aSymbolColleciton 
+			do: [ :aName |
+				(self buttonNamed: aName)
+					ifNotNil: [ :aButton | aButton show ]
+			].
+! !
+
+!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 18:36'!
+titleString
+
+	^ titleString ! !
+
+!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:51'!
+titleString: aString
+	"Remember titleString and set up submorphs"
+
+	titleString := aString.
+	self reset! !
+
+!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:31'!
+windowMenuButtonClicked
+	"Delegate action to owner"
+	
+	self owner windowMenuButtonClicked
+! !
+
+!TitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:03'!
+submorphOrder
+	"Aside from #title, all are named buttons.  Any button may be absent"
+
+	^ #( close collapse expand worldMenu title pin )! !
+
+!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 17:05'!
+title: aString
+
+	^ self title: aString buttonsNamed: #()! !
+
+!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 20:21'!
+title: aString buttonsNamed: aSymbolCollection
+
+	((self submorphOrder) includesAllOf: aSymbolCollection)
+		ifFalse: [ self error: 'Bad button name in ', aSymbolCollection printString ].
+	^ (self newRow) title: aString buttonsNamed: aSymbolCollection
+! !
 
 !SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 2/28/2015 11:04'!
 disablesEdition
