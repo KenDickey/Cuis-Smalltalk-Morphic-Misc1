@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 3:09:52.387194 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 4:26:32.468631 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 32!
+!provides: 'Morphic-Misc1' 1 33!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2598,7 +2598,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:38'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 16:23'!
 largerIcons
 "
 	ImagePallet largerIcons.
@@ -2618,9 +2618,10 @@ largerIcons
 			imageFilter: [:form | ImageMorph new image: (form magnifyTo: 32 @ 32)].
 	savedExtent := ip morphExtent.
 
-	sw := SystemWindow new.
+	sw := Panel new.
 	sw addMorph: ip.
-	sw setLabel: 'Pick an Icon'.
+	sw setLabel: 'Pick an Icon';
+	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
 	extraExtent := ScrollBar scrollbarThickness + 3
 					 @ (ScrollBar scrollbarThickness + 3 + sw boxExtent y).
@@ -2667,7 +2668,7 @@ namedColors
 			
 	^ sw! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:48'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 16:25'!
 namedIcons
 "
 	ImagePallet namedIcons.
@@ -2688,9 +2689,10 @@ namedIcons
 			imageFilter: [:form | ImageMorph new image: form].
 	savedExtent := ip morphExtent.
 
-	sw := SystemWindow new.
+	sw := Panel new.
 	sw addMorph: ip.
-	sw setLabel: 'Pick an Icon'.
+	sw setLabel: 'Pick an Icon';
+	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
 	extraExtent := ScrollBar scrollbarThickness + 4
 					 @ (ScrollBar scrollbarThickness + 4 + sw boxExtent y).
