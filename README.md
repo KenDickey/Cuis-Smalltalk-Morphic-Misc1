@@ -3,9 +3,18 @@ Morphic-Misc1
 Tested: Cuis 4.2 rev 2243
 
 To load the package
-````Smalltalk
+ ````Smalltalk
 	Feature require:  'Morphic-Misc1'.
 ````
+
+To test WindowTitleMorph, close all windows.
+Open a WorkSpace.
+ ````Smalltalk
+	Feature require: 'Morphic-Misc1'.
+	ChangeSet fileIn: '../Cuis-Smalltalk-Morphic-Misc1/2244-CuisCore-KenD-2015Apr26-18h26m-KenD.3.cs.st'.
+````
+Close the WorkSpace.
+Use system as normal.
 
 Basic morphs used by various packages 
 

@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 25 April 2015 at 4:26:32.468631 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 28 April 2015 at 6:46:17.38074 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 33!
+!provides: 'Morphic-Misc1' 1 40!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -172,14 +172,14 @@ LayoutMorph subclass: #RadioGroup
 RadioGroup class
 	instanceVariableNames: ''!
 
-!classDefinition: #TitleMorph category: #'Morphic-Misc1'!
-LayoutMorph subclass: #TitleMorph
+!classDefinition: #WindowTitleMorph category: #'Morphic-Misc1'!
+LayoutMorph subclass: #WindowTitleMorph
 	instanceVariableNames: 'titleString'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
-!classDefinition: 'TitleMorph class' category: #'Morphic-Misc1'!
-TitleMorph class
+!classDefinition: 'WindowTitleMorph class' category: #'Morphic-Misc1'!
+WindowTitleMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #SimpleNumberEntryMorph category: #'Morphic-Misc1'!
@@ -306,8 +306,8 @@ iVars:
  buttons - cached array of buttons
 !
 
-!TitleMorph commentStamp: '<historical>' prior: 0!
-I hold and layout title section of windows/panels.
+!WindowTitleMorph commentStamp: '<historical>' prior: 0!
+I hold and layout the title section of windows/panels.
 
 My owner gets messages for standard buttons.
 
@@ -1159,12 +1159,12 @@ hideButtons
 
 	self titleMorph hideButtons ! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 4/24/2015 18:23'!
+!Panel methodsFor: 'initialization' stamp: 'KenD 4/28/2015 18:41'!
 initialize
 	"Initialize a system window. Add label, stripes, etc., if desired"
 
 	super initialize.
-	titleMorph := TitleMorph title: 'Untitled'.
+	titleMorph := WindowTitleMorph title: 'Untitled'.
 	extent := self defaultExtent.
 	stayUp := false. "UI push pin to change"
 	titleMorph 
@@ -1176,13 +1176,6 @@ initialize
 
 	"by default"
 	self beColumn! !
-
-!Panel methodsFor: 'change reporting' stamp: 'KenD 7/24/2014 20:00'!
-invalidateTitleArea
-
-	"not really pretty... also invalidating the top border, regardless of it being above or below the title area
-	(Different themes use various looks, this covers them all)"
-	self invalidateLocalRect: (0@0 extent: extent x @ (self labelHeight + borderWidth))! !
 
 !Panel methodsFor: 'testing' stamp: 'KenD 12/9/2013 16:45'!
 is: aSymbol
@@ -1354,11 +1347,11 @@ replaceArea: oldArea with: newArea
 
 ! !
 
-!Panel methodsFor: 'label' stamp: 'KenD 4/24/2015 15:53'!
+!Panel methodsFor: 'label' stamp: 'KenD 4/28/2015 18:34'!
 setLabel: aString
 
 	self titleMorph titleString: aString.
-	self invalidateTitleArea! !
+! !
 
 !Panel methodsFor: 'GUI building' stamp: 'KenD 4/25/2015 08:45'!
 showButtonsNamed: aSymbolCollection
@@ -1425,8 +1418,8 @@ windowColor
 	
 	^ Theme current transcript  "model class windowColor"! !
 
-!Panel methodsFor: 'events' stamp: 'KenD 4/24/2015 16:09'!
-windowMenuBoxClicked
+!Panel methodsFor: 'events' stamp: 'KenD 4/28/2015 13:42'!
+windowMenuButtonClicked
 	
 	self subclassResponsibility 
 ! !
@@ -2598,16 +2591,20 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 16:23'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/26/2015 16:30'!
 largerIcons
 "
 	ImagePallet largerIcons.
 "
 	| ip sw iconsCollection savedExtent sortedCollection extraExtent |
 	iconsCollection := OrderedCollection new. 
-	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'. 'mimetypes'. 'places'. 'smalltalk'. 'status'. } do: [ :category |
-		iconsCollection addAll: (Theme content get: {'Theme'. '16x16'. category}) array.
+	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'. 
+			'mimetypes'. 'places'. 'smalltalk'. 'status'. } 
+		do: [ :category |
+			iconsCollection addAll: (Theme content get: {'Theme'. '16x16'. category}) array.
 	].
+	iconsCollection addAll: 
+		(Theme content get: {'Theme'. '14x14'. 'buttons'}) array.
 	sortedCollection := SortedCollection sortBlock: [ :a :b | a key < b key].
 	sortedCollection addAll: (iconsCollection select: [ :assoc | assoc isNil not]).
 	
@@ -2626,7 +2623,7 @@ largerIcons
 	extraExtent := ScrollBar scrollbarThickness + 3
 					 @ (ScrollBar scrollbarThickness + 3 + sw boxExtent y).
 	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"! !
+			min: ((DisplayScreen actualScreenSize) // 1.2)). "openInWorld resets extent" ! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:46'!
 namedColors
@@ -3408,19 +3405,28 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/25/2015 15:09'!
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/28/2015 18:27'!
 addButton: nameSym action: actionSym baloonText: toolHelpString themeName: iconName
 	"add a a button morph to me"
 	
 	self addMorph: 
 		((PluggableButtonMorph model: self action: actionSym)
-			icon: (Theme current perform: iconName);
+			icon: ((Theme current perform: iconName) magnifyTo: self boxExtent) ;
 			setBalloonText: toolHelpString;
 			iconName: nameSym;
 			yourself)
 		layoutSpec: (LayoutSpec keepMorphExtent)! !
 
-!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/28/2015 14:04'!
+boxExtent
+	"answer the extent to use in all the buttons. 
+	 
+	the label height is used to be proportional to the fonts preferences"
+	| e |
+	e _ Preferences windowTitleFont height.
+	^e@e! !
+
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
 buttonNamed: aSymbol
 
 	^ self submorphs  
@@ -3430,7 +3436,7 @@ buttonNamed: aSymbol
 		]
 		ifNone: [ ^ nil ]! !
 
-!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 08:01'!
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 08:01'!
 buttonNamesShown
 
 	| names |
@@ -3444,57 +3450,63 @@ buttonNamesShown
 
 	^ names! !
 
-!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
 closeButtonClicked
 	"Delegate action to owner"
 	
 	self owner closeButtonClicked
 ! !
 
-!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
 collapseButtonClicked	"Delegate action to owner"
 
 	self owner collapseButtonClicked
 ! !
 
-!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 16:28'!
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 16:28'!
 color
 	"I take on the color of my title bar"
 
 	^ Color transparent ! !
 
-!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:30'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:30'!
 expandButtonClicked
 	"Delegate action to owner"
 	
 	self owner expandButtonClicked
 ! !
 
-!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
 hideButtons
 
 	self submorphsDo: [ :m | (m isKindOf: PluggableButtonMorph) ifTrue: [ m hide ] ]! !
 
-!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:49'!
+!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:49'!
 initialize
 
 	super initialize.
 	titleString := 'Untitled'.
 	self separation: 4@0.! !
 
-!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 4/28/2015 15:40'!
+morphExtent: newExtent
+
+	super morphExtent: newExtent.
+	self reset! !
+
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 17:01'!
 pinButton
 
 	^ self buttonNamed: #pin! !
 
-!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
 pinButtonClicked
 	"Delegate action to owner"
 		
 	self owner pinButtonClicked 
 	! !
 
-!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 08:02'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/28/2015 18:17'!
 reset
 	"Remove old and place new tItle and button Morphs"
 	
@@ -3511,7 +3523,7 @@ reset
 		withArguments: rowArgs ].
 	
 	self addMorph: (StringMorph 
-						contents: self titleString 
+						contents: self titleStringForDisplay 
 						font: Preferences windowTitleFont ).
 	
 	self  
@@ -3522,10 +3534,9 @@ reset
 		
 	self hideButtons.
 	self showButtonsNamed: buttonsShown.
-	
 	! !
 
-!TitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:56'!
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:56'!
 showButtonsNamed: aSymbolColleciton
 
 	aSymbolColleciton 
@@ -3535,7 +3546,7 @@ showButtonsNamed: aSymbolColleciton
 			].
 ! !
 
-!TitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:50'!
+!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:50'!
 title: aString buttonsNamed: aSymbolColleciton
 	"Set me up"
 	
@@ -3547,36 +3558,53 @@ title: aString buttonsNamed: aSymbolColleciton
 			].
 ! !
 
-!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 18:36'!
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 18:36'!
 titleString
 
 	^ titleString ! !
 
-!TitleMorph methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:51'!
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/24/2015 15:51'!
 titleString: aString
 	"Remember titleString and set up submorphs"
 
 	titleString := aString.
 	self reset! !
 
-!TitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:31'!
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/28/2015 15:36'!
+titleStringForDisplay
+	"Answer a string scaled to fit"
+	
+	| titleWidth desiredWidth titleString |
+	titleString := self titleString.
+	titleWidth := Preferences windowTitleFont widthOfString: titleString.
+	desiredWidth := (self morphWidth - (self boxExtent x * self buttonNamesShown size)) max: 20.
+	^ (titleWidth <= desiredWidth)
+		ifTrue: [ titleString ]
+		ifFalse: [ titleString squeezedTo: (titleString size * (desiredWidth / titleWidth)) rounded]! !
+
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:31'!
 windowMenuButtonClicked
 	"Delegate action to owner"
 	
 	self owner windowMenuButtonClicked
 ! !
 
-!TitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/25/2015 12:57'!
+!WindowTitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/28/2015 11:56'!
 buttonNames
 
-	^ #( close collapse expand worldMenu pin )! !
+	^ #( close collapse expand windowMenu pin )! !
 
-!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 17:05'!
+!WindowTitleMorph class methodsFor: 'new-morph participation' stamp: 'KenD 4/28/2015 18:45'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	^ false! !
+
+!WindowTitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/23/2015 17:05'!
 title: aString
 
 	^ self title: aString buttonsNamed: #()! !
 
-!TitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/25/2015 13:18'!
+!WindowTitleMorph class methodsFor: 'instance creation' stamp: 'KenD 4/25/2015 13:18'!
 title: aString buttonsNamed: aSymbolCollection
 
 	((self buttonNames) includesAllOf: aSymbolCollection)
