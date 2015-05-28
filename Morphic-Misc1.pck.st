@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2243] on 28 April 2015 at 6:46:17.38074 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2330] on 28 May 2015 at 4:57:55.585918 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 40!
+!provides: 'Morphic-Misc1' 1 41!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2625,12 +2625,13 @@ largerIcons
 	sw morphExtent: (savedExtent + extraExtent
 			min: ((DisplayScreen actualScreenSize) // 1.2)). "openInWorld resets extent" ! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 08:46'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 5/28/2015 16:57'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
 	self useXKCDColorDict.                    "" To get XKCD color names""
 	self useSmallColorDict.
+	self useCrayonColorDict.
 	ImagePallet namedColors.
 "
 	| ip sw sortedColors a b savedExtent extraExtent |
@@ -2705,6 +2706,14 @@ useCSS3ColorDict
 
 	Feature require: 'CSS3-NamedColors'.
 	Color setColorNamesDict: Color css3ColorDictionary.! !
+
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 5/28/2015 16:56'!
+useCrayonColorDict
+"
+	self useCrayonColorDict.
+"
+	Feature require: 'Crayon-NamedColors'.
+	Color setColorNamesDict: Color crayonColorDictionary.! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 16:14'!
 useNBSISCCColorDict
