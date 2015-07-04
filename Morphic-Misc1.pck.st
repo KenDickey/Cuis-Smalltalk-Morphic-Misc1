@@ -1,7 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 3:40:33.939091 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 3:55:34.550692 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 43!
-!requires: 'Cuis-Base' 42 2198 nil!
+!provides: 'Morphic-Misc1' 1 45!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2777,6 +2776,14 @@ allowsMorphDrop
 
 	^ true! !
 
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:48'!
+createHaloBox
+	^ (PluggableButtonMorph model: self action: #showHaloButtonClicked)
+		icon: Theme current doItIcon;
+		iconName: #showHalo;
+		setBalloonText: 'show target halo' ;
+		morphExtent: self boxExtent! !
+
 !DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 12/3/2013 18:25'!
 defaultBorderColor
 
@@ -2796,10 +2803,20 @@ initialize
 
 ! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 1/11/2015 17:21'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:45'!
+initializeLabelArea
+	"Initialize the label area (titlebar) for the window."
+
+	| spacing |
+	spacing _ self boxExtent x + 2.
+	super initializeLabelArea.
+	self addMorph: self createHaloBox position: spacing*4+2@2
+! !
+
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:53'!
 openFor: aMorph
 
-	targetMorph := aMorph.
+	self model: aMorph.
 	"Don't let Layout obfiscate view below"
 	(self layoutMorph) color: (Color teal alpha: 0.3).
 
@@ -2816,10 +2833,17 @@ openFor: aMorph
 	
 ! !
 
-!DropTargetMorph methodsFor: 'access' stamp: 'KenD 12/3/2013 19:25'!
+!DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:51'!
+showHaloButtonClicked
+
+	| aMorph |
+	aMorph := self model.
+	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+
+!DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 15:53'!
 targetMorph
 
-	^ targetMorph! !
+	^ self model! !
 
 !DropTargetMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:32'!
 wantsDroppedMorph: aMorph event: evt
