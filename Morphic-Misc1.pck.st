@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 3:55:34.550692 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 4:12:52.396728 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 45!
+!provides: 'Morphic-Misc1' 1 46!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2784,6 +2784,13 @@ createHaloBox
 		setBalloonText: 'show target halo' ;
 		morphExtent: self boxExtent! !
 
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 16:11'!
+createMenuBox
+	"Substitute a different button."
+	"This avoids having a button on top of the window title."
+
+	^ self createHaloBox ! !
+
 !DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 12/3/2013 18:25'!
 defaultBorderColor
 
@@ -2801,16 +2808,6 @@ initialize
 	super initialize.
 	self widgetsColor: self defaultBorderColor.
 
-! !
-
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:45'!
-initializeLabelArea
-	"Initialize the label area (titlebar) for the window."
-
-	| spacing |
-	spacing _ self boxExtent x + 2.
-	super initializeLabelArea.
-	self addMorph: self createHaloBox position: spacing*4+2@2
 ! !
 
 !DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:53'!
