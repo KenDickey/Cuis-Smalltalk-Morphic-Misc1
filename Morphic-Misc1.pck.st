@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 9:00:27.872753 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 3:40:33.939091 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 42!
+!provides: 'Morphic-Misc1' 1 43!
 !requires: 'Cuis-Base' 42 2198 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1541,12 +1541,12 @@ updateMasterFromCopy
 	
 	self subclassResponsibility ! !
 
-!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 4/24/2015 16:49'!
+!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/4/2015 15:25'!
 buildMorphicWindow
 	
 	| controlArea leftCol rightCol  |	
 	self setLabel: (self model printStringLimitedTo: 30).
-	self titleMorph showButtonsNamed: #( close pin collapse ).
+	self titleMorph showButtonsNamed: #( close pin collapse showHalo ).
 		
 	directionArea    := self newDirectionArea.
 	paddingArea     := self newPaddingArea.
@@ -1929,6 +1929,13 @@ setPadRadio: radio fromPadFactor: factor
 		[1.0] -> [ (radio buttons at: 3) select ].
 	} otherwise: [ (radio buttons at: 4) select ]! !
 
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:38'!
+showHaloButtonClicked
+
+	| aMorph |
+	aMorph := self model.
+	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:47'!
 updateMasterFromCopy
 	"Update model from editModel"
@@ -2004,12 +2011,12 @@ auxHeight
 
 	^ 48 "pixels"! !
 
-!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 4/24/2015 16:48'!
+!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/4/2015 15:39'!
 buildMorphicWindow
 
 	| controlsArea |
 	self setLabel: (self model printStringLimitedTo: 30).
-	self titleMorph showButtonsNamed: #( close pin collapse ); layoutSubmorphs.
+	self titleMorph showButtonsNamed: #( close pin collapse showHalo ); layoutSubmorphs.
 		
 	widthArea     := self newWidthArea.
 	heightArea    := self newHeightArea.
@@ -2448,6 +2455,11 @@ showHalo
 	| aMorph |
 	aMorph := self model morph.
 	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:24'!
+showHaloButtonClicked
+
+	self showHalo! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:52'!
 updateMasterFromCopy
@@ -3516,7 +3528,7 @@ pinButtonClicked
 	self owner pinButtonClicked 
 	! !
 
-!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/28/2015 18:17'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:31'!
 reset
 	"Remove old and place new tItle and button Morphs"
 	
@@ -3528,6 +3540,8 @@ reset
 	   ( collapse collapseButtonClicked 'collapse this window' collapseIcon )
 	   ( expand expandButtonClicked 'expand this window' expandIcon )
 	   ( windowMenu windowMenuButtonClicked 'window menu' windowMenuIcon )
+	   ( showHalo showHaloButtonClicked 'show target halo' doItIcon  )
+"	   ( pin pinButtonClicked 'pin me (don''t close)' pushPinIcon )  ADD AFTER TLTLE (below)"
 	) do: [ :rowArgs | 
 		self perform: #addButton:action:baloonText:themeName: 
 		withArguments: rowArgs ].
@@ -3555,6 +3569,13 @@ showButtonsNamed: aSymbolColleciton
 					ifNotNil: [ :aButton | aButton show ]
 			].
 ! !
+
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:22'!
+showHaloButtonClicked
+	"Delegate action to owner"
+		
+	self owner showHaloButtonClicked 
+	! !
 
 !WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:50'!
 title: aString buttonsNamed: aSymbolColleciton
@@ -3599,10 +3620,10 @@ windowMenuButtonClicked
 	self owner windowMenuButtonClicked
 ! !
 
-!WindowTitleMorph class methodsFor: 'accessing' stamp: 'KenD 4/28/2015 11:56'!
+!WindowTitleMorph class methodsFor: 'accessing' stamp: 'KenD 7/4/2015 14:40'!
 buttonNames
 
-	^ #( close collapse expand windowMenu pin )! !
+	^ #( close collapse expand windowMenu pin showHalo )! !
 
 !WindowTitleMorph class methodsFor: 'new-morph participation' stamp: 'KenD 4/28/2015 18:45'!
 includeInNewMorphMenu
