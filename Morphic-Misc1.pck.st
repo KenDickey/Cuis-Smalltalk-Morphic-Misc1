@@ -1,6 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 4 July 2015 at 4:12:52.396728 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 9:44:02.978493 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 46!
+!provides: 'Morphic-Misc1' 1 47!
+!requires: 'Cuis-Base' 42 2400 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -103,7 +104,7 @@ PluggableScrollBar class
 
 !classDefinition: #DropTargetMorph category: #'Morphic-Misc1'!
 SystemWindow subclass: #DropTargetMorph
-	instanceVariableNames: 'targetMorph'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -2810,10 +2811,10 @@ initialize
 
 ! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:53'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/5/2015 09:43'!
 openFor: aMorph
 
-	self model: aMorph.
+	self targetMorph: aMorph.
 	"Don't let Layout obfiscate view below"
 	(self layoutMorph) color: (Color teal alpha: 0.3).
 
@@ -2841,6 +2842,11 @@ showHaloButtonClicked
 targetMorph
 
 	^ self model! !
+
+!DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/5/2015 09:43'!
+targetMorph: aMorph
+
+	self model: aMorph! !
 
 !DropTargetMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:32'!
 wantsDroppedMorph: aMorph event: evt
