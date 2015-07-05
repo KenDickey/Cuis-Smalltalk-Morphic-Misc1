@@ -7,15 +7,6 @@ To load the package
 	Feature require:  'Morphic-Misc1'.
 ````
 
-To test WindowTitleMorph, close all windows.
-Open a WorkSpace.
- ````Smalltalk
-	Feature require: 'Morphic-Misc1'.
-	ChangeSet fileIn: '../Cuis-Smalltalk-Morphic-Misc1/2244-CuisCore-KenD-2015Apr26-18h26m-KenD.3.cs.st'.
-````
-Close the WorkSpace.
-Use system as normal.
-
 Basic morphs used by various packages 
 
   BorderedImageMorph 
