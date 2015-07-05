@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 7:02:37.695866 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 7:12:40.846807 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 43!
-!requires: 'Cuis-Base' 42 2198 nil!
+!provides: 'Morphic-Misc1' 1 45!
+!requires: 'Cuis-Base' 42 2400 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -1449,11 +1449,11 @@ cancelAndForgetEverything
 		ifFalse: [ self delete ]
 		ifTrue: [ self refreshView ]! !
 
-!EditPanel methodsFor: 'accessing' stamp: 'KenD 12/17/2013 19:25'!
+!EditPanel methodsFor: 'accessing' stamp: 'KenD 7/5/2015 07:06'!
 editModel
 	"A subclass may wish to supply a custom editModel rather than model clone"
 	
-	editModel ifNil: [	editModel := self model clone ].
+	editModel ifNil: [	editModel := self model shallowCopy postCopy ].
 	
 	^ editModel! !
 
