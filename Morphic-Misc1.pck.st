@@ -1,4 +1,4 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 9:44:02.978493 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 3:20:58.802248 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
 !provides: 'Morphic-Misc1' 1 47!
 !requires: 'Cuis-Base' 42 2400 nil!
@@ -337,12 +337,6 @@ else the new value is remembered and displayed.!
 
 !LabelMorph commentStamp: '<historical>' prior: 0!
 I am a StringMorph used as a label!
-
-!Form methodsFor: '*morphic-misc1' stamp: 'KenD 12/25/2013 10:06'!
-icon32
-	"Answer a 32 x 32 icon of myself"
-	
-	^self magnifyTo: 32 @ 32! !
 
 !LayoutSpec methodsFor: '*morphic-misc1' stamp: 'KenD 4/18/2015 20:18'!
 morph
@@ -2803,7 +2797,7 @@ defaultColor
 
 	^ Color transparent! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 12/3/2013 19:16'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/5/2015 15:20'!
 initialize
 
 	super initialize.
@@ -2811,7 +2805,7 @@ initialize
 
 ! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/5/2015 09:43'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/5/2015 15:20'!
 openFor: aMorph
 
 	self targetMorph: aMorph.
@@ -2827,9 +2821,42 @@ openFor: aMorph
 		morphPosition: aMorph morphPositionInWorld - self boxExtent ;
 		morphExtent: aMorph morphExtent + self boxExtent;
 		color: (Color teal alpha: 0.3);
+		refreshSubmorphs;
 		yourself
 	
 ! !
+
+!DropTargetMorph methodsFor: 'morphIt' stamp: 'KenD 7/5/2015 07:02'!
+refreshSubmorphs
+	"remove submorphs and get 'em back"
+"
+	| curPos deltaX deltaY myExtent|
+	curPos := self borderWidth @ self borderWidth.
+	deltaX := deltaY := 40.  ""Large Icon Size including border""
+	myExtent := self morphExtent max: 80@240.
+"
+	self layoutMorph removeAllMorphs. 
+	"(MorphMorph modifiersOf: self targetMorph) "
+	(self targetMorph valueOfProperty: #morphModifiers  ifAbsent: [ nil ])
+		ifNotNil: [ :modifiers | modifiers do: 
+			[ :m | 
+				m ifNotNil: [
+					self addMorph: m layoutSpec: LayoutSpec keepMorphExtent .
+					m show.
+"
+					m morphPosition: curPos.
+					(curPos x + deltaX > myExtent x)
+						ifTrue: [ curPos := self borderWidth @ (curPos y + deltaY) ]
+						ifFalse: [ curPos := (curPos x + deltaX) @ curPos y ].
+"
+"					Transcript newLine; show: 'SubM curPos: ', curPos printString .
+"
+				]
+			]
+		].
+	self layoutMorph layoutSubmorphs .
+	self redrawNeeded.
+	! !
 
 !DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:51'!
 showHaloButtonClicked
@@ -2843,7 +2870,7 @@ targetMorph
 
 	^ self model! !
 
-!DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/5/2015 09:43'!
+!DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 16:34'!
 targetMorph: aMorph
 
 	self model: aMorph! !
@@ -3031,11 +3058,11 @@ layoutBounds
 
 	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
 
-!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/4/2015 19:15'!
 morphExtent
 	"Answer an extent which includes me, taking into account my borderWidth"
 
-	^ extent + borderWidth + borderWidth ! !
+	^ self minimumExtent + borderWidth + borderWidth ! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:07'!
 aboutToBeGrabbedBy: aHand
@@ -3057,7 +3084,7 @@ aboutToGrab: aMorph
 
 	^ self class fromColor: aMorph color   "Pick up a copy of me"! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:13'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 5/10/2015 15:21'!
 dropAction: aDropTargetMorph
 	"Set a color"
 
@@ -3080,7 +3107,8 @@ dropAction: aDropTargetMorph
 						with: self color
 			]
 		].
-	aDropTargetMorph delete. "Remove the DropTargetMorph. It's job is done!!"! !
+
+	aDropTargetMorph refreshSubmorphs.! !
 
 !DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
 fromColor: aColor
@@ -3228,14 +3256,15 @@ layoutBounds
 	
 	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
 
-!PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 9/14/2013 16:00'!
+!PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/4/2015 19:55'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
 	that should be added to the hand.
 	Answer nil to reject the drag."
 
-	^aMorph copy! !
+	^ aMorph shallowCopy postCopy  "Nota Bene: clone to retain closures"
+	! !
 
 !PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 9/14/2013 15:59'!
 allowsSubmorphDrag
