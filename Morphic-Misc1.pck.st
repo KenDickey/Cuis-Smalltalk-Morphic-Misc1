@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2400] on 5 July 2015 at 3:20:58.802248 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 5 July 2015 at 7:48:39.906855 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 47!
+!provides: 'Morphic-Misc1' 1 48!
 !requires: 'Cuis-Base' 42 2400 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -3256,14 +3256,14 @@ layoutBounds
 	
 	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
 
-!PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/4/2015 19:55'!
+!PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/5/2015 19:48'!
 aboutToGrab: aMorph
 	"submorph is being grabbed by a hand.
 	Perform necessary adjustments (if any) and return the actual morph
 	that should be added to the hand.
 	Answer nil to reject the drag."
 
-	^ aMorph shallowCopy postCopy  "Nota Bene: clone to retain closures"
+	^ aMorph copy   "Note PartsBinMorph>>aboutToGrab: "
 	! !
 
 !PalletLayoutMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 9/14/2013 15:59'!
