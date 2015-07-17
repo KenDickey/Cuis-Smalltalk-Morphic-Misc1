@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 16 July 2015 at 3:10:48.060569 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 17 July 2015 at 2:48:03.523428 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 50!
+!provides: 'Morphic-Misc1' 1 51!
 !requires: 'Cuis-Base' 42 2400 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2898,12 +2898,15 @@ doesNotUnderstand: aMessage
 
 	^ aMessage sendTo: object.! !
 
-!SignMorph methodsFor: 'initialization' stamp: 'KenD 10/5/2013 17:23'!
+!SignMorph methodsFor: 'initialization' stamp: 'KenD 7/17/2015 14:45'!
 forObject: anObject
 
+	| nameString |
+	
+	nameString := anObject name ifNotNil: [ :name | name ] ifNil: [ anObject printString ].
 	super initialize.  "Initialize extent as required by #redrawNeeded"
 	object := anObject.
-	self contents: anObject name.  "NOTE: Object defaults this to #printString"
+	self contents: nameString
 ! !
 
 !SignMorph methodsFor: 'initialization' stamp: 'KenD 10/5/2013 17:23'!
