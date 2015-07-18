@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 17 July 2015 at 2:48:03.523428 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 17 July 2015 at 6:37:14.973593 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 51!
+!provides: 'Morphic-Misc1' 1 52!
 !requires: 'Cuis-Base' 42 2400 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -272,6 +272,12 @@ A sign by its nature points to something else.  Use:
 
 ivar:
    object - the object I point-to/denote/stand-for
+
+Examples:
+  (SignMorph forObject: Color green) openInHand.
+  (SignMorph forObject: 4.7) openInHand.
+  (SignMorph forObject: 'Ball of string') openInHand.
+  EllipseMorph initializedInstance signMorphForMe.
 !
 
 !BorderedImageMorph commentStamp: '<historical>' prior: 0!
@@ -363,14 +369,15 @@ privateProportionalWidth
 
 	^ proportionalWidth ! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:19'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 7/17/2015 18:31'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
 	aCustomMenu 
 		addLine;
 		add: 'show drop target for me' action: #showDropTarget;
-		add: 'edit my layoutSpec' action: #editMyLayoutSpec! !
+		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
+		add: 'create a SignMorph for me' action: #signMorphForMe! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:09'!
 editMyLayoutSpec
@@ -383,6 +390,12 @@ showDropTarget
 	"Display a DropTargetMorph for me"
 
 	DropTargetMorph openFor: self! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 7/17/2015 18:32'!
+signMorphForMe
+	"Add a SignMorph for me in the active hand"
+
+	(SignMorph forObject: self) openInHand ! !
 
 !LayoutMorph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:22'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
