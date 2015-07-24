@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2404] on 17 July 2015 at 6:37:14.973593 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 23 July 2015 at 8:44:38.541618 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 52!
-!requires: 'Cuis-Base' 42 2400 nil!
+!provides: 'Morphic-Misc1' 1 53!
+!requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2940,11 +2940,13 @@ object
 
 	^ object! !
 
-!SignMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/16/2015 15:07'!
+!SignMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/21/2015 20:38'!
 rejectDropMorphEvent: dropEvent
 	"The receiver has been rejected.  Disappear"
-
-	self delete
+	
+	Transcript newLine; show: 'SignMorph>>rejectDropMorphEvent'.
+	self hide; delete.
+	self world ifNotNil: [ :w | w activeHand removeMorph: self ].
 ! !
 
 !SignMorph class methodsFor: 'instance creation' stamp: 'KenD 10/5/2013 16:54'!
@@ -3582,12 +3584,13 @@ hideButtons
 
 	self submorphsDo: [ :m | (m isKindOf: PluggableButtonMorph) ifTrue: [ m hide ] ]! !
 
-!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:49'!
+!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 7/23/2015 20:43'!
 initialize
 
 	super initialize.
 	titleString := 'Untitled'.
-	self separation: 4@0.! !
+	self morphPosition: 0@0;
+	      separation: 4@0.! !
 
 !WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 4/28/2015 15:40'!
 morphExtent: newExtent
