@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 24 July 2015 at 11:29:40.171178 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 24 July 2015 at 2:09:58.558262 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 54!
+!provides: 'Morphic-Misc1' 1 55!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1548,11 +1548,11 @@ updateMasterFromCopy
 	
 	self subclassResponsibility ! !
 
-!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/4/2015 15:25'!
+!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/24/2015 14:08'!
 buildMorphicWindow
 	
 	| controlArea leftCol rightCol  |	
-	self setLabel: (self model printStringLimitedTo: 30).
+	self setLabel: 'Layout: ', (self model printStringLimitedTo: 30).
 	self titleMorph showButtonsNamed: #( close pin collapse showHalo ).
 		
 	directionArea    := self newDirectionArea.
@@ -2018,11 +2018,11 @@ auxHeight
 
 	^ 48 "pixels"! !
 
-!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/4/2015 15:39'!
+!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/24/2015 14:06'!
 buildMorphicWindow
 
 	| controlsArea |
-	self setLabel: (self model printStringLimitedTo: 30).
+	self setLabel: 'LayoutSpec: ', (self model morph printStringLimitedTo: 30).
 	self titleMorph showButtonsNamed: #( close pin collapse showHalo ); layoutSubmorphs.
 		
 	widthArea     := self newWidthArea.
@@ -2818,7 +2818,7 @@ initialize
 
 ! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/5/2015 15:20'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/24/2015 13:38'!
 openFor: aMorph
 
 	self targetMorph: aMorph.
@@ -2829,7 +2829,7 @@ openFor: aMorph
 
 	self 
 		morphExtent: aMorph morphExtent + self boxExtent;
-		setLabel: ('DropTarget for: ', (aMorph printStringLimitedTo: 64));
+		setLabel: ('DropTarget: ', (aMorph printStringLimitedTo: 64));
 		openInWorld; "Ignores settings; RESET them!!!!"
 		morphPosition: aMorph morphPositionInWorld - self boxExtent ;
 		morphExtent: aMorph morphExtent + self boxExtent;
