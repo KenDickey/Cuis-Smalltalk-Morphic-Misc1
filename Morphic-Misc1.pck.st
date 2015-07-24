@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 23 July 2015 at 8:44:38.541618 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 24 July 2015 at 11:29:40.171178 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 53!
+!provides: 'Morphic-Misc1' 1 54!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -3180,8 +3180,11 @@ wantsToBeDroppedInto: aMorph
 		ifTrue: [ self dropAction: aMorph ].
 	^ false  "Always be rejected after doing the drop action"! !
 
-!DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 11/30/2013 19:24'!
+!DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 7/24/2015 11:20'!
 fromColor: aColor
+"
+	(DropColorMorph fromColor: Color teal) openInHand.
+"
 
 	^ self new fromColor: aColor ! !
 
