@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 24 July 2015 at 2:09:58.558262 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 27 July 2015 at 1:26:39.031014 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 55!
+!provides: 'Morphic-Misc1' 1 56!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1533,14 +1533,14 @@ replaceArea: oldArea with: newArea
 	].
 ! !
 
-!EditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 13:48'!
+!EditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:25'!
 showHalo
 
 	| aMorph |
 	aMorph := self model.
 	(aMorph isKindOf: Morph)
 	ifFalse: [ self subclassResponsibility ] "subclass must override if model not Morph"
-	ifTrue: [ aMorph isInWorld ifTrue: [ aMorph addHalo ] ]! !
+	ifTrue: [ aMorph isInWorld ifTrue: [ aMorph show; addHalo ] ]! !
 
 !EditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 19:01'!
 updateMasterFromCopy
@@ -1936,12 +1936,12 @@ setPadRadio: radio fromPadFactor: factor
 		[1.0] -> [ (radio buttons at: 3) select ].
 	} otherwise: [ (radio buttons at: 4) select ]! !
 
-!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:38'!
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:25'!
 showHaloButtonClicked
 
 	| aMorph |
 	aMorph := self model.
-	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:47'!
 updateMasterFromCopy
@@ -2456,12 +2456,12 @@ setRadioSelection: radio selectSym: newSelectSym
 
 	(radio buttonFor: newSelectSym) select! !
 
-!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 4/18/2015 20:55'!
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:26'!
 showHalo
 
 	| aMorph |
 	aMorph := self model morph.
-	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:24'!
 showHaloButtonClicked
@@ -2871,12 +2871,12 @@ refreshSubmorphs
 	self redrawNeeded.
 	! !
 
-!DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:51'!
+!DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:25'!
 showHaloButtonClicked
 
 	| aMorph |
 	aMorph := self model.
-	aMorph isInWorld ifTrue: [aMorph addHalo ]! !
+	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
 
 !DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 15:53'!
 targetMorph
