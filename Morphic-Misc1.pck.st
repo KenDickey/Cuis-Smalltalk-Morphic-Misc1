@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 27 July 2015 at 1:26:39.031014 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 27 July 2015 at 4:36:54.328591 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 56!
+!provides: 'Morphic-Misc1' 1 57!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1476,7 +1476,7 @@ editModel: anObject
 
 	editModel := anObject! !
 
-!EditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 21:01'!
+!EditPanel methodsFor: 'area layouts' stamp: 'KenD 7/27/2015 16:32'!
 newButtonArea
 	"Answer a LayoutMorph with Update and Cancel buttons"
 	
@@ -1502,7 +1502,7 @@ newButtonArea
 							minorDirectionPadding: #center);
 		addMorph: (PluggableButtonMorph 
 				model: self 
-				action:  #showHalo
+				action:  #showHaloButtonClicked
 				label: 'Show Halo')
 			layoutSpec: (LayoutSpec 
 							proportionalWidth: 0.3 
@@ -1541,6 +1541,11 @@ showHalo
 	(aMorph isKindOf: Morph)
 	ifFalse: [ self subclassResponsibility ] "subclass must override if model not Morph"
 	ifTrue: [ aMorph isInWorld ifTrue: [ aMorph show; addHalo ] ]! !
+
+!EditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 16:32'!
+showHaloButtonClicked
+
+	self subclassResponsibility! !
 
 !EditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 19:01'!
 updateMasterFromCopy
@@ -1936,12 +1941,18 @@ setPadRadio: radio fromPadFactor: factor
 		[1.0] -> [ (radio buttons at: 3) select ].
 	} otherwise: [ (radio buttons at: 4) select ]! !
 
-!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:25'!
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 16:26'!
 showHaloButtonClicked
 
 	| aMorph |
 	aMorph := self model.
-	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
+	(aMorph isInWorld)
+		ifTrue: [aMorph show; addHalo ]
+		ifFalse: [
+		(HoverHelpMorph 
+			contents: aMorph printString , ' not shown in world')
+				popUpForHand: self  world activeHand
+	]! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:47'!
 updateMasterFromCopy
@@ -2456,12 +2467,18 @@ setRadioSelection: radio selectSym: newSelectSym
 
 	(radio buttonFor: newSelectSym) select! !
 
-!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:26'!
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/27/2015 16:27'!
 showHalo
 
 	| aMorph |
 	aMorph := self model morph.
-	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
+	(aMorph isInWorld) 
+	ifTrue: [aMorph show; addHalo ]
+	ifFalse: [
+		(HoverHelpMorph 
+			contents: aMorph printString , ' not shown in world')
+				popUpForHand: self  world activeHand
+	]! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:24'!
 showHaloButtonClicked
@@ -2871,12 +2888,19 @@ refreshSubmorphs
 	self redrawNeeded.
 	! !
 
-!DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/27/2015 13:25'!
+!DropTargetMorph methodsFor: 'event handling' stamp: 'KenD 7/27/2015 16:25'!
 showHaloButtonClicked
 
 	| aMorph |
 	aMorph := self model.
-	aMorph isInWorld ifTrue: [aMorph show; addHalo ]! !
+	
+	(aMorph isInWorld)
+	ifTrue: [aMorph show; addHalo ]
+	ifFalse: [
+		(HoverHelpMorph 
+			contents: aMorph printString , ' not shown in world')
+				popUpForHand: self  world activeHand
+	]! !
 
 !DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 15:53'!
 targetMorph
