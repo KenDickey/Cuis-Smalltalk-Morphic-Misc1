@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2424] on 27 July 2015 at 4:36:54.328591 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2464] on 20 August 2015 at 8:47:15.497572 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 57!
+!provides: 'Morphic-Misc1' 1 58!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2964,11 +2964,11 @@ object
 
 	^ object! !
 
-!SignMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 7/21/2015 20:38'!
+!SignMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 8/20/2015 08:21'!
 rejectDropMorphEvent: dropEvent
 	"The receiver has been rejected.  Disappear"
 	
-	Transcript newLine; show: 'SignMorph>>rejectDropMorphEvent'.
+"	Transcript newLine; show: 'SignMorph>>rejectDropMorphEvent'. "
 	self hide; delete.
 	self world ifNotNil: [ :w | w activeHand removeMorph: self ].
 ! !
