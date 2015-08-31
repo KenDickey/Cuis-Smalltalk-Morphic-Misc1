@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2464] on 20 August 2015 at 8:47:15.497572 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2463] on 31 August 2015 at 8:05:11.506488 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 58!
+!provides: 'Morphic-Misc1' 1 59!
 !requires: 'Cuis-Base' 42 2424 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -54,7 +54,7 @@ Panel class
 
 !classDefinition: #EditPanel category: #'Morphic-Misc1'!
 Panel subclass: #EditPanel
-	instanceVariableNames: 'editModel'
+	instanceVariableNames: 'editModel buttonArea'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -1161,18 +1161,25 @@ expandButtonClicked
 	self expand
 ! !
 
+!Panel methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:31'!
+fontPreferenceChanged
+	"My size will have changed. "
+	
+	super fontPreferenceChanged.
+	self morphExtent: self minimumExtent.
+! !
+
 !Panel methodsFor: 'GUI building' stamp: 'KenD 4/25/2015 08:51'!
 hideButtons
 
 	self titleMorph hideButtons ! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 4/28/2015 18:41'!
+!Panel methodsFor: 'initialization' stamp: 'KenD 8/26/2015 12:40'!
 initialize
 	"Initialize a system window. Add label, stripes, etc., if desired"
 
 	super initialize.
 	titleMorph := WindowTitleMorph title: 'Untitled'.
-	extent := self defaultExtent.
 	stayUp := false. "UI push pin to change"
 	titleMorph 
 			layoutSpec: (LayoutSpec morphHeightProportionalWidth: 1.0);
@@ -1182,7 +1189,8 @@ initialize
 	super addMorph: titleMorph.
 
 	"by default"
-	self beColumn! !
+	self beColumn.
+! !
 
 !Panel methodsFor: 'testing' stamp: 'KenD 12/9/2013 16:45'!
 is: aSymbol
@@ -1454,6 +1462,16 @@ open: model label: aString
 		openInWorld;
 		yourself! !
 
+!EditPanel methodsFor: 'accessing' stamp: 'KenD 8/25/2015 17:22'!
+buttonArea
+
+	^ buttonArea! !
+
+!EditPanel methodsFor: 'accessing' stamp: 'KenD 8/25/2015 17:22'!
+buttonArea: aButtonArea
+
+	buttonArea := aButtonArea ! !
+
 !EditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 15:22'!
 cancelAndForgetEverything
 
@@ -1476,7 +1494,7 @@ editModel: anObject
 
 	editModel := anObject! !
 
-!EditPanel methodsFor: 'area layouts' stamp: 'KenD 7/27/2015 16:32'!
+!EditPanel methodsFor: 'area layouts' stamp: 'KenD 8/25/2015 15:52'!
 newButtonArea
 	"Answer a LayoutMorph with Update and Cancel buttons"
 	
@@ -1513,7 +1531,7 @@ newButtonArea
 							fixedHeight: 36
 							minorDirectionPadding: #center);
 		padding: #center;
-		color: self widgetsColor lighter;
+		color: self widgetsColor;
 		yourself
 
 	! !
@@ -1553,7 +1571,7 @@ updateMasterFromCopy
 	
 	self subclassResponsibility ! !
 
-!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/24/2015 14:08'!
+!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 8/26/2015 12:35'!
 buildMorphicWindow
 	
 	| controlArea leftCol rightCol  |	
@@ -1564,6 +1582,7 @@ buildMorphicWindow
 	paddingArea     := self newPaddingArea.
 	separationArea := self newSeparationtionArea.
 	colorArea         := self newColorArea.
+	self buttonArea: self newButtonArea.
 
 	controlArea :=  LayoutMorph newRow.  "A row of two columns"
 	controlArea separation: self defaultSeparation.
@@ -1585,10 +1604,18 @@ buildMorphicWindow
 	self layoutMorph 
 		separation: self defaultSeparation;
 		addMorph: controlArea;
-		addMorph: self newButtonArea;
+		addMorph: self buttonArea;
 		padding: #center.
+		
+	self morphExtent: self minimumExtent;
+		yourself
 
 ! !
+
+!LayoutMorphEditPanel methodsFor: 'accessing' stamp: 'KenD 8/25/2015 15:55'!
+buttonArea
+
+	^ buttonArea ! !
 
 !LayoutMorphEditPanel methodsFor: 'accessing' stamp: 'KenD 12/16/2013 15:29'!
 colorArea
@@ -1614,6 +1641,27 @@ directionArea
 directionArea: newDirectonArea
 
 	directionArea := newDirectonArea! !
+
+!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 8/26/2015 14:43'!
+fontPreferenceChanged
+	"My size needs adjustment"
+
+	self submorphsDo: [ :m | m fontPreferenceChanged ].
+	self refreshView.
+	self submorphsDo: [ :m | m fontPreferenceChanged ].
+.	self morphExtent: self minimumExtent ! !
+
+!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 8/25/2015 16:10'!
+minimumExtent
+	"Answer minimum to hold my submorphs"
+	| width height |
+	width := height := 0.
+	self submorphsDo: [ :sm | | minExt |
+		minExt := sm minimumExtent.
+		width := width max: minExt x.
+		height := height + minExt y.
+	].
+	^ width @ 50 + height + self buttonArea minimumExtent y! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 12:35'!
 modelBeColumn
@@ -2024,12 +2072,12 @@ addFixedWidthEntryMorphTo: radio
 "		addMorph: (StringMorph contents: 'pixels') 
 			layoutSpec: (LayoutSpec keepMorphExtent)"! !
 
-!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 12/18/2013 21:03'!
+!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 8/26/2015 13:50'!
 auxHeight
 
-	^ 48 "pixels"! !
+	^ 3 * AbstractFont default height    "pixels"! !
 
-!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 7/24/2015 14:06'!
+!LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 8/26/2015 12:33'!
 buildMorphicWindow
 
 	| controlsArea |
@@ -2039,6 +2087,7 @@ buildMorphicWindow
 	widthArea     := self newWidthArea.
 	heightArea    := self newHeightArea.
 	paddingArea  := self newPaddingArea.
+	self buttonArea: self newButtonArea.
 	
 	controlsArea := LayoutMorph newRow.
 	controlsArea 
@@ -2052,8 +2101,11 @@ buildMorphicWindow
 	self layoutMorph 
 		separation: self defaultSeparation;
 		addMorph: controlsArea;
-		addMorph: self newButtonArea;
+		addMorph: self buttonArea;
 		padding: #center.
+		
+	self morphExtent: self minimumExtent;
+		yourself
 
 ! !
 
@@ -2061,6 +2113,15 @@ buildMorphicWindow
 defaultExtent
 
 	^ 550@240! !
+
+!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 8/26/2015 14:43'!
+fontPreferenceChanged
+	"My size needs adjustment"
+
+	self submorphsDo: [ :m | m fontPreferenceChanged. ].
+	self refreshView.
+	self submorphsDo: [ :m | m fontPreferenceChanged. ] 
+.	self morphExtent: self minimumExtent ! !
 
 !LayoutSpecEditPanel methodsFor: 'accessing' stamp: 'KenD 12/17/2013 19:50'!
 heightArea
@@ -2085,6 +2146,18 @@ heightSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
+
+!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 8/25/2015 17:25'!
+minimumExtent
+	"Answer minimum to hold my submorphs"
+	| width height |
+	width := height := 0.
+	self submorphsDo: [ :sm | | minExt |
+		minExt := sm minimumExtent.
+		width := width max: minExt x.
+		height := height + minExt y.
+	].
+	^ width @ 70 + height + self buttonArea minimumExtent y! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 20:22'!
 modelPadding: numPixels
@@ -2769,6 +2842,12 @@ useXKCDColorDict
 	Feature require: 'XKCD-NamedColors'.
 	Color setColorNamesDict: Color xkcdColorDictionary.! !
 
+!PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 8/26/2015 12:27'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	slider morphExtent: self buttonExtent @ self buttonExtent.! !
+
 !PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 11/26/2013 21:12'!
 initialize
 
@@ -3279,6 +3358,12 @@ drawOn: aCanvas
 		borderWidth: borderWidth 
 		borderStyleSymbol: frameSelector! !
 
+!FramedLayoutMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:39'!
+extentBorder
+	"Answer the number of pixels to add to my internal minimum extent"
+	
+	^ 4! !
+
 !FramedLayoutMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 14:36'!
 frameSelector
 
@@ -3406,6 +3491,12 @@ buttons: arrayOfRadioButtons
 font
 
 	^ font! !
+
+!RadioGroup methodsFor: 'geometry' stamp: 'KenD 8/27/2015 16:13'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	self setFont: Preferences standardButtonFont.! !
 
 !RadioGroup methodsFor: 'initialization' stamp: 'KenD 11/19/2013 19:48'!
 fromList: arrayOfSymbols
@@ -3535,17 +3626,21 @@ includeInNewMorphMenu
 	
 	^ false! !
 
-!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/28/2015 18:27'!
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 8/26/2015 15:20'!
 addButton: nameSym action: actionSym baloonText: toolHelpString themeName: iconName
 	"add a a button morph to me"
-	
-	self addMorph: 
-		((PluggableButtonMorph model: self action: actionSym)
-			icon: ((Theme current perform: iconName) magnifyTo: self boxExtent) ;
-			setBalloonText: toolHelpString;
-			iconName: nameSym;
-			yourself)
-		layoutSpec: (LayoutSpec keepMorphExtent)! !
+	| spec button |
+	spec := LayoutSpec keepMorphExtent.
+	spec minorDirectionPadding: 0.001.
+	button := PluggableButtonMorph model: self action: actionSym.
+	button
+		icon: ((Theme current perform: iconName) magnifyTo: self boxExtent - 4) ;
+		setBalloonText: toolHelpString;
+		iconName: nameSym;
+		morphExtent: self boxExtent.
+		
+	self addMorph: button layoutSpec: spec
+	! !
 
 !WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/28/2015 14:04'!
 boxExtent
@@ -3580,6 +3675,11 @@ buttonNamesShown
 
 	^ names! !
 
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:23'!
+buttonSeparation
+
+	^ 4@0! !
+
 !WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:21'!
 closeButtonClicked
 	"Delegate action to owner"
@@ -3606,20 +3706,55 @@ expandButtonClicked
 	self owner expandButtonClicked
 ! !
 
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:20'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	self rescaleButtons.
+! !
+
 !WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
 hideButtons
 
 	self submorphsDo: [ :m | (m isKindOf: PluggableButtonMorph) ifTrue: [ m hide ] ]! !
 
-!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 7/23/2015 20:43'!
+!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 8/26/2015 12:23'!
 initialize
 
 	super initialize.
 	titleString := 'Untitled'.
 	self morphPosition: 0@0;
-	      separation: 4@0.! !
+	      separation: self buttonSeparation.! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 4/28/2015 15:40'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:25'!
+minimumButtonsExtent
+
+	| width height |
+	height := self boxExtent y.
+	width := (self boxExtent x + self buttonSeparation x)
+				* (self buttonNamesShown size).
+	^ width @ height! !
+
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/25/2015 11:03'!
+minimumExtent
+
+	| minButtonExt minTitleExt |
+	minButtonExt :=  self minimumButtonsExtent.
+	minTitleExt := self minimumTitleExtent.
+	^ (minButtonExt x + minTitleExt x) 
+     	@ (minButtonExt y + minTitleExt y)! !
+
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 15:13'!
+minimumTitleExtent
+	"My titleString can shrink a bit but not completely"
+	| font |
+	font := Preferences windowTitleFont.
+
+	"Keep space for 8 characters"
+	^ (8 * (font widthOf: $A)) @ font height
+	! !
+
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/25/2015 19:45'!
 morphExtent: newExtent
 
 	super morphExtent: newExtent.
@@ -3636,6 +3771,17 @@ pinButtonClicked
 		
 	self owner pinButtonClicked 
 	! !
+
+!WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 8/25/2015 19:34'!
+rescaleButtons
+	"boxExtent changed.  Update my buttons."
+	| buttonExtent |
+	buttonExtent := self boxExtent .
+	self submorphsDo: [ :aMorph |
+		(aMorph isKindOf: PluggableButtonMorph) 
+		  ifTrue: [ aMorph morphExtent: buttonExtent ].
+	].
+! !
 
 !WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:31'!
 reset
@@ -3784,6 +3930,11 @@ entryChars
 
 	^ entryChars! !
 
+!SimpleNumberEntryMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 13:38'!
+extentBorder
+
+	^ 2   "pixels" ! !
+
 !SimpleNumberEntryMorph methodsFor: 'events' stamp: 'KenD 12/2/2013 16:31'!
 keyStroke: aKeyboardEvent
 	"Check for legal char if in ASCII range, else let super so it"
@@ -3846,6 +3997,11 @@ measureContents
 	myFont := self fontToUse.
 	"Use a wide character as sample for the character width"
 	^ (4 + (((font widthOfString: 'A') * self numCharsToHold) max: 3)  @ myFont height).! !
+
+!SimpleNumberEntryMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:58'!
+minumExtent
+
+	^ self measureContents + self extentBorder ! !
 
 !SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 11/21/2013 15:06'!
 numCharsToHold
@@ -4124,6 +4280,12 @@ rgbOneOf
 			]
 			toString: [ :n | n printString ]! !
 
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:37'!
+extentBorder
+	"Add the number of pixels to add to my interior minimumExtent".
+
+	^ 1! !
+
 !LabelMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 15:27'!
 initWithContents: aString font: aFont emphasis: emphasisCode 
 	self initialize.
@@ -4144,10 +4306,10 @@ initialize
 		emphasis: AbstractFont boldCode;
 		layoutSpec: (LayoutSpec keepMorphExtent).! !
 
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:53'!
 minimumExtent
 
-	^ self measureContents! !
+	^ self measureContents + self extentBorder.! !
 
 !LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
 morphExtent: aPoint 
@@ -4155,10 +4317,10 @@ morphExtent: aPoint
 
 	super morphExtent: (aPoint max: self minimumExtent)! !
 
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/15/2013 22:00'!
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 13:19'!
 naturalHeight
 
-	^ self morphExtent y! !
+	^ self minimumExtent y! !
 AddedCursors initialize!
 RadioButtonMorph initialize!
 FrameMorph initialize!
