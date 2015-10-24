@@ -1,6 +1,6 @@
 Morphic-Misc1
 =============
-Tested: Cuis 4.2 rev 2478
+Tested: Cuis 4.2 rev 2555
 
 To load the package
  ````Smalltalk
