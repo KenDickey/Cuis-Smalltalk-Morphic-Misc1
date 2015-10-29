@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2463] on 31 August 2015 at 8:05:11.506488 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 29 October 2015 at 4:39:33.757683 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 59!
-!requires: 'Cuis-Base' 42 2424 nil!
+!provides: 'Morphic-Misc1' 1 61!
+!requires: 'Cuis-Base' 42 2563 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3492,18 +3492,40 @@ font
 
 	^ font! !
 
-!RadioGroup methodsFor: 'geometry' stamp: 'KenD 8/27/2015 16:13'!
+!RadioGroup methodsFor: 'events-processing' stamp: 'KenD 10/29/2015 16:38'!
 fontPreferenceChanged
 
+	| labelStrings maxStringWidth labelLayoutSpec |
 	super fontPreferenceChanged.
-	self setFont: Preferences standardButtonFont.! !
+	self setFont: Preferences standardButtonFont.
+	maxStringWidth := 3. "minimum"
+	labelStrings := self labelStrings.
+	labelStrings do: [ :str |
+		maxStringWidth := maxStringWidth max:  (self font widthOfString: str)
+	].
+	labelLayoutSpec := 
+			LayoutSpec 
+					fixedWidth: maxStringWidth + 4
+					fixedHeight: self font height + 2
+					minorDirectionPadding: #center. 
+	self submorphsDo: [ :selectLine |
+		selectLine submorphsDo: [ :aMorph |
+			(aMorph respondsTo: #setFont:)
+				ifTrue: [ aMorph setFont: Preferences standardButtonFont ].
+			(aMorph respondsTo: #font:)
+				ifTrue: [ aMorph font: Preferences standardButtonFont ].
+			((aMorph isKindOf: StringMorph)
+			  and: [labelStrings includes: aMorph contents])
+				ifTrue: [ aMorph layoutSpec: labelLayoutSpec ].
+		]
+	].! !
 
 !RadioGroup methodsFor: 'initialization' stamp: 'KenD 11/19/2013 19:48'!
 fromList: arrayOfSymbols
 
 	self list: arrayOfSymbols ! !
 
-!RadioGroup methodsFor: 'initialization' stamp: 'KenD 4/18/2015 19:42'!
+!RadioGroup methodsFor: 'initialization' stamp: 'KenD 10/29/2015 13:05'!
 initialize
 	"Initialize self to harmless values"
 	
@@ -3511,7 +3533,6 @@ initialize
 	self setList: #(); "see #list: setter"
 		 setFont: Preferences standardButtonFont;
 		 buttonOnLeft: true;
-		 separation: 2;
 		 color: Color transparent! !
 
 !RadioGroup methodsFor: 'accessing' stamp: 'KenD 11/19/2013 19:45'!
@@ -3525,7 +3546,7 @@ list
 
 	^ list! !
 
-!RadioGroup methodsFor: 'accessing' stamp: 'KenD 4/18/2015 19:38'!
+!RadioGroup methodsFor: 'accessing' stamp: 'KenD 10/29/2015 13:02'!
 list: arrayOfSymbols
 	"Set up my submorphs from arrayOfSymbols"
 
@@ -3533,7 +3554,7 @@ list: arrayOfSymbols
 	maxStringWidth := 0.
 	self removeAllMorphs; "Don't keep old stuff."
 		 setList: arrayOfSymbols.
-	buttonList := OrderedCollection new.
+	buttonList  := OrderedCollection new.
 	labelList    := OrderedCollection new.
 	arrayOfSymbols do: [ :labelSym | | newRow label button |
 		newRow := LayoutMorph newRow.
@@ -3548,8 +3569,8 @@ list: arrayOfSymbols
 		labelList add: label.
 		self 
 			addMorph: newRow 
-			layoutSpec: (LayoutSpec
-				fixedHeight: (self font height max: RadioButtonMorph defaultDiameter) + 2)
+			"layoutSpec: (LayoutSpec
+				fixedHeight: (self font height max: RadioButtonMorph defaultDiameter) + 2)"
 
 	].
 	self buttons: buttonList asArray.
@@ -3558,10 +3579,10 @@ list: arrayOfSymbols
 	"Make all labels have same width"
 	labelLayout := LayoutSpec 
 			fixedWidth: maxStringWidth + 4
-			fixedHeight: self font height
+			fixedHeight: self font height + 2
 			minorDirectionPadding: #center.
 	labelList do: [ :label | label layoutSpec: labelLayout ].
-	self layoutSpec: (LayoutSpec fixedHeight: self naturalHeight).
+"	self layoutSpec: (LayoutSpec fixedHeight: self naturalHeight). "
 
 ! !
 
@@ -3706,11 +3727,11 @@ expandButtonClicked
 	self owner expandButtonClicked
 ! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:20'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/28/2015 20:25'!
 fontPreferenceChanged
 
 	super fontPreferenceChanged.
-	self rescaleButtons.
+	self rescaleButtons; reset.
 ! !
 
 !WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
@@ -3735,13 +3756,13 @@ minimumButtonsExtent
 				* (self buttonNamesShown size).
 	^ width @ height! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/25/2015 11:03'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/28/2015 20:25'!
 minimumExtent
 
 	| minButtonExt minTitleExt |
 	minButtonExt :=  self minimumButtonsExtent.
 	minTitleExt := self minimumTitleExtent.
-	^ (minButtonExt x + minTitleExt x) 
+	^ (minButtonExt x max: minTitleExt x) 
      	@ (minButtonExt y + minTitleExt y)! !
 
 !WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 15:13'!
@@ -3907,19 +3928,19 @@ disablesEdition
 
 	^ self hasProperty: #disablesEdition! !
 
-!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 7/24/2014 20:24'!
+!SimpleNumberEntryMorph methodsFor: 'drawing' stamp: 'KenD 10/29/2015 14:16'!
 drawOn: aCanvas
 
-	self hasSelection ifTrue: [ self drawSelectionOn: aCanvas ].
+	self hasSelection     ifTrue: [ self drawSelectionOn: aCanvas ].
 	self hasTextCursor ifTrue: [ self drawTextCursorOn: aCanvas ].
 	aCanvas
 		drawString: contents
-		at: (2@0 extent: extent - 2) topLeft
+		at: 2@2
 		font: self fontToUse
 		color: color.
 		
 	aCanvas
-		frameRectangle: (0@0 extent: self morphExtent)
+		frameRectangle: (-2@-2 extent: self morphExtent)
 		color: Color black
 		borderWidth: 2
 		borderStyleSymbol: #simple
@@ -3934,6 +3955,11 @@ entryChars
 extentBorder
 
 	^ 2   "pixels" ! !
+
+!SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 10/28/2015 20:21'!
+fontToUse
+
+	^ Preferences standardListFont ! !
 
 !SimpleNumberEntryMorph methodsFor: 'events' stamp: 'KenD 12/2/2013 16:31'!
 keyStroke: aKeyboardEvent
@@ -3988,7 +4014,7 @@ legalChars: legalEntryChars numCharsToHold: nilOrInteger value: initialValue val
 	].
 ! !
 
-!SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 12/2/2013 16:56'!
+!SimpleNumberEntryMorph methodsFor: 'accessing' stamp: 'KenD 10/28/2015 20:22'!
 measureContents
 	| myFont |
 
@@ -3996,7 +4022,7 @@ measureContents
 	
 	myFont := self fontToUse.
 	"Use a wide character as sample for the character width"
-	^ (4 + (((font widthOfString: 'A') * self numCharsToHold) max: 3)  @ myFont height).! !
+	^ 4 + ((myFont widthOfString: 'A') * (self numCharsToHold max: 3)  @ myFont height).! !
 
 !SimpleNumberEntryMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:58'!
 minumExtent
