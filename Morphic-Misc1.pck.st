@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 29 October 2015 at 4:39:33.757683 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 8:23:15.987182 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 61!
+!provides: 'Morphic-Misc1' 1 62!
 !requires: 'Cuis-Base' 42 2563 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -3727,12 +3727,12 @@ expandButtonClicked
 	self owner expandButtonClicked
 ! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/28/2015 20:25'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 10/30/2015 08:06'!
 fontPreferenceChanged
 
-	super fontPreferenceChanged.
-	self rescaleButtons; reset.
-! !
+  super fontPreferenceChanged.
+  self reset.
+	! !
 
 !WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
 hideButtons
@@ -3756,14 +3756,14 @@ minimumButtonsExtent
 				* (self buttonNamesShown size).
 	^ width @ height! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/28/2015 20:25'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/30/2015 08:12'!
 minimumExtent
 
 	| minButtonExt minTitleExt |
 	minButtonExt :=  self minimumButtonsExtent.
 	minTitleExt := self minimumTitleExtent.
-	^ (minButtonExt x max: minTitleExt x) 
-     	@ (minButtonExt y + minTitleExt y)! !
+	^ (minButtonExt x + minTitleExt x) 
+     	@ (minButtonExt y max: minTitleExt y)! !
 
 !WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 15:13'!
 minimumTitleExtent
@@ -3804,7 +3804,7 @@ rescaleButtons
 	].
 ! !
 
-!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 7/4/2015 15:31'!
+!WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 10/30/2015 08:02'!
 reset
 	"Remove old and place new tItle and button Morphs"
 	
@@ -3834,6 +3834,10 @@ reset
 		
 	self hideButtons.
 	self showButtonsNamed: buttonsShown.
+	
+	self layoutSpec: (LayoutSpec 
+							proportionalWidth: 1  
+							fixedHeight: (self minimumExtent y) )
 	! !
 
 !WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:56'!
@@ -3853,7 +3857,7 @@ showHaloButtonClicked
 	self owner showHaloButtonClicked 
 	! !
 
-!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 4/24/2015 15:50'!
+!WindowTitleMorph methodsFor: 'initialization' stamp: 'KenD 10/30/2015 08:04'!
 title: aString buttonsNamed: aSymbolColleciton
 	"Set me up"
 	
@@ -3863,6 +3867,7 @@ title: aString buttonsNamed: aSymbolColleciton
 				(self buttonNamed: aName)
 					ifNotNil: [ :aButton | aButton show ]
 			].
+	self reset.
 ! !
 
 !WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 4/23/2015 18:36'!
