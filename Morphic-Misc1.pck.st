@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 2:19:40.549069 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 3:56:28.527862 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 63!
+!provides: 'Morphic-Misc1' 1 65!
 !requires: 'Cuis-Base' 42 2563 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2228,7 +2228,7 @@ newHeightSelection: selectSym
 	
 	self refreshHeightArea ! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 10/30/2015 13:57'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 10/30/2015 15:56'!
 newPaddingArea
 	"Answer a FramedLayoutMorph with controls for Padding"
 	
@@ -2241,8 +2241,7 @@ newPaddingArea
 		(2 * padArea borderWidth)
 		+ (label naturalHeight)
 		+ (padRadio naturalHeight)
-		+ (self auxHeight)
-		+ 4.
+		+ 20.
 		
 	"Setup"
 	padEntry := SimpleNumberEntryMorph realFactor: 1.0 maxNumChars: 3.
@@ -2277,7 +2276,7 @@ newPaddingSelection: padSym
 
 ! !
 
-!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 4/18/2015 19:26'!
+!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 10/30/2015 14:23'!
 newProportionalHeightAuxArea
 	"Add proportion factor and minSize fields"
 
@@ -2285,16 +2284,12 @@ newProportionalHeightAuxArea
 	aux := LayoutMorph newColumn.
 	^ aux
 		color: Color transparent;
-		layoutSpec: (LayoutSpec 
-					proportionalWidth: 1.0 
-					fixedHeight: self auxHeight
-					minorDirectionPadding: #center);
 		separation: self defaultSeparation;
 		addMorph: self propHeightPercent;
 		addMorph: self propHeightMinimum;
 		yourself! !
 
-!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 4/18/2015 19:27'!
+!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 10/30/2015 14:23'!
 newProportionalWidthAuxArea
 	"Add proportion factor and minSize fields"
 
@@ -2302,10 +2297,6 @@ newProportionalWidthAuxArea
 	aux := LayoutMorph newColumn.
 	^ aux
 		color: Color transparent;
-		layoutSpec: (LayoutSpec 
-					proportionalWidth: 1.0 
-					fixedHeight: self auxHeight
-					minorDirectionPadding: #center);
 		separation: self defaultSeparation;
 		addMorph: self propWidthPercent;
 		addMorph: self propWidthMinimum;
