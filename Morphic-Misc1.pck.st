@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 8:23:15.987182 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 2:19:40.549069 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 62!
+!provides: 'Morphic-Misc1' 1 63!
 !requires: 'Cuis-Base' 42 2563 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -1651,9 +1651,10 @@ fontPreferenceChanged
 	self submorphsDo: [ :m | m fontPreferenceChanged ].
 .	self morphExtent: self minimumExtent ! !
 
-!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 8/25/2015 16:10'!
+!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 10/30/2015 13:33'!
 minimumExtent
-	"Answer minimum to hold my submorphs"
+"Answer minimum extent to hold my submorphs"
+
 	| width height |
 	width := height := 0.
 	self submorphsDo: [ :sm | | minExt |
@@ -1661,7 +1662,7 @@ minimumExtent
 		width := width max: minExt x.
 		height := height + minExt y.
 	].
-	^ width @ 50 + height + self buttonArea minimumExtent y! !
+	^ width @ 10 + height + self buttonArea minimumExtent y! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 12:35'!
 modelBeColumn
@@ -2022,11 +2023,11 @@ updateMasterFromCopy
 		ifTrue: [ self refreshView ]
 ! !
 
-!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 12/18/2013 20:41'!
+!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 10/30/2015 14:12'!
 addFixedHeightEntryMorphTo: radio
 	"Add entry field to #Fixed radioButton row"
 
-	| fixEntry spec layout rowForFixed | 
+	| fixEntry spec rowForFixed | 
 	spec :=  self editModel.
 	fixEntry := SimpleNumberEntryMorph 
 						integerRangeFrom: 0 
@@ -2037,21 +2038,18 @@ addFixedHeightEntryMorphTo: radio
 	fixEntry refreshValueFrom: spec.
 	"Do layout surgery to make room for added field"
 	rowForFixed := (radio rowFor: #Fixed).
-	layout := LayoutSpec 
-			proportionalWidth: 0.4
-			fixedHeight: rowForFixed layoutSpec privateFixedHeight
-			minorDirectionPadding:  #left.
 	rowForFixed
-		layoutSpec: layout;
-		addMorph: fixEntry.
-"		addMorph: (StringMorph contents: 'pixels') 
-			layoutSpec: (LayoutSpec keepMorphExtent)"! !
+			layoutSpec proportionalWidth: 0.4;
+			minorDirectionPadding:  #left.
+	rowForFixed 
+			addMorph: fixEntry.
+! !
 
-!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 12/18/2013 20:41'!
+!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 10/30/2015 14:11'!
 addFixedWidthEntryMorphTo: radio
 	"Add entry field to #Fixed radioButton row"
 
-	| fixEntry spec layout rowForFixed | 
+	| fixEntry spec rowForFixed | 
 	spec :=  self editModel.
 	fixEntry := SimpleNumberEntryMorph 
 						integerRangeFrom: 0 
@@ -2062,15 +2060,12 @@ addFixedWidthEntryMorphTo: radio
 	fixEntry refreshValueFrom: spec.
 	"Do layout surgery to make room for added field"
 	rowForFixed := (radio rowFor: #Fixed).
-	layout := LayoutSpec 
-			proportionalWidth: 0.4
-			fixedHeight: rowForFixed layoutSpec privateFixedHeight
+	rowForFixed 
+			layoutSpec proportionalWidth: 0.4;
 			minorDirectionPadding:  #left.
 	rowForFixed
-		layoutSpec: layout;
-		addMorph: fixEntry.
-"		addMorph: (StringMorph contents: 'pixels') 
-			layoutSpec: (LayoutSpec keepMorphExtent)"! !
+			addMorph: fixEntry.
+! !
 
 !LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 8/26/2015 13:50'!
 auxHeight
@@ -2147,7 +2142,7 @@ heightSelectionSymbol
 		]
 		ifNotNil: [ #Proportional ].! !
 
-!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 8/25/2015 17:25'!
+!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 10/30/2015 13:34'!
 minimumExtent
 	"Answer minimum to hold my submorphs"
 	| width height |
@@ -2157,7 +2152,7 @@ minimumExtent
 		width := width max: minExt x.
 		height := height + minExt y.
 	].
-	^ width @ 70 + height + self buttonArea minimumExtent y! !
+	^ width @ 50 + height + self buttonArea minimumExtent y! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 20:22'!
 modelPadding: numPixels
@@ -2233,7 +2228,7 @@ newHeightSelection: selectSym
 	
 	self refreshHeightArea ! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 19:02'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 10/30/2015 13:57'!
 newPaddingArea
 	"Answer a FramedLayoutMorph with controls for Padding"
 	
@@ -2246,17 +2241,13 @@ newPaddingArea
 		(2 * padArea borderWidth)
 		+ (label naturalHeight)
 		+ (padRadio naturalHeight)
+		+ (self auxHeight)
 		+ 4.
 		
 	"Setup"
 	padEntry := SimpleNumberEntryMorph realFactor: 1.0 maxNumChars: 3.
 	row := (padRadio rowFor: #Specify).
-	"Do layout surgery on row to make room for padEntry"
-	row
-		layoutSpec: (LayoutSpec proportionalWidth: 0.5
-						fixedHeight: row layoutSpec privateFixedHeight
-						minorDirectionPadding:  #left);
-		addMorph: padEntry.
+	row addMorph: padEntry.
 	padEntry valueAccessor: [ :model | model minorDirectionPadding ].
 	padEntry valueUpdator: [ :newPad | self modelPadding: newPad ].
 	padEntry refreshValueFrom: self editModel.
@@ -2396,7 +2387,7 @@ paddingArea: newPaddingArea
 
 	paddingArea := newPaddingArea! !
 
-!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 4/18/2015 19:50'!
+!LayoutSpecEditPanel methodsFor: 'entry morphs' stamp: 'KenD 10/30/2015 14:19'!
 propHeightMinimum
 	"proportion percent"
 
