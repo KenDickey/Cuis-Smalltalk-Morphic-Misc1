@@ -1,7 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2563] on 30 October 2015 at 3:56:28.527862 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2595] on 5 December 2015 at 3:00:58.495371 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 65!
-!requires: 'Cuis-Base' 42 2563 nil!
+!provides: 'Morphic-Misc1' 1 66!
+!requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2591,7 +2591,7 @@ collection: aNameImageCollection
 	self collection: aNameImageCollection filter: [ :any | any ] 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 10/17/2013 16:48'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 12/5/2015 14:51'!
 collection: aNameImageCollection filter: imageSelector
 
 	| numImages imageExtent spaceWidth imageWidth maxWidth numAcross imageHeight numDown layoutExtent |
@@ -2605,7 +2605,7 @@ collection: aNameImageCollection filter: imageSelector
 	imageExtent := (self processImage: (aNameImageCollection anyOne value)) morphExtent.
 
 	spaceWidth := 2. "Pixels between images"
-	maxWidth := (DisplayScreen actualScreenSize x) // 2.
+	maxWidth := (DisplayScreen actualScreenSize x) // 1.2.
 	imageWidth := (imageExtent x) + spaceWidth.
 	numAcross := (((maxWidth - spaceWidth) // imageWidth) max: 1) min: numImages.
 	numDown := (numImages / numAcross) ceiling.
@@ -2614,7 +2614,7 @@ collection: aNameImageCollection filter: imageSelector
 					@ (imageHeight * numDown + spaceWidth).
 	
 	self layoutImages: numAcross extent: layoutExtent.
-	self morphExtent:  (layoutExtent min: ((DisplayScreen actualScreenSize) // 2)).
+	self morphExtent:  (layoutExtent min: ((DisplayScreen actualScreenSize) // 1.2)).
 
 ! !
 
@@ -2683,7 +2683,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/26/2015 16:30'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:54'!
 largerIcons
 "
 	ImagePallet largerIcons.
@@ -2702,22 +2702,23 @@ largerIcons
 	
 	ip := ImagePallet 
 			fromCollection: (sortedCollection collect: [ :assoc | 
-				Association key: (assoc key sansPeriodSuffix) value: assoc value
+				Association key: (assoc key) value: assoc value
 			])
 			imageFilter: [:form | ImageMorph new image: (form magnifyTo: 32 @ 32)].
 	savedExtent := ip morphExtent.
 
 	sw := Panel new.
 	sw addMorph: ip.
+	ip color: sw windowColor paler.
 	sw setLabel: 'Pick an Icon';
 	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
-	extraExtent := ScrollBar scrollbarThickness + 3
-					 @ (ScrollBar scrollbarThickness + 3 + sw boxExtent y).
+	extraExtent := ScrollBar scrollbarThickness + 8
+					 @ (ScrollBar scrollbarThickness + 10 + sw boxExtent y).
 	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.2)). "openInWorld resets extent" ! !
+			min: ((DisplayScreen actualScreenSize) // 1.1)). "openInWorld resets extent" ! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 5/28/2015 16:57'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:59'!
 namedColors
 "
 	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
@@ -2746,19 +2747,20 @@ namedColors
 	savedExtent := ip morphExtent.
 
 	sw := Panel new.
+	ip color: sw windowColor paler.
 	sw addMorph: ip;
 		setLabel: 'Pick a Color';
 	     showButtonsNamed: #( close collapse );
 		openInWorld. 
 	"openInWorld resets extent"
-	extraExtent := ScrollBar scrollbarThickness + 4
-					 @ (ScrollBar scrollbarThickness + 4 + sw labelRectangle height).
+	extraExtent := ScrollBar scrollbarThickness 
+					 @ (ScrollBar scrollbarThickness + 12 + sw labelRectangle height).
 	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.2)).  "openInWorld resets extent"
+			min: ((DisplayScreen actualScreenSize) // 1.1)).  "openInWorld resets extent"
 			
 	^ sw! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 4/25/2015 16:25'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:55'!
 namedIcons
 "
 	ImagePallet namedIcons.
@@ -2774,13 +2776,14 @@ namedIcons
 	
 	ip := ImagePallet 
 			fromCollection: (sortedCollection collect: [ :assoc | 
-				Association key: (assoc key sansPeriodSuffix) value: assoc value
+				Association key: (assoc key) value: assoc value
 			])
 			imageFilter: [:form | ImageMorph new image: form].
 	savedExtent := ip morphExtent.
 
 	sw := Panel new.
 	sw addMorph: ip.
+	ip color: sw windowColor paler.
 	sw setLabel: 'Pick an Icon';
 	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
