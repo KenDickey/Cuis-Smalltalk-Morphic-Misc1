@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2595] on 5 December 2015 at 3:00:58.495371 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2595] on 6 January 2016 at 10:09:12.353599 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 66!
+!provides: 'Morphic-Misc1' 1 67!
 !requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -2865,10 +2865,10 @@ allowsMorphDrop
 
 	^ true! !
 
-!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 7/4/2015 15:48'!
+!DropTargetMorph methodsFor: 'initialization' stamp: 'KenD 1/6/2016 09:56'!
 createHaloBox
 	^ (PluggableButtonMorph model: self action: #showHaloButtonClicked)
-		icon: Theme current doItIcon;
+		icon: (Theme current doItIcon magnifyTo: self boxExtent);
 		iconName: #showHalo;
 		setBalloonText: 'show target halo' ;
 		morphExtent: self boxExtent! !
