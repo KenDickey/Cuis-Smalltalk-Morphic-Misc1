@@ -10,24 +10,32 @@ Shows how to create and use a custom cursor.
 Morph with a custom #drawOn: method.
 - DropColorMorph - 
 A "color swatch" with a custom #dropAction: which gathers color setters into a popup selector menu.
-- DropTargetMorph
-
-- EditPanel
-- FrameMorph
-- FramedLayoutMorph
-- ImagePallet
-- LabelMorph
-- LayoutMorphEditPanel useful to edit Layouts
-- LayoutSpecEditPanel useful to edit LayoutSpecs
-- LineMorph
-- PalletLayoutMorph
-- Panel
-- PluggableScrollBar
-- RadioButtonMorph
-- RadioGroup
-- SignMorph useful morph to "point to" non-morph objects
-- SimpleNumberEntryMorph
-- WindowTitleMorph
+- DropTargetMorph - 
+Solves the problem of dropping state and behavior changes onto a specific Morph.  One creates a DropTarget and drops Morph updaters on that.  See how items are added to the Morph Menu via the method Morph>>addCustomMenuItems:hand: in the '*morphit-misc1' method category.
+- EditPanel - My editModel is a "putty" or "shadow" copy to which all edit operations are applied.  Subclassed by LayoutMorphEditPanel and LayoutSpecEditPanel. 
+If the user Update's then the changes are propagated from the editModel to the model.
+- FrameMorph - 
+Another morph with a custom drawOn: method.  Method morphContainsPoint: is specialized so that mouse clicks are only notices on the frame itself.
+- FramedLayoutMorph - 
+Subclass of LayoutMorph which adds a frame.
+- ImagePallet -
+Used to display a pallet of widgets to grab a copy of to drop on something else.  Examples on the class side.
+- LabelMorph - 
+A StringMorph used as a label.  Has a few added convenience methods.
+- LayoutMorphEditPanel - Useful to edit Layouts.  Selectable from a Morph's Menu.
+- LayoutSpecEditPanel - Useful to edit LayoutSpecs.  Selectable from a Morph's Menu.
+- LineMorph - 
+A line useful to show a connection between other Morphs.
+- PalletLayoutMorph - 
+A LayoutMorph which allows grabbing (cloning) its submorphs.
+- Panel - 
+A very simple window with a label.  Useful when you don't need the full generality of a SystemWindow.
+- PluggableScrollBar - 
+- RadioButtonMorph - 
+- RadioGroup - 
+- SignMorph - useful morph to "point to" non-morph objects
+- SimpleNumberEntryMorph - 
+- WindowTitleMorph - Used in Panels to supply Title and common Buttons
  
 # Adding Morphs to the New Morph Menu
 
