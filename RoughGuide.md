@@ -37,7 +37,7 @@ A very simple window with a label.  Useful when you don't need the full generali
 - SimpleNumberEntryMorph - 
 - WindowTitleMorph - Used in Panels to supply Title and common Buttons
  
-# Adding Morphs to the New Morph Menu
+# Adding Morphs to the New Morph menu
 
 When the browser category or a Morph starts with 'Morphic-' and the Morph's class answers true to #includeInNewMorphMenu, then the Morph will show up under the category name with the 'Morphic-' prefix removed.  
 
@@ -46,4 +46,3 @@ The New Morph Menu is available via World Menu -> New Morph..
 To prevent such morphs from showing up in the New Morph Menu, add a class side method category 'new-morph participation' and add a method #includeInNewMorphMenu which answers false.
 
 You may also wish to add a class method #initializedInstance to return something special when a new Morph is created from the New Morph Menu.  Look at the code in UpdatingStringMorph class>>initializedInstance for an example.
-
