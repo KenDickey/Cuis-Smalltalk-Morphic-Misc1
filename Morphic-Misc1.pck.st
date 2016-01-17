@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2595] on 6 January 2016 at 10:09:12.353599 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2658] on 17 January 2016 at 12:29:42.135849 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 67!
+!provides: 'Morphic-Misc1' 1 68!
 !requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
@@ -204,7 +204,10 @@ LabelMorph class
 
 
 !AddedCursors commentStamp: '<historical>' prior: 0!
-Additional Cursors -- see class side!
+Additional Cursors -- see class side
+
+AddedCursors openHand activateCursor.
+AddedCursors closedHand activateCursor.!
 
 !LineMorph commentStamp: '<historical>' prior: 0!
 I am a line from startPoint to endPoint!
@@ -425,10 +428,10 @@ padding
 
 	^ padding! !
 
-!AddedCursors class methodsFor: 'constants' stamp: 'KenD 9/23/2013 20:17'!
+!AddedCursors class methodsFor: 'constants' stamp: 'KenD 1/17/2016 12:02'!
 closedHand
 "
-	self closedHand show.
+	AddedCursors closedHand activateCursor.
 "
 	^ ClosedHand ! !
 
@@ -555,10 +558,10 @@ initialize
 	self initOpenHand.
 	self initClosedHand.! !
 
-!AddedCursors class methodsFor: 'constants' stamp: 'KenD 9/23/2013 20:17'!
+!AddedCursors class methodsFor: 'constants' stamp: 'KenD 1/17/2016 12:01'!
 openHand
 "
-	self openHand show.
+	AddedCursors openHand activateCursor.
 "
 
 	^ OpenHand ! !

@@ -8,25 +8,27 @@ To load the package
 ````
 
 Basic morphs used by various packages 
-
-  BorderedImageMorph 
-  DropColorMorph 
-  DropTargetMorph 
-  EditPanel 
-  FramedLayoutMorph 
-  FrameMorph 
-  ImagePallet 
-  LabelMorph 
-  LayoutMorphEditPanel 
-  LayoutSpecEditPanel 
-  LineMorph 
-  PalletLayoutMorph 
-  Panel 
-  PluggableScrollBar 
-  RadioButtonMorph 
-  RadioGroup 
-  SignMorph 
-  SimpleNumberEntryMorph 
+- AddedCursors
+- BorderedImageMorph
+- DropColorMorph
+- DropTargetMorph
+- EditPanel
+- FrameMorph
+- FramedLayoutMorph
+- ImagePallet
+- LabelMorph
+- LayoutMorphEditPanel useful to edit Layouts
+- LayoutSpecEditPanel useful to edit LayoutSpecs
+- LineMorph
+- PalletLayoutMorph
+- Panel
+- PluggableScrollBar
+- RadioButtonMorph
+- RadioGroup
+- SignMorph useful morph to "point to" non-morph objects
+- SimpleNumberEntryMorph
+- WindowTitleMorph
+ 
 
 ![Misc1 Morphs in Cuis](Misc1-Screenshot.png)
 
