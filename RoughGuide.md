@@ -4,11 +4,11 @@ Cuis-Smalltalk-Morphic-Misc1
 This package adds Morphs useful in constructing other morphs
 
 # Techniques of Interest
-- AddedCursors
+- AddedCursors - 
 Shows how to create and use a custom cursor.
-- BorderedImageMorph
+- BorderedImageMorph - 
 Morph with a custom #drawOn: method.
-- DropColorMorph
+- DropColorMorph - 
 A "color swatch" with a custom #dropAction: which gathers color setters into a popup selector menu.
 - DropTargetMorph
 
