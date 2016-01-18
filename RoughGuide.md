@@ -11,19 +11,19 @@ Morph with a custom #drawOn: method.
 - DropColorMorph - 
 A "color swatch" with a custom #dropAction: which gathers color setters into a popup selector menu.
 - DropTargetMorph - 
-Solves the problem of dropping state and behavior changes onto a specific Morph.  One creates a DropTarget and drops Morph updaters on that.  See how items are added to the Morph Menu via the method Morph>>addCustomMenuItems:hand: in the '*morphit-misc1' method category.
+Solves the problem of dropping state and behavior changes onto a specific Morph.  One creates a DropTarget and drops Morph updaters on that.  See how items are added to the Morph Menu via the method Morph>>addCustomMenuItems: hand: in the '*morphit-misc1' method category.
 - EditPanel - My editModel is a "putty" or "shadow" copy to which all edit operations are applied.  Subclassed by LayoutMorphEditPanel and LayoutSpecEditPanel. 
 If the user Update's then the changes are propagated from the editModel to the model.
 - FrameMorph - 
-Another morph with a custom drawOn: method.  Method morphContainsPoint: is specialized so that mouse clicks are only notices on the frame itself.
+Another morph with a custom drawOn: method.  Method morphContainsPoint: is specialized so that mouse clicks are only noticed on the frame itself.
 - FramedLayoutMorph - 
 Subclass of LayoutMorph which adds a frame.
 - ImagePallet -
 Used to display a pallet of widgets to grab a copy of to drop on something else.  Examples on the class side.
 - LabelMorph - 
 A StringMorph used as a label.  Has a few added convenience methods.
-- LayoutMorphEditPanel - Useful to edit Layouts.  Selectable from a Morph's Menu.
-- LayoutSpecEditPanel - Useful to edit LayoutSpecs.  Selectable from a Morph's Menu.
+- LayoutMorphEditPanel - Useful to edit Layouts.  Selectable from a Morph's menu.
+- LayoutSpecEditPanel - Useful to edit LayoutSpecs.  Selectable from a Morph's menu.
 - LineMorph - 
 A line useful to show a connection between other Morphs.
 - PalletLayoutMorph - 
