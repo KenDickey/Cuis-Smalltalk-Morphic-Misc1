@@ -1,6 +1,7 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2658] on 17 January 2016 at 12:29:42.135849 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2676] on 27 January 2016 at 8:11:33.924883 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 68!
+!provides: 'Morphic-Misc1' 1 69!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
