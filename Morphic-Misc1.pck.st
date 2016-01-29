@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2676] on 27 January 2016 at 8:11:33.924883 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2676] on 28 January 2016 at 4:50:57.612993 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 69!
+!provides: 'Morphic-Misc1' 1 70!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -1431,11 +1431,11 @@ widgetsColor: aColor
 	self color: self textBackgroundColor.
 	self adoptWidgetsColor: widgetsColor! !
 
-!Panel methodsFor: 'GUI building' stamp: 'KenD 12/9/2013 18:46'!
+!Panel methodsFor: 'GUI building' stamp: 'KenD 1/28/2016 14:36'!
 windowColor
 	"Some default"
 	
-	^ Theme current transcript  "model class windowColor"! !
+	^ Theme current background  "model class windowColor"! !
 
 !Panel methodsFor: 'events' stamp: 'KenD 4/28/2015 13:42'!
 windowMenuButtonClicked
@@ -2595,7 +2595,7 @@ collection: aNameImageCollection
 	self collection: aNameImageCollection filter: [ :any | any ] 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 12/5/2015 14:51'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 16:38'!
 collection: aNameImageCollection filter: imageSelector
 
 	| numImages imageExtent spaceWidth imageWidth maxWidth numAcross imageHeight numDown layoutExtent |
@@ -2609,20 +2609,27 @@ collection: aNameImageCollection filter: imageSelector
 	imageExtent := (self processImage: (aNameImageCollection anyOne value)) morphExtent.
 
 	spaceWidth := 2. "Pixels between images"
-	maxWidth := (DisplayScreen actualScreenSize x) // 1.2.
+	maxWidth := (DisplayScreen actualScreenSize x) // 1.6.
 	imageWidth := (imageExtent x) + spaceWidth.
 	numAcross := (((maxWidth - spaceWidth) // imageWidth) max: 1) min: numImages.
 	numDown := (numImages / numAcross) ceiling.
+	((numDown < 3) and: [numAcross > 40])
+		ifTrue: [ numAcross := 40. numDown := (numImages / numAcross) ceiling.].
 	imageHeight := (imageExtent y) + spaceWidth.
-	layoutExtent := (imageWidth * numAcross + spaceWidth) 
-					@ (imageHeight * numDown + spaceWidth).
+	layoutExtent := (imageWidth * numAcross) @ (imageHeight * numDown).
 	
 	self layoutImages: numAcross extent: layoutExtent.
-	self morphExtent:  (layoutExtent min: ((DisplayScreen actualScreenSize) // 1.2)).
+	self morphExtent: layoutExtent.
 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 10/17/2013 16:36'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 15:04'!
+initialize
+
+	super initialize.
+	self scroller color: Theme current background. ! !
+
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 16:33'!
 layoutImages: numAcross extent: layoutExtent
 
 	"Lay out images in self"
@@ -2656,6 +2663,7 @@ layoutImages: numAcross extent: layoutExtent
 							minorDirectionPadding: #top)..
 	column morphExtent: layoutExtent.
 	self addToScroller: column.
+	self hideOrShowScrollBars.
 
 
 ! !
@@ -2687,7 +2695,7 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:54'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 1/28/2016 15:42'!
 largerIcons
 "
 	ImagePallet largerIcons.
@@ -2717,16 +2725,15 @@ largerIcons
 	sw setLabel: 'Pick an Icon';
 	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
-	extraExtent := ScrollBar scrollbarThickness + 8
-					 @ (ScrollBar scrollbarThickness + 10 + sw boxExtent y).
-	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.1)). "openInWorld resets extent" ! !
+	extraExtent := ScrollBar scrollbarThickness
+					 @ (ScrollBar scrollbarThickness + 6 + sw boxExtent y).
+	sw morphExtent: (savedExtent + extraExtent). "openInWorld resets extent" ! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:59'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 1/28/2016 16:39'!
 namedColors
 "
-	self useCSS3ColorDict.                    "" To get CSS3/Web color names""
-	self useXKCDColorDict.                    "" To get XKCD color names""
+	self useCSS3ColorDict.                  
+	self useXKCDColorDict.
 	self useSmallColorDict.
 	self useCrayonColorDict.
 	ImagePallet namedColors.
@@ -2749,19 +2756,20 @@ namedColors
 					yourself
 			].
 	savedExtent := ip morphExtent.
-
+"Transcript nextPutAll: 'SavedExtent ', (savedExtent asString); newLine."
 	sw := Panel new.
 	ip color: sw windowColor paler.
 	sw addMorph: ip;
 		setLabel: 'Pick a Color';
-	     showButtonsNamed: #( close collapse );
-		openInWorld. 
+	     showButtonsNamed: #( close collapse ).
+	extraExtent := ScrollBar scrollbarThickness + 2
+					 @ (ScrollBar scrollbarThickness + 2 + sw titleMorph height).
+	sw morphExtent: (savedExtent + extraExtent). 
+	ip hideOrShowScrollBars.
+	sw openInWorld. 
 	"openInWorld resets extent"
-	extraExtent := ScrollBar scrollbarThickness 
-					 @ (ScrollBar scrollbarThickness + 12 + sw labelRectangle height).
-	sw morphExtent: (savedExtent + extraExtent
-			min: ((DisplayScreen actualScreenSize) // 1.1)).  "openInWorld resets extent"
-			
+	sw morphExtent: (savedExtent + extraExtent).  "openInWorld resets extent"
+"Transcript nextPutAll: 'MorphExtent ', ((savedExtent+ extraExtent) asString); newLine."
 	^ sw! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:55'!
@@ -2820,9 +2828,11 @@ useNBSISCCColorDict
 	Feature require: 'NBSISCC-NamedColors'.
 	Color setColorNamesDict: Color nbsisccColorDictionary.! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2013 16:30'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 1/28/2016 15:10'!
 useSmallColorDict
-
+"
+	ImagePallet useSmallColorDict.
+"
 	Color setColorNamesDict: Color defaultColorNamesDictionary.! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 16:12'!
@@ -3723,6 +3733,11 @@ fontPreferenceChanged
   self reset.
 	! !
 
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 1/28/2016 16:06'!
+height
+
+	^ self morphExtent y! !
+
 !WindowTitleMorph methodsFor: 'buttons' stamp: 'KenD 4/24/2015 07:52'!
 hideButtons
 
@@ -3882,6 +3897,11 @@ titleStringForDisplay
 	^ (titleWidth <= desiredWidth)
 		ifTrue: [ titleString ]
 		ifFalse: [ titleString squeezedTo: (titleString size * (desiredWidth / titleWidth)) rounded]! !
+
+!WindowTitleMorph methodsFor: 'accessing' stamp: 'KenD 1/28/2016 16:07'!
+width
+
+	^ self morphExtent x! !
 
 !WindowTitleMorph methodsFor: 'event handling' stamp: 'KenD 4/23/2015 16:31'!
 windowMenuButtonClicked
