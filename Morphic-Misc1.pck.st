@@ -1,8 +1,8 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2676] on 28 January 2016 at 4:50:57.612993 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2706] on 19 March 2016 at 7:27:31.196196 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 70!
+!provides: 'Morphic-Misc1' 1 71!
+!requires: 'Cuis-Base' 42 2706 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
-!requires: 'Cuis-Base' 42 2595 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2623,11 +2623,16 @@ collection: aNameImageCollection filter: imageSelector
 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 15:04'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 3/19/2016 18:59'!
 initialize
 
 	super initialize.
-	self scroller color: Theme current background. ! !
+	(self scroller)
+		color: Theme current background;
+		layoutSpec: LayoutSpec useAll.
+	self 
+		layoutSpec: LayoutSpec useAll;
+		yourself! !
 
 !ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 16:33'!
 layoutImages: numAcross extent: layoutExtent
