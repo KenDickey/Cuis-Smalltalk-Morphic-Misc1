@@ -1,8 +1,8 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2919] on 1 September 2016 at 3:41:10 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 16 September 2016 at 9:33:39 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 72!
-!requires: 'Cuis-Base' 42 2706 nil!
+!provides: 'Morphic-Misc1' 1 74!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!requires: 'Cuis-Base' 42 2706 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -13,36 +13,6 @@ CursorWithMask subclass: #AddedCursors
 AddedCursors class
 	instanceVariableNames: ''!
 
-!classDefinition: #BorderedImageMorph category: #'Morphic-Misc1'!
-ImageMorph subclass: #BorderedImageMorph
-	instanceVariableNames: 'borderWidth borderColor borderStyle'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'BorderedImageMorph class' category: #'Morphic-Misc1'!
-BorderedImageMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #DropColorMorph category: #'Morphic-Misc1'!
-ImageMorph subclass: #DropColorMorph
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'DropColorMorph class' category: #'Morphic-Misc1'!
-DropColorMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #LabelMorph category: #'Morphic-Misc1'!
-StringMorph subclass: #LabelMorph
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'LabelMorph class' category: #'Morphic-Misc1'!
-LabelMorph class
-	instanceVariableNames: ''!
-
 !classDefinition: #RadioButtonMorph category: #'Morphic-Misc1'!
 EllipseMorph subclass: #RadioButtonMorph
 	instanceVariableNames: 'isSelected'
@@ -51,16 +21,6 @@ EllipseMorph subclass: #RadioButtonMorph
 	category: 'Morphic-Misc1'!
 !classDefinition: 'RadioButtonMorph class' category: #'Morphic-Misc1'!
 RadioButtonMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #PluggableScrollBar category: #'Morphic-Misc1'!
-ScrollBar subclass: #PluggableScrollBar
-	instanceVariableNames: 'refreshValueSelector'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Morphic-Misc1'!
-!classDefinition: 'PluggableScrollBar class' category: #'Morphic-Misc1'!
-PluggableScrollBar class
 	instanceVariableNames: ''!
 
 !classDefinition: #ImagePallet category: #'Morphic-Misc1'!
@@ -81,6 +41,16 @@ SystemWindow subclass: #DropTargetMorph
 	category: 'Morphic-Misc1'!
 !classDefinition: 'DropTargetMorph class' category: #'Morphic-Misc1'!
 DropTargetMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #PluggableScrollBar category: #'Morphic-Misc1'!
+ScrollBar subclass: #PluggableScrollBar
+	instanceVariableNames: 'refreshValueSelector'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PluggableScrollBar class' category: #'Morphic-Misc1'!
+PluggableScrollBar class
 	instanceVariableNames: ''!
 
 !classDefinition: #Panel category: #'Morphic-Misc1'!
@@ -131,6 +101,36 @@ BorderedRectMorph subclass: #FrameMorph
 	category: 'Morphic-Misc1'!
 !classDefinition: 'FrameMorph class' category: #'Morphic-Misc1'!
 FrameMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #BorderedImageMorph category: #'Morphic-Misc1'!
+ImageMorph subclass: #BorderedImageMorph
+	instanceVariableNames: 'borderWidth borderColor borderStyle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'BorderedImageMorph class' category: #'Morphic-Misc1'!
+BorderedImageMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #DropColorMorph category: #'Morphic-Misc1'!
+ImageMorph subclass: #DropColorMorph
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'DropColorMorph class' category: #'Morphic-Misc1'!
+DropColorMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #LabelMorph category: #'Morphic-Misc1'!
+StringMorph subclass: #LabelMorph
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'LabelMorph class' category: #'Morphic-Misc1'!
+LabelMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FramedLayoutMorph category: #'Morphic-Misc1'!
@@ -203,6 +203,16 @@ Morph subclass: #LineMorph
 LineMorph class
 	instanceVariableNames: ''!
 
+!classDefinition: #PointerLineMorph category: #'Morphic-Misc1'!
+LineMorph subclass: #PointerLineMorph
+	instanceVariableNames: 'endPointMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PointerLineMorph class' category: #'Morphic-Misc1'!
+PointerLineMorph class
+	instanceVariableNames: ''!
+
 
 !AddedCursors commentStamp: '<historical>' prior: 0!
 Additional Cursors -- see class side
@@ -210,26 +220,8 @@ Additional Cursors -- see class side
 AddedCursors openHand activateCursor.
 AddedCursors closedHand activateCursor.!
 
-!BorderedImageMorph commentStamp: '<historical>' prior: 0!
-I supply a border to an ImageMorph.
-
-borderStyle is one of #simple #raised #inset!
-
-!DropColorMorph commentStamp: '<historical>' prior: 0!
-I am picked up to be dropped on another morph.
-
-I change that morph's color to my color.
-
-See method #dropAction:!
-
-!LabelMorph commentStamp: '<historical>' prior: 0!
-I am a StringMorph used as a label!
-
 !RadioButtonMorph commentStamp: '<historical>' prior: 0!
 I am a very simple radio button.!
-
-!PluggableScrollBar commentStamp: '<historical>' prior: 0!
-I am a ScrollBar which can get new values from my model.!
 
 !ImagePallet commentStamp: '<historical>' prior: 0!
 I Display a pallet of widgets to grab a copy of to drop on something else
@@ -242,6 +234,9 @@ I am a transcient drop target for a morph.
 I allow one to drop morphs which make changes to myMorph.
 Each such morph has property DropActionMorph set to true.
 !
+
+!PluggableScrollBar commentStamp: '<historical>' prior: 0!
+I am a ScrollBar which can get new values from my model.!
 
 !Panel commentStamp: '<historical>' prior: 0!
 I am a very simple window with a label.
@@ -277,6 +272,21 @@ I am a simple editor for a LayoutSpec.
 
 !FrameMorph commentStamp: '<historical>' prior: 0!
 I appear as an empty frame!
+
+!BorderedImageMorph commentStamp: '<historical>' prior: 0!
+I supply a border to an ImageMorph.
+
+borderStyle is one of #simple #raised #inset!
+
+!DropColorMorph commentStamp: '<historical>' prior: 0!
+I am picked up to be dropped on another morph.
+
+I change that morph's color to my color.
+
+See method #dropAction:!
+
+!LabelMorph commentStamp: '<historical>' prior: 0!
+I am a StringMorph used as a label!
 
 !FramedLayoutMorph commentStamp: '<historical>' prior: 0!
 I add a simple frame to a LayoutMorph!
@@ -346,7 +356,10 @@ The validator is applied on return and if nil, the old value is redisplayed and 
 else the new value is remembered and displayed.!
 
 !LineMorph commentStamp: '<historical>' prior: 0!
-I am a line from startPoint to endPoint!
+I am a line from my start point to my end point.!
+
+!PointerLineMorph commentStamp: '<historical>' prior: 0!
+I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 7/17/2015 18:31'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
@@ -364,11 +377,73 @@ editMyLayoutSpec
 	self layoutSpec ifNil: [ self layoutSpec: LayoutSpec keepMorphExtent ].
 	LayoutSpecEditPanel open: self layoutSpec! !
 
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:19:30'!
+frameLayouts: colors depth: depth
+	"Display frames around LayoutMorphs, then erase"
+	
+	(self isKindOf: LayoutMorph)
+	ifFalse:  [
+		self submorphsDo: [ :m | m frameLayouts: colors depth: depth ]
+	]
+	ifTrue: [ | frame colorIndex |
+	 	colorIndex := 1 + depth mod: (colors size - 1).
+		frame := FrameMorph new 
+			:: borderColor: (colors at: colorIndex); 
+			borderWidth: 2;
+			morphExtent: self morphExtent;
+			morphPosition: self morphPositionInWorld;
+			yourself.
+		frame openInWorld.
+		self submorphsDo: [ :m | m frameLayouts: colors depth: depth + 1 ].
+	].! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:32:25'!
+frameNonLayouts: colors depth: depth
+	"Display frames around LayoutMorphs, then erase"
+	
+	(self isKindOf: LayoutMorph)
+	ifTrue:  [
+		self submorphsDo: [ :m | m frameNonLayouts: colors depth: depth ]
+	]
+	ifFalse: [ | frame colorIndex |
+	 	colorIndex := 1 + depth mod: (colors size - 1).
+		frame := FrameMorph new 
+			:: borderColor: (colors at: colorIndex); 
+			borderWidth: 2;
+			morphExtent: self morphExtent;
+			morphPosition: self morphPositionInWorld;
+			yourself.
+		frame openInWorld.
+		self submorphsDo: [ :m | m frameNonLayouts: colors depth: depth + 1 ].
+	].! !
+
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:21'!
 showDropTarget
 	"Display a DropTargetMorph for me"
 
 	DropTargetMorph openFor: self! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:25:47'!
+showLayouts
+	"Display frames around LayoutMorphs; then delete"
+	| colors |
+	colors := Color orange mix: Color blue shades: 12.
+	self submorphsDo: [ :m | m frameLayouts: colors depth: 0 ].
+	self redrawNeeded; refreshWorld.
+	(Delay forSeconds: 5) wait.
+	"Assume only my frames were added to World"
+	self world submorphsDo: [ :s | (s isKindOf: FrameMorph) ifTrue: [ s delete ]].! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:31:23'!
+showNonLayouts
+	"Display frames around LayoutMorphs; then delete"
+	| colors |
+	colors := Color orange mix: Color blue shades: 12.
+	self submorphsDo: [ :m | m frameNonLayouts: colors depth: 0 ].
+	self redrawNeeded; refreshWorld.
+	(Delay forSeconds: 5) wait.
+	"Assume only my frames were added to World"
+	self world submorphsDo: [ :s | (s isKindOf: FrameMorph) ifTrue: [ s delete ]].! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 7/17/2015 18:32'!
 signMorphForMe
@@ -567,220 +642,6 @@ openHand
 
 	^ OpenHand ! !
 
-!BorderedImageMorph methodsFor: 'private' stamp: 'KenD 12/25/2013 13:39'!
-basicExtent: aPoint
-
-	extent := aPoint! !
-
-!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
-borderColor
-
-	^ borderColor! !
-
-!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
-borderColor: aColor
-	borderColor = aColor ifFalse: [
-		borderColor _ aColor.
-		self redrawNeeded]! !
-
-!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
-borderWidth: anInteger
-	borderWidth = anInteger ifFalse: [
-		borderColor ifNil: [ borderColor _ Color black ].
-		borderWidth _ anInteger max: 0.
-		self redrawNeeded ]! !
-
-!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
-clippingRect
-	"In own coordinates!!
-	Return the bounds to which any submorphs should be clipped if the property is set"
-	"Should be a region, like our shadow"
-	self flag: #jmvVer2.
-	^ super clippingRect insetBy: borderWidth! !
-
-!BorderedImageMorph methodsFor: 'drawing' stamp: 'KenD 12/25/2013 13:40'!
-drawOn: aCanvas
-	"A canvas is already set with a proper transformation from our coordinates to those of the Canvas target."
-
-	aCanvas  "My image is inset from the border."
-	     image: image
-		at: borderWidth @ borderWidth.
-
-	aCanvas "The border is drawn around the image."
-		frameRectangle: (0@0  extent: self morphExtent) 
-		color: borderColor 
-		borderWidth: borderWidth 
-		borderStyleSymbol: borderStyle! !
-
-!BorderedImageMorph methodsFor: 'initialization' stamp: 'KenD 12/25/2013 13:40'!
-initialize
-	"Set my defaults"
-
-	self basicExtent: 32@32. "Not nil"
-	borderWidth := 4.
-	super initialize.
-	borderColor := Color orange.
-	borderStyle := #raised.! !
-
-!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/24/2014 20:15'!
-layoutBounds
-	"Return the bounds for laying out children of the receiver"
-
-	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
-
-!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/4/2015 19:15'!
-morphExtent
-	"Answer an extent which includes me, taking into account my borderWidth"
-
-	^ self minimumExtent + borderWidth + borderWidth ! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:07'!
-aboutToBeGrabbedBy: aHand
-	"The receiver is being grabbed by a hand.
-	Perform necessary adjustments (if any) and return the actual morph
-	that should be added to the hand.
-	Answer nil to reject the drag."
-	"This message is sent to the dragged morph, not to the owner.
-	It is included here just for reference."
-
-	^ self class fromColor: self color "Grab a new sibling of me"! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:15'!
-aboutToGrab: aMorph
-	"submorph is being grabbed by a hand.
-	Perform necessary adjustments (if any) and return the actual morph
-	that should be added to the hand.
-	Answer nil to reject the drag."
-
-	^ self class fromColor: aMorph color   "Pick up a copy of me"! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 5/10/2015 15:21'!
-dropAction: aDropTargetMorph
-	"Set a color"
-
-	| colorSetters choices |
-	colorSetters := (((aDropTargetMorph targetMorph class withAllSuperclasses 
-		collect: [ :c | c selectors ] andFold: [ :a :b | a union: b]) "all selectors"
-			select: [ :s | ('*color*:' match: s) and: [('*:*:' match: s) not]] ) asArray).
-			
-	(colorSetters size = 1)
-		ifTrue: [ aDropTargetMorph targetMorph perform: (colorSetters at: 1) with: self color ]
-		ifFalse: [ | selection |
-			choices := OrderedCollection with: #Cancel.
-			choices addAll: colorSetters.
-			self delete. "Remove me from hand so user can choose"
-			selection := PopUpMenu withCaption: 'Choose color setter' 
-											chooseFrom: choices.
-			(selection = 1) ifFalse: [ "1 -> Cancel"
-				aDropTargetMorph targetMorph 
-						perform: (colorSetters at: selection - 1) 
-						with: self color
-			]
-		].
-
-	aDropTargetMorph refreshSubmorphs.! !
-
-!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
-fromColor: aColor
-
-	self 
-		color: aColor;
-		image: (self color icon magnifyTo: 32@32)
-	! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:53'!
-handlesMouseDown: buttonEvent
-
-	^ true
-! !
-
-!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
-initialize
-
-	super initialize.
-	self setProperty: #DropActionMorph toValue: #setColor! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:58'!
-mouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
-
-	(self morphContainsPoint: localEventPosition)
-		ifTrue: [ 
-				self runningWorld activeHand attachMorph:
-					 (DropColorMorph fromColor: self color)
-		]
-! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
-rejectDropMorphEvent: evt
-	"Rejected drop of me.  Remove me from the hand."
-	
-	self world ifNotNil: [ :w | w activeHand removeMorph: self ]
-! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:52'!
-wantsToBeDroppedInto: aMorph
-	"I wish to be dropped on a DropTargeMorph"
-
-	(aMorph isKindOf: DropTargetMorph)
-		ifTrue: [ self dropAction: aMorph ].
-	^ false  "Always be rejected after doing the drop action"! !
-
-!DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 7/24/2015 11:20'!
-fromColor: aColor
-"
-	(DropColorMorph fromColor: Color teal) openInHand.
-"
-
-	^ self new fromColor: aColor ! !
-
-!DropColorMorph class methodsFor: 'new-morph participation' stamp: 'KenD 12/6/2013 19:06'!
-includeInNewMorphMenu
-	"Return true for all classes that can be instantiated from the menu"
-	
-	^ false! !
-
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:37'!
-extentBorder
-	"Add the number of pixels to add to my interior minimumExtent".
-
-	^ 1! !
-
-!LabelMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 15:27'!
-initWithContents: aString font: aFont emphasis: emphasisCode 
-	self initialize.
-	
-	aFont ifNotNil: [ font := aFont ] ifNil: [ font := AbstractFont default ].
-	(emphasisCode = 0) 
-		ifTrue: [ emphasis := AbstractFont boldCode ] 
-		ifFalse: [ emphasis := emphasisCode ].
-	self contents: aString! !
-
-!LabelMorph methodsFor: 'initialization' stamp: 'KenD 4/18/2015 19:15'!
-initialize
-
-	super initialize.
-	self
-		font: AbstractFont default;
-		color: Color transparent;
-		emphasis: AbstractFont boldCode;
-		layoutSpec: (LayoutSpec keepMorphExtent).! !
-
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:53'!
-minimumExtent
-
-	^ self measureContents + self extentBorder.! !
-
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
-morphExtent: aPoint 
-	"Set the receiver's extent to value provided. Honor my minimumExtent."
-
-	super morphExtent: (aPoint max: self minimumExtent)! !
-
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 13:19'!
-naturalHeight
-
-	^ self minimumExtent y! !
-
 !RadioButtonMorph methodsFor: 'initialization' stamp: 'KenD 11/20/2013 14:05'!
 defaultDiameter
 
@@ -889,38 +750,6 @@ initialize
 ofSize: numPixels
 
 	^ self new ofSize: numPixels! !
-
-!PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 8/26/2015 12:27'!
-fontPreferenceChanged
-
-	super fontPreferenceChanged.
-	slider morphExtent: self buttonExtent @ self buttonExtent.! !
-
-!PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 11/26/2013 21:12'!
-initialize
-
-	super initialize.
-	slider morphExtent: self buttonExtent @ self buttonExtent.! !
-
-!PluggableScrollBar methodsFor: 'accessing' stamp: 'KenD 11/25/2013 18:44'!
-model: thang setValueSelector: setValueSym refreshValueSelector: getValueSym
-
-	model := thang.
-	setValueSelector := setValueSym.
-	refreshValueSelector := getValueSym ! !
-
-!PluggableScrollBar methodsFor: 'model access' stamp: 'KenD 11/25/2013 18:42'!
-refreshValueFromModel
-	"Called externally to reset value from model"
-
-	refreshValueSelector ifNotNil: [
-		self value:  (model perform: refreshValueSelector) ]! !
-
-!PluggableScrollBar class methodsFor: 'new-morph participation' stamp: 'KenD 12/6/2013 19:06'!
-includeInNewMorphMenu
-	"Return true for all classes that can be instantiated from the menu"
-	
-	^ false! !
 
 !ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 9/14/2013 16:04'!
 collection: aNameImageCollection
@@ -1287,6 +1116,11 @@ showHaloButtonClicked
 				popUpForHand: self  world activeHand
 	]! !
 
+!DropTargetMorph methodsFor: 'user interface' stamp: 'KenD 9/15/2016 18:05:22'!
+showLayouts
+
+	! !
+
 !DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 15:53'!
 targetMorph
 
@@ -1313,6 +1147,38 @@ includeInNewMorphMenu
 openFor: aMorph
 
 	^ self basicNew initialize openFor: aMorph ! !
+
+!PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 8/26/2015 12:27'!
+fontPreferenceChanged
+
+	super fontPreferenceChanged.
+	slider morphExtent: self buttonExtent @ self buttonExtent.! !
+
+!PluggableScrollBar methodsFor: 'initialization' stamp: 'KenD 11/26/2013 21:12'!
+initialize
+
+	super initialize.
+	slider morphExtent: self buttonExtent @ self buttonExtent.! !
+
+!PluggableScrollBar methodsFor: 'accessing' stamp: 'KenD 11/25/2013 18:44'!
+model: thang setValueSelector: setValueSym refreshValueSelector: getValueSym
+
+	model := thang.
+	setValueSelector := setValueSym.
+	refreshValueSelector := getValueSym ! !
+
+!PluggableScrollBar methodsFor: 'model access' stamp: 'KenD 11/25/2013 18:42'!
+refreshValueFromModel
+	"Called externally to reset value from model"
+
+	refreshValueSelector ifNotNil: [
+		self value:  (model perform: refreshValueSelector) ]! !
+
+!PluggableScrollBar class methodsFor: 'new-morph participation' stamp: 'KenD 12/6/2013 19:06'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ false! !
 
 !Panel methodsFor: 'submorphs-add/remove' stamp: 'KenD 12/9/2013 16:44'!
 addMorph: aMorph 
@@ -3037,6 +2903,229 @@ initialize
 "
 	Colors := { Color yellow. Color mustard. Color brown. }.! !
 
+!FrameMorph class methodsFor: 'accessing' stamp: 'KenD 9/15/2016 15:55:19'!
+setColors: colorArray
+"
+	self setColors: (Color orange mix: Color purple shades: 8).
+	self example1.
+"
+
+	Colors := colorArray! !
+
+!BorderedImageMorph methodsFor: 'private' stamp: 'KenD 12/25/2013 13:39'!
+basicExtent: aPoint
+
+	extent := aPoint! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderColor
+
+	^ borderColor! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderColor: aColor
+	borderColor = aColor ifFalse: [
+		borderColor _ aColor.
+		self redrawNeeded]! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
+borderWidth: anInteger
+	borderWidth = anInteger ifFalse: [
+		borderColor ifNil: [ borderColor _ Color black ].
+		borderWidth _ anInteger max: 0.
+		self redrawNeeded ]! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 12/25/2013 13:41'!
+clippingRect
+	"In own coordinates!!
+	Return the bounds to which any submorphs should be clipped if the property is set"
+	"Should be a region, like our shadow"
+	self flag: #jmvVer2.
+	^ super clippingRect insetBy: borderWidth! !
+
+!BorderedImageMorph methodsFor: 'drawing' stamp: 'KenD 12/25/2013 13:40'!
+drawOn: aCanvas
+	"A canvas is already set with a proper transformation from our coordinates to those of the Canvas target."
+
+	aCanvas  "My image is inset from the border."
+	     image: image
+		at: borderWidth @ borderWidth.
+
+	aCanvas "The border is drawn around the image."
+		frameRectangle: (0@0  extent: self morphExtent) 
+		color: borderColor 
+		borderWidth: borderWidth 
+		borderStyleSymbol: borderStyle! !
+
+!BorderedImageMorph methodsFor: 'initialization' stamp: 'KenD 12/25/2013 13:40'!
+initialize
+	"Set my defaults"
+
+	self basicExtent: 32@32. "Not nil"
+	borderWidth := 4.
+	super initialize.
+	borderColor := Color orange.
+	borderStyle := #raised.! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/24/2014 20:15'!
+layoutBounds
+	"Return the bounds for laying out children of the receiver"
+
+	^  (0@0 extent: self morphExtent) insetBy: borderWidth! !
+
+!BorderedImageMorph methodsFor: 'geometry' stamp: 'KenD 7/4/2015 19:15'!
+morphExtent
+	"Answer an extent which includes me, taking into account my borderWidth"
+
+	^ self minimumExtent + borderWidth + borderWidth ! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:07'!
+aboutToBeGrabbedBy: aHand
+	"The receiver is being grabbed by a hand.
+	Perform necessary adjustments (if any) and return the actual morph
+	that should be added to the hand.
+	Answer nil to reject the drag."
+	"This message is sent to the dragged morph, not to the owner.
+	It is included here just for reference."
+
+	^ self class fromColor: self color "Grab a new sibling of me"! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:15'!
+aboutToGrab: aMorph
+	"submorph is being grabbed by a hand.
+	Perform necessary adjustments (if any) and return the actual morph
+	that should be added to the hand.
+	Answer nil to reject the drag."
+
+	^ self class fromColor: aMorph color   "Pick up a copy of me"! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 5/10/2015 15:21'!
+dropAction: aDropTargetMorph
+	"Set a color"
+
+	| colorSetters choices |
+	colorSetters := (((aDropTargetMorph targetMorph class withAllSuperclasses 
+		collect: [ :c | c selectors ] andFold: [ :a :b | a union: b]) "all selectors"
+			select: [ :s | ('*color*:' match: s) and: [('*:*:' match: s) not]] ) asArray).
+			
+	(colorSetters size = 1)
+		ifTrue: [ aDropTargetMorph targetMorph perform: (colorSetters at: 1) with: self color ]
+		ifFalse: [ | selection |
+			choices := OrderedCollection with: #Cancel.
+			choices addAll: colorSetters.
+			self delete. "Remove me from hand so user can choose"
+			selection := PopUpMenu withCaption: 'Choose color setter' 
+											chooseFrom: choices.
+			(selection = 1) ifFalse: [ "1 -> Cancel"
+				aDropTargetMorph targetMorph 
+						perform: (colorSetters at: selection - 1) 
+						with: self color
+			]
+		].
+
+	aDropTargetMorph refreshSubmorphs.! !
+
+!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
+fromColor: aColor
+
+	self 
+		color: aColor;
+		image: (self color icon magnifyTo: 32@32)
+	! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:53'!
+handlesMouseDown: buttonEvent
+
+	^ true
+! !
+
+!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
+initialize
+
+	super initialize.
+	self setProperty: #DropActionMorph toValue: #setColor! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:58'!
+mouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
+
+	(self morphContainsPoint: localEventPosition)
+		ifTrue: [ 
+				self runningWorld activeHand attachMorph:
+					 (DropColorMorph fromColor: self color)
+		]
+! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
+rejectDropMorphEvent: evt
+	"Rejected drop of me.  Remove me from the hand."
+	
+	self world ifNotNil: [ :w | w activeHand removeMorph: self ]
+! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:52'!
+wantsToBeDroppedInto: aMorph
+	"I wish to be dropped on a DropTargeMorph"
+
+	(aMorph isKindOf: DropTargetMorph)
+		ifTrue: [ self dropAction: aMorph ].
+	^ false  "Always be rejected after doing the drop action"! !
+
+!DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 7/24/2015 11:20'!
+fromColor: aColor
+"
+	(DropColorMorph fromColor: Color teal) openInHand.
+"
+
+	^ self new fromColor: aColor ! !
+
+!DropColorMorph class methodsFor: 'new-morph participation' stamp: 'KenD 12/6/2013 19:06'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ false! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:37'!
+extentBorder
+	"Add the number of pixels to add to my interior minimumExtent".
+
+	^ 1! !
+
+!LabelMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 15:27'!
+initWithContents: aString font: aFont emphasis: emphasisCode 
+	self initialize.
+	
+	aFont ifNotNil: [ font := aFont ] ifNil: [ font := AbstractFont default ].
+	(emphasisCode = 0) 
+		ifTrue: [ emphasis := AbstractFont boldCode ] 
+		ifFalse: [ emphasis := emphasisCode ].
+	self contents: aString! !
+
+!LabelMorph methodsFor: 'initialization' stamp: 'KenD 4/18/2015 19:15'!
+initialize
+
+	super initialize.
+	self
+		font: AbstractFont default;
+		color: Color transparent;
+		emphasis: AbstractFont boldCode;
+		layoutSpec: (LayoutSpec keepMorphExtent).! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/24/2015 19:53'!
+minimumExtent
+
+	^ self measureContents + self extentBorder.! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 12/24/2013 16:33'!
+morphExtent: aPoint 
+	"Set the receiver's extent to value provided. Honor my minimumExtent."
+
+	super morphExtent: (aPoint max: self minimumExtent)! !
+
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 13:19'!
+naturalHeight
+
+	^ self minimumExtent y! !
+
 !FramedLayoutMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 14:33'!
 borderColor
 
@@ -4377,6 +4466,55 @@ startPoint: start endPoint: end
 startPoint: start endPoint: end width: numPixels color: aColor
 
 	^ self new startPoint: start endPoint: end width: numPixels color: aColor! !
+
+!PointerLineMorph methodsFor: 'accessing' stamp: 'KenD 9/15/2016 16:25:30'!
+endPointMorph
+	
+	^ endPointMorph! !
+
+!PointerLineMorph methodsFor: 'accessing' stamp: 'KenD 9/15/2016 16:36:14'!
+endPointMorph: aMorph
+	
+	self endPointMorph ifNotNil: [ :pointer | self removeMorph: pointer ].
+	endPointMorph := aMorph.
+	self endPointMorph morphPosition: self rect corner.
+	self addMorphFront: aMorph ! !
+
+!PointerLineMorph methodsFor: 'initialization' stamp: 'KenD 9/15/2016 16:40:58'!
+initialize
+
+	super initialize.
+	self endPointMorph:
+		(BorderedRectMorph new 
+			:: color: Color yellow; 
+			borderColor: Color red; 
+			borderWidth: 3; 
+			morphExtent: 16@16; 
+			yourself).
+	self updateEndPoint.! !
+
+!PointerLineMorph methodsFor: 'geometry' stamp: 'KenD 9/15/2016 16:28:43'!
+morphExtent: newExtent
+
+	super morphExtent: newExtent.
+	self updateEndPoint.! !
+
+!PointerLineMorph methodsFor: 'geometry' stamp: 'KenD 9/15/2016 17:01:11'!
+updateEndPoint
+	"Place my pointer morph at my endpoint, centered"
+	
+	| pointMorphCenter endPointOffset |
+	pointMorphCenter := (self endPointMorph morphExtent) / 2.
+	endPointOffset := (self rect perform: endPointSelector) + (self lineWidth / 2).
+	self endPointMorph morphPosition: endPointOffset - pointMorphCenter.! !
+
+!PointerLineMorph class methodsFor: 'instance creation' stamp: 'KenD 9/15/2016 17:37:25'!
+initializedInstance
+
+	| newInst |
+	newInst  := super initializedInstance.
+	newInst updateEndPoint.
+	^newInst! !
 AddedCursors initialize!
 RadioButtonMorph initialize!
 FrameMorph initialize!
