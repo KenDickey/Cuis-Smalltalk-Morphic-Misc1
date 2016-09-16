@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 16 September 2016 at 9:33:39 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 16 September 2016 at 1:59:06 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 74!
+!provides: 'Morphic-Misc1' 1 79!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 42 2706 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -361,7 +361,7 @@ I am a line from my start point to my end point.!
 !PointerLineMorph commentStamp: '<historical>' prior: 0!
 I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 7/17/2015 18:31'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:40:51'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
@@ -369,7 +369,35 @@ addCustomMenuItems: aCustomMenu hand: aHandMorph
 		addLine;
 		add: 'show drop target for me' action: #showDropTarget;
 		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
-		add: 'create a SignMorph for me' action: #signMorphForMe! !
+		add: 'create a SignMorph for me' action: #signMorphForMe;
+		add: 'toggle my DropShadow' action: #toggleDropShadow! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:31'!
+dropShadowForm
+	"Answer the shadow only for the BlockMorph"
+
+	|  srcForm destForm |
+	srcForm := self shadowForm.
+	destForm := srcForm copy.
+	destForm 
+		copy: (0@0 corner: srcForm extent) 
+		from: srcForm 
+		to: 0@0 - self dropShadowOffset 
+		rule: 4. "erase"
+	^ destForm
+! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:36:24'!
+dropShadowOffset
+
+	^ 4@6! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:53'!
+dropShadowShown
+
+	| dsMorph |
+	dsMorph := self valueOfProperty: #dropShadowMorph ifAbsent: [ ^false ].
+	^ self submorphs includes: dsMorph! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:09'!
 editMyLayoutSpec
@@ -417,6 +445,65 @@ frameNonLayouts: colors depth: depth
 		self submorphsDo: [ :m | m frameNonLayouts: colors depth: depth + 1 ].
 	].! !
 
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:57:48'!
+hasDropShadow
+	
+	^ self hasProperty: #dropShadowMorph! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:47:17'!
+hideDropShadow
+	
+	self valueOfProperty: #dropShadowMorph
+		 ifPresentDo: [ :dsMorph |
+			self removeMorph: dsMorph.
+			self removeProperty: #dropShadowMorph.
+			self redrawNeeded 
+	]! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:46:20'!
+setDropShadowMorph
+
+	| dsMorph |
+	dsMorph := ImageMorph new image: self dropShadowForm.
+	dsMorph morphPosition: self dropShadowOffset.
+	self setProperty: #dropShadowMorph toValue: dsMorph.
+	self redrawNeeded.
+
+		
+! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:43:34'!
+shadowForm
+"
+	[ :i | (ImageMorph new)  image: i shadowForm ;  openInWorld.] value: ImageMorph new.
+"
+	| aCanvas stencilForm depth |
+	depth := Display depth.
+	aCanvas := BitBltCanvas depth: depth over: (0@0 corner: self morphExtent).
+	aCanvas image: (self imageForm: depth) at: 0@0.
+	self submorphs reverseDo: [ :m | aCanvas image: (m imageForm: depth) at: m morphPosition ].
+	stencilForm := aCanvas form. 
+	aCanvas := BitBltCanvas depth: depth over: (0@0 corner: self morphExtent). 
+	aCanvas stencil: stencilForm at: 0@0  color: (Color black alpha: 0.3).	 
+	^ aCanvas form! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:48:05'!
+shadowNonLayouts
+
+	self submorphsDo: [ :s | s shadowNonLayouts ].
+	(self isKindOf: LayoutMorph) ifFalse: [ self showDropShadow ]! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:46:55'!
+showDropShadow
+	
+	self 
+		valueOfProperty: #dropShadowMorph
+		ifAbsent: [
+			self setDropShadowMorph.
+			self addMorphBack: (self valueOfProperty: #dropShadowMorph).
+			self redrawNeeded 
+		]! !
+
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:21'!
 showDropTarget
 	"Display a DropTargetMorph for me"
@@ -450,6 +537,19 @@ signMorphForMe
 	"Add a SignMorph for me in the active hand"
 
 	(SignMorph forObject: self) openInHand ! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:43:29'!
+toggleDropShadow
+	
+	self hasDropShadow 
+		ifTrue: [ self hideDropShadow ] 
+		ifFalse: [self showDropShadow ]! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:48:39'!
+unShadowNonLayouts
+
+	(self isKindOf: LayoutMorph) ifFalse: [ self hideDropShadow ].
+	self submorphsDo: [ :s | s unShadowNonLayouts ].! !
 
 !LayoutMorph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:22'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
