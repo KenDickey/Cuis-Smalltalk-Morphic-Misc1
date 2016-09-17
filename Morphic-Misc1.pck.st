@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 16 September 2016 at 1:59:06 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 17 September 2016 at 2:50:26 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 79!
+!provides: 'Morphic-Misc1' 1 81!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 42 2706 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -372,6 +372,18 @@ addCustomMenuItems: aCustomMenu hand: aHandMorph
 		add: 'create a SignMorph for me' action: #signMorphForMe;
 		add: 'toggle my DropShadow' action: #toggleDropShadow! !
 
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/17/2016 10:08:23'!
+colorizeLayouts
+	"debug"
+	"Tinge rows red, columns blue"
+	
+	self submorphsDo: [ :s | s colorizeLayouts ].
+	(self isKindOf: LayoutMorph) ifTrue: [
+		(self direction = #horizontal)
+		ifTrue:  [self color: (Color lightRed alpha: 0.5)] "Row"
+		ifFalse: [self color: (Color skyBlue  alpha: 0.5)] "Column"
+	]! !
+
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:31'!
 dropShadowForm
 	"Answer the shadow only for the BlockMorph"
@@ -460,8 +472,9 @@ hideDropShadow
 			self redrawNeeded 
 	]! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:46:20'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:09:16'!
 setDropShadowMorph
+	"private"
 
 	| dsMorph |
 	dsMorph := ImageMorph new image: self dropShadowForm.
@@ -472,8 +485,9 @@ setDropShadowMorph
 		
 ! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:43:34'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:09:43'!
 shadowForm
+	"private"
 "
 	[ :i | (ImageMorph new)  image: i shadowForm ;  openInWorld.] value: ImageMorph new.
 "
@@ -487,9 +501,13 @@ shadowForm
 	aCanvas stencil: stencilForm at: 0@0  color: (Color black alpha: 0.3).	 
 	^ aCanvas form! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:48:05'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:16:18'!
 shadowNonLayouts
-
+	"debug"
+	"Turn on dropShadows for submorphs' graphic elements"
+	
+	"Nota Bene: shadow submorphs FIRST or you will be recursively "
+	" adding shadows to shadows to shadows to..."
 	self submorphsDo: [ :s | s shadowNonLayouts ].
 	(self isKindOf: LayoutMorph) ifFalse: [ self showDropShadow ]! !
 
@@ -510,8 +528,9 @@ showDropTarget
 
 	DropTargetMorph openFor: self! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:25:47'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:12:54'!
 showLayouts
+	"debug"
 	"Display frames around LayoutMorphs; then delete"
 	| colors |
 	colors := Color orange mix: Color blue shades: 12.
@@ -521,8 +540,9 @@ showLayouts
 	"Assume only my frames were added to World"
 	self world submorphsDo: [ :s | (s isKindOf: FrameMorph) ifTrue: [ s delete ]].! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 09:31:23'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:13:33'!
 showNonLayouts
+	"debug"
 	"Display frames around LayoutMorphs; then delete"
 	| colors |
 	colors := Color orange mix: Color blue shades: 12.
@@ -545,9 +565,10 @@ toggleDropShadow
 		ifTrue: [ self hideDropShadow ] 
 		ifFalse: [self showDropShadow ]! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:48:39'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:14:17'!
 unShadowNonLayouts
-
+	"debug"
+	"Remove submorph dropShadows"
 	(self isKindOf: LayoutMorph) ifFalse: [ self hideDropShadow ].
 	self submorphsDo: [ :s | s unShadowNonLayouts ].! !
 
@@ -1385,10 +1406,10 @@ defaultExtent
 
 	^ 300 @ 200! !
 
-!Panel methodsFor: 'initialization' stamp: 'KenD 12/16/2013 16:35'!
+!Panel methodsFor: 'initialization' stamp: 'KenD 9/16/2016 16:49:16'!
 defaultSeparation
 
-	^ 4 "Pixels between controls/layouts"! !
+	^ 6 "Pixels between controls/layouts"! !
 
 !Panel methodsFor: 'drawing' stamp: 'KenD 12/9/2013 17:08'!
 drawClassicFrameOn: aCanvas color: titleColor
@@ -1854,7 +1875,7 @@ updateMasterFromCopy
 	
 	self subclassResponsibility ! !
 
-!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 8/26/2015 12:35'!
+!LayoutMorphEditPanel methodsFor: 'GUI building' stamp: 'KenD 9/17/2016 14:13:28'!
 buildMorphicWindow
 	
 	| controlArea leftCol rightCol  |	
@@ -1872,14 +1893,16 @@ buildMorphicWindow
 		
 	leftCol := LayoutMorph newColumn.
 	leftCol 
-		separation: self defaultSeparation;
+		separation: self defaultSeparation + 4;
+		padding: #top;
 		addMorph: directionArea;
 		addMorph: paddingArea.
 	controlArea addMorph: leftCol.
 
 	rightCol := LayoutMorph newColumn.
 	rightCol 
-		separation: self defaultSeparation;
+		separation: self defaultSeparation + 4;
+		padding: #top;
 		addMorph: separationArea ;
 		addMorph: colorArea .
 	controlArea addMorph: rightCol.
@@ -1910,10 +1933,27 @@ colorArea: newColorArea
 
 	colorArea := newColorArea! !
 
-!LayoutMorphEditPanel methodsFor: 'initialization' stamp: 'KenD 4/18/2015 20:37'!
+!LayoutMorphEditPanel methodsFor: 'private' stamp: 'KenD 9/17/2016 13:42:51'!
+colorMorph
+	"Answer a framed color swatch"
+	
+	| swatch imageMorph frameMorph |
+	swatch := self editModel color iconOrThumbnailOfSize: 64.
+	imageMorph := ImageMorph new :: image: swatch.
+	frameMorph := FrameMorph new ::
+		morphExtent: 68@68;
+		borderColor: Color black; 
+		borderWidth: 2; 
+		yourself.
+	frameMorph addMorph: imageMorph.
+	imageMorph morphPosition: 2@2.
+	^ frameMorph
+	! !
+
+!LayoutMorphEditPanel methodsFor: 'initialization' stamp: 'KenD 9/17/2016 13:08:30'!
 defaultExtent
 
-	^ 470 @ 272! !
+	^ 510 @ 300! !
 
 !LayoutMorphEditPanel methodsFor: 'accessing' stamp: 'KenD 12/16/2013 15:29'!
 directionArea
@@ -1934,7 +1974,7 @@ fontPreferenceChanged
 	self submorphsDo: [ :m | m fontPreferenceChanged ].
 .	self morphExtent: self minimumExtent ! !
 
-!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 10/30/2015 13:33'!
+!LayoutMorphEditPanel methodsFor: 'geometry' stamp: 'KenD 9/17/2016 13:21:55'!
 minimumExtent
 "Answer minimum extent to hold my submorphs"
 
@@ -1945,7 +1985,7 @@ minimumExtent
 		width := width max: minExt x.
 		height := height + minExt y.
 	].
-	^ width @ 10 + height + self buttonArea minimumExtent y! !
+	^ width @ 20 + height + self buttonArea minimumExtent y! !
 
 !LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 12:35'!
 modelBeColumn
@@ -1987,20 +2027,18 @@ modelYSeparation: numPixels
 	self editModel separation: (self editModel xSeparation @ numPixels).
 	self refreshSeparationtionArea.! !
 
-!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 20:39'!
+!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 13:45:07'!
 newColorArea
 	"Answer a FramedLayoutMorph showing color swatch and hex RGB entry"
 	
-	| newColorArea label spec initialColor colorSwatch colorRGB hexEntry |
+	| newColorArea label spec colorRGB hexEntry |
 	newColorArea := FramedLayoutMorph newColumn.
 	label := LabelMorph contents: 'Color'.
-	initialColor := self editModel color.
-	colorSwatch := initialColor iconOrThumbnailOfSize: 64.
 	colorRGB := SimpleNumberEntryMorph hexRGBEntry.
 	spec := LayoutSpec fixedHeight:
 		(2 * newColorArea borderWidth)
 		+ (label naturalHeight)
-		+ (colorSwatch height)
+		+ 68 "colorSwatch height"
 		+ 28 "hexEntry height"
 		+ 2.
 		
@@ -2033,14 +2071,14 @@ newColorArea
 		color: Color  transparent;
 		padding: #center;
 		addMorph: label;
-		addMorph: (ImageMorph new image: colorSwatch)  
+		addMorph: (self colorMorph) 
 				layoutSpec: (LayoutSpec keepMorphExtent);
 		addMorph: hexEntry;
 		yourself 
 	
 	! !
 
-!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 19:04'!
+!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/16/2016 16:33:11'!
 newDirectionArea
 	"Answer a FramedLayoutMorph with controls for Direction (Row,Column)"
 	
@@ -2064,6 +2102,7 @@ newDirectionArea
 	^ dirArea
 		layoutSpec: spec;
 		color: Color  transparent ;
+		separation: 2;
 		addMorph: label;
 		addMorph: radio;
 		yourself 
@@ -2077,7 +2116,7 @@ newDirectionSelection: dirSymbol
 		ifTrue: [ self modelBeRow ] 
 		ifFalse: [ self modelBeColumn ]! !
 
-!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 19:04'!
+!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:09:06'!
 newPaddingArea
 	"Answer a FramedLayoutMorph with controls for Padding"
 	
@@ -2093,7 +2132,8 @@ newPaddingArea
 	spec := LayoutSpec fixedHeight:
 		(2 * padArea borderWidth)
 		+ (label naturalHeight)
-		+ (padRadio naturalHeight).
+		+ (padRadio naturalHeight)
+		+ 6.
 		
 	"Setup"
 	padEntry := SimpleNumberEntryMorph realFactor: 1.0 maxNumChars: 3.
@@ -2108,6 +2148,7 @@ newPaddingArea
 	^ padArea
 		layoutSpec: spec;
 		color: Color  transparent ;
+		separation: 4;
 		addMorph: label;
 		addMorph: padRadio;
 		yourself 
@@ -2130,7 +2171,7 @@ newPaddingSelection: padSym
 
 ! !
 
-!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 20:24'!
+!LayoutMorphEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:06:54'!
 newSeparationtionArea
 	"Answer a FramedLayoutMorph with controls for x & y separation"
 	
@@ -2139,7 +2180,8 @@ newSeparationtionArea
 	label := LabelMorph contents: 'Separation'.
 	spec := LayoutSpec fixedHeight:
 		(2 * sepArea borderWidth)
-		+ (3 * label naturalHeight).
+		+ (3 * label naturalHeight)
+		+ 10.
 		
 	"Setup"
 	xSep := SimpleNumberEntryMorph 
@@ -2149,9 +2191,10 @@ newSeparationtionArea
 	xArea := LayoutMorph newRow.
 	xArea 
 		color: Color  transparent;
+		separation: 2;
 		addMorph: (LabelMorph contents: '  X ');
 		addMorph: xSep;
-		addMorph: (StringMorph contents: ' pixels').
+		addMorph: (StringMorph contents: 'pixels').
 		
 	ySep := SimpleNumberEntryMorph 
 			integerRangeFrom: 0 
@@ -2160,21 +2203,23 @@ newSeparationtionArea
 	yArea := LayoutMorph newRow.
 	yArea 
 		color: Color  transparent;
+		separation: 2;
 		addMorph: (LabelMorph contents: '  Y ');
 		addMorph: ySep;
-		addMorph: (StringMorph contents: ' pixels').
+		addMorph: (StringMorph contents: 'pixels').
 
 	"Value flow"
 	xSep valueAccessor: [ :model | model xSeparation ].
-	xSep valueUpdator: [ :newX | self modelXSeparation: newX ].
+	xSep valueUpdator:   [ :newX | self modelXSeparation: newX ].
 	ySep valueAccessor: [ :model | model ySeparation ].
-	ySep valueUpdator: [ :newY | self modelYSeparation: newY ].
+	ySep valueUpdator:   [ :newY | self modelYSeparation: newY ].
 	xSep refreshValueFrom: self editModel.
 	ySep refreshValueFrom: self editModel.
 		
 	 ^ sepArea
 		layoutSpec: spec;
 		color: Color  transparent ;
+		separation: 2;
 		addMorph: label;
 		addMorph: xArea;
 		addMorph: yArea;
@@ -2286,7 +2331,7 @@ showHaloButtonClicked
 				popUpForHand: self  world activeHand
 	]! !
 
-!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 4/19/2015 16:47'!
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 9/17/2016 12:36:10'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -2297,7 +2342,7 @@ updateMasterFromCopy
 	original padding: editCopy padding.
 	original separation: ( editCopy xSeparation @ editCopy ySeparation ).
 	original color: editCopy color.
-	original  layoutSubmorphs; redrawNeeded.
+	original calculateMinimumExtent; layoutSubmorphs; redrawNeeded.
 	original owner ifNotNil: [ :container | container layoutSubmorphs; redrawNeeded ].
 	self editModel: nil.
 	
@@ -2387,10 +2432,10 @@ buildMorphicWindow
 
 ! !
 
-!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 12/18/2013 21:03'!
+!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 9/17/2016 14:23:14'!
 defaultExtent
 
-	^ 550@240! !
+	^ 540@240! !
 
 !LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 8/26/2015 14:43'!
 fontPreferenceChanged
@@ -2425,7 +2470,7 @@ heightSelectionSymbol
 		]
 		ifNotNil: [ #Proportional ].! !
 
-!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 10/30/2015 13:34'!
+!LayoutSpecEditPanel methodsFor: 'geometry' stamp: 'KenD 9/17/2016 14:49:09'!
 minimumExtent
 	"Answer minimum to hold my submorphs"
 	| width height |
@@ -2435,7 +2480,7 @@ minimumExtent
 		width := width max: minExt x.
 		height := height + minExt y.
 	].
-	^ width @ 50 + height + self buttonArea minimumExtent y! !
+	^ width @ 20 + height + self buttonArea minimumExtent y! !
 
 !LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/17/2013 20:22'!
 modelPadding: numPixels
@@ -2457,7 +2502,7 @@ newEmptyAuxArea
 		separation: self defaultSeparation;
 		yourself! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 19:02'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:25:50'!
 newHeightArea
 	"Answer a FramedLayoutMorph with controls for Height"
 	
@@ -2482,6 +2527,7 @@ newHeightArea
 		
 	^ heightArea
 		layoutSpec: spec;
+		separation: 4;
 		color: Color  transparent ;
 		addMorph: label;
 		addMorph: radio;
@@ -2511,7 +2557,7 @@ newHeightSelection: selectSym
 	
 	self refreshHeightArea ! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 10/30/2015 15:56'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:17:56'!
 newPaddingArea
 	"Answer a FramedLayoutMorph with controls for Padding"
 	
@@ -2540,6 +2586,7 @@ newPaddingArea
 	^ padArea
 		layoutSpec: spec;
 		color: Color  transparent ;
+		separation: 4;
 		addMorph: label;
 		addMorph: padRadio;
 		yourself 
@@ -2585,7 +2632,7 @@ newProportionalWidthAuxArea
 		addMorph: self propWidthMinimum;
 		yourself! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 4/18/2015 19:02'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:17:46'!
 newWidthArea
 	"Answer a FramedLayoutMorph with controls for Width"
 	
@@ -2611,6 +2658,7 @@ newWidthArea
 	^ widthArea
 		layoutSpec: spec;
 		color: Color  transparent ;
+		separation: 4;
 		addMorph: label;
 		addMorph: radio;
 		addMorph: ((selected == #Proportional)
@@ -3221,10 +3269,10 @@ morphExtent: aPoint
 
 	super morphExtent: (aPoint max: self minimumExtent)! !
 
-!LabelMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 13:19'!
+!LabelMorph methodsFor: 'geometry' stamp: 'KenD 9/17/2016 10:15:31'!
 naturalHeight
 
-	^ self minimumExtent y! !
+	^ (self minimumExtent y) + 4! !
 
 !FramedLayoutMorph methodsFor: 'accessing' stamp: 'KenD 12/11/2013 14:33'!
 borderColor
@@ -3454,7 +3502,7 @@ fromList: arrayOfSymbols
 
 	self list: arrayOfSymbols ! !
 
-!RadioGroup methodsFor: 'initialization' stamp: 'KenD 10/29/2015 13:05'!
+!RadioGroup methodsFor: 'initialization' stamp: 'KenD 9/17/2016 13:12:26'!
 initialize
 	"Initialize self to harmless values"
 	
@@ -3462,6 +3510,7 @@ initialize
 	self setList: #(); "see #list: setter"
 		 setFont: Preferences standardButtonFont;
 		 buttonOnLeft: true;
+		 separation: 4@4;
 		 color: Color transparent! !
 
 !RadioGroup methodsFor: 'accessing' stamp: 'KenD 11/19/2013 19:45'!
@@ -3475,7 +3524,7 @@ list
 
 	^ list! !
 
-!RadioGroup methodsFor: 'accessing' stamp: 'KenD 10/29/2015 13:02'!
+!RadioGroup methodsFor: 'accessing' stamp: 'KenD 9/17/2016 14:20:55'!
 list: arrayOfSymbols
 	"Set up my submorphs from arrayOfSymbols"
 
@@ -3487,8 +3536,9 @@ list: arrayOfSymbols
 	labelList    := OrderedCollection new.
 	arrayOfSymbols do: [ :labelSym | | newRow label button |
 		newRow := LayoutMorph newRow.
-		newRow separation: 2; color: Color transparent.
+		newRow separation: 2; color: Color transparent; padding: #left.
 		button := (RadioButtonMorph ofSize: RadioButtonMorph defaultDiameter).
+		button layoutSpec: (LayoutSpec keepMorphExtent).
 		label := StringMorph contents: labelSym asString font: self font.
 		maxStringWidth := maxStringWidth max: (self font widthOfString: labelSym).
 		(self buttonOnLeft)
@@ -3497,9 +3547,7 @@ list: arrayOfSymbols
 		buttonList add: button.
 		labelList add: label.
 		self 
-			addMorph: newRow 
-			"layoutSpec: (LayoutSpec
-				fixedHeight: (self font height max: RadioButtonMorph defaultDiameter) + 2)"
+			addMorph: newRow
 
 	].
 	self buttons: buttonList asArray.
@@ -3508,18 +3556,18 @@ list: arrayOfSymbols
 	"Make all labels have same width"
 	labelLayout := LayoutSpec 
 			fixedWidth: maxStringWidth + 4
-			fixedHeight: self font height + 2
-			minorDirectionPadding: #center.
+			fixedHeight: (RadioButtonMorph defaultDiameter max: self font height) + 4
+			minorDirectionPadding: #left.
 	labelList do: [ :label | label layoutSpec: labelLayout ].
 "	self layoutSpec: (LayoutSpec fixedHeight: self naturalHeight). "
 
 ! !
 
-!RadioGroup methodsFor: 'geometry' stamp: 'KenD 12/15/2013 21:57'!
+!RadioGroup methodsFor: 'geometry' stamp: 'KenD 9/17/2016 10:33:51'!
 naturalHeight
 	"Answer the combined heights of my elements"
 	
-	^ 4 + (self list size * ((self font height max: RadioButtonMorph defaultDiameter) + 2))! !
+	^ 4 + ((self list size) * (2 + ((self font height) max: (RadioButtonMorph defaultDiameter))))! !
 
 !RadioGroup methodsFor: 'events-processing' stamp: 'KenD 11/20/2013 15:11'!
 newSelection: radioButton
