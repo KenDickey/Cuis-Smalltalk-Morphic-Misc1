@@ -1,6 +1,6 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 17 September 2016 at 2:50:26 pm'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 18 September 2016 at 10:48:28 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 81!
+!provides: 'Morphic-Misc1' 1 82!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 42 2706 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -383,6 +383,20 @@ colorizeLayouts
 		ifTrue:  [self color: (Color lightRed alpha: 0.5)] "Row"
 		ifFalse: [self color: (Color skyBlue  alpha: 0.5)] "Column"
 	]! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/18/2016 08:59:03'!
+containingLayout
+	"Answer the LayoutMorph containing me or nil"
+	
+	| container |
+	container := self owner.
+	container 
+		ifNil: [ ^ container ] 
+		ifNotNil: [
+			(container isKindOf: LayoutMorph) 
+				ifTrue: [ ^ container ]
+				ifFalse: [ ^ owner containingLayout ]
+		]! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:31'!
 dropShadowForm
@@ -2395,10 +2409,10 @@ addFixedWidthEntryMorphTo: radio
 			addMorph: fixEntry.
 ! !
 
-!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 8/26/2015 13:50'!
+!LayoutSpecEditPanel methodsFor: 'initialization' stamp: 'KenD 9/18/2016 10:45:07'!
 auxHeight
 
-	^ 3 * AbstractFont default height    "pixels"! !
+	^ 5 * AbstractFont default height    "pixels"! !
 
 !LayoutSpecEditPanel methodsFor: 'GUI building' stamp: 'KenD 8/26/2015 12:33'!
 buildMorphicWindow
@@ -2502,7 +2516,7 @@ newEmptyAuxArea
 		separation: self defaultSeparation;
 		yourself! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:25:50'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/18/2016 10:40:19'!
 newHeightArea
 	"Answer a FramedLayoutMorph with controls for Height"
 	
@@ -2518,6 +2532,7 @@ newHeightArea
 		+ (radio naturalHeight)
 		+ (self auxHeight)
 		+ 4.
+	spec minorDirectionPadding: #top.
 		
 	"Setup"
 	self setRadioSelection: radio selectSym: selected.
@@ -2557,7 +2572,7 @@ newHeightSelection: selectSym
 	
 	self refreshHeightArea ! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:17:56'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/18/2016 10:40:27'!
 newPaddingArea
 	"Answer a FramedLayoutMorph with controls for Padding"
 	
@@ -2571,7 +2586,8 @@ newPaddingArea
 		+ (label naturalHeight)
 		+ (padRadio naturalHeight)
 		+ 20.
-		
+	spec minorDirectionPadding: #top.
+			
 	"Setup"
 	padEntry := SimpleNumberEntryMorph realFactor: 1.0 maxNumChars: 3.
 	row := (padRadio rowFor: #Specify).
@@ -2632,7 +2648,7 @@ newProportionalWidthAuxArea
 		addMorph: self propWidthMinimum;
 		yourself! !
 
-!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/17/2016 14:17:46'!
+!LayoutSpecEditPanel methodsFor: 'area layouts' stamp: 'KenD 9/18/2016 10:40:35'!
 newWidthArea
 	"Answer a FramedLayoutMorph with controls for Width"
 	
@@ -2648,7 +2664,8 @@ newWidthArea
 		+ (radio naturalHeight)
 		+ (self auxHeight)
 		+ 4.
-		
+	spec minorDirectionPadding: #top.
+			
 	"Setup"
 	self setRadioSelection: radio selectSym: selected.	
 	(selected == #Fixed) ifTrue: [ self addFixedWidthEntryMorphTo: radio ].
@@ -2871,7 +2888,7 @@ showHaloButtonClicked
 
 	self showHalo! !
 
-!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 9/1/2016 15:38:19'!
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 9/18/2016 09:30:26'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -2880,7 +2897,7 @@ updateMasterFromCopy
 	editCopy := self editModel.
 	(self model morph isKindOf: ImageMorph)
 	ifTrue: [
-		self inform: 'NOTE: ImageMorphs can''t be resized'
+		^self inform: 'NOTE: ImageMorphs can''t be resized'
 	] 
 	ifFalse: [
 		original proportionalHeight: editCopy privateProportionalHeight 
@@ -2890,8 +2907,9 @@ updateMasterFromCopy
 	].
 	original minorDirectionPadding: editCopy minorDirectionPadding.
 	self editModel: nil.
-	original morph layoutSubmorphs; redrawNeeded.
-	original morph owner ifNotNil: [ :owner | owner layoutSubmorphs; redrawNeeded ].
+	"My containing LayoutMorph may need to recalculate & redisplay"
+	original morph containingLayout 
+		ifNotNil: [ :layoutMorph | layoutMorph calculateMinimumExtent; layoutSubmorphs; redrawNeeded ].
 	
 	self stayUp 
 		ifFalse: [ self delete ] 
@@ -3463,6 +3481,13 @@ buttons
 buttons: arrayOfRadioButtons
 
 	buttons := arrayOfRadioButtons.! !
+
+!RadioGroup methodsFor: 'geometry' stamp: 'KenD 9/18/2016 09:46:59'!
+calculateMinimumExtent
+
+	| extent |
+	extent := super calculateMinimumExtent.
+	^ (extent x) @ (extent y max: self naturalHeight)! !
 
 !RadioGroup methodsFor: 'accessing' stamp: 'KenD 11/19/2013 19:46'!
 font
