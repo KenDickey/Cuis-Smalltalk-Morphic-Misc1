@@ -1,8 +1,8 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2935] on 18 September 2016 at 10:48:28 am'!
+'From Cuis 4.2 of 25 July 2013 [latest update: #2951] on 30 September 2016 at 4:36:12 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 82!
-!requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!provides: 'Morphic-Misc1' 1 83!
 !requires: 'Cuis-Base' 42 2706 nil!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -31,6 +31,16 @@ PluggableScrollPane subclass: #ImagePallet
 	category: 'Morphic-Misc1'!
 !classDefinition: 'ImagePallet class' category: #'Morphic-Misc1'!
 ImagePallet class
+	instanceVariableNames: ''!
+
+!classDefinition: #MorphMessageBox category: #'Morphic-Misc1'!
+WorkspaceWindow subclass: #MorphMessageBox
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'MorphMessageBox class' category: #'Morphic-Misc1'!
+MorphMessageBox class
 	instanceVariableNames: ''!
 
 !classDefinition: #DropTargetMorph category: #'Morphic-Misc1'!
@@ -228,6 +238,9 @@ I Display a pallet of widgets to grab a copy of to drop on something else
 
 !
 
+!MorphMessageBox commentStamp: '<historical>' prior: 0!
+I am a Workspace specialized to send a message to a Morph.!
+
 !DropTargetMorph commentStamp: '<historical>' prior: 0!
 I am a transcient drop target for a morph.
 
@@ -361,7 +374,7 @@ I am a line from my start point to my end point.!
 !PointerLineMorph commentStamp: '<historical>' prior: 0!
 I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:40:51'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 16:33:12'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
@@ -370,7 +383,7 @@ addCustomMenuItems: aCustomMenu hand: aHandMorph
 		add: 'show drop target for me' action: #showDropTarget;
 		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
 		add: 'create a SignMorph for me' action: #signMorphForMe;
-		add: 'toggle my DropShadow' action: #toggleDropShadow! !
+		add: 'message window on me' action: #messageWindow! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/17/2016 10:08:23'!
 colorizeLayouts
@@ -485,6 +498,11 @@ hideDropShadow
 			self removeProperty: #dropShadowMorph.
 			self redrawNeeded 
 	]! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 16:33:38'!
+messageWindow
+
+	^ MorphMessageBox openForMorph: self! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:09:16'!
 setDropShadowMorph
@@ -1143,6 +1161,35 @@ useXKCDColorDict
 
 	Feature require: 'XKCD-NamedColors'.
 	Color setColorNamesDict: Color xkcdColorDictionary.! !
+
+!MorphMessageBox methodsFor: 'initialization' stamp: 'KenD 9/30/2016 15:28:45'!
+initialize
+
+	super initialize.
+	self morphExtent: self minimumExtent.! !
+
+!MorphMessageBox methodsFor: 'geometry' stamp: 'KenD 9/30/2016 15:24:28'!
+minimumExtent
+
+	^ 440@50! !
+
+!MorphMessageBox class methodsFor: 'instance creation' stamp: 'KenD 9/30/2016 16:30:32'!
+openForMorph: aMorph
+"
+	MorphMessageBox openForMorph: EllipseMorph initializedInstance.
+"
+	| morphName win work textModelMorph |
+	morphName := aMorph nameForWorkspace.
+	work := Workspace new contents: ''.
+	win := self editText: work label: 'Message for ', morphName wrap: false.
+	textModelMorph := win layoutMorph submorphs at: 1.
+	win morphExtent: win minimumExtent.
+	textModelMorph editor afterSelectionInsertAndSelect: morphName , ' '; 
+	afterSelectionInsertAndSelect: ' '.
+		"deselectAndPlaceCursorAt: (morphName size + 2) ."
+	(win model  bindingOf: morphName) value: aMorph.
+	win changed: #actualContents.
+	^win! !
 
 !DropTargetMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:33'!
 allowsMorphDrop
