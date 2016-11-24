@@ -1,8 +1,8 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2951] on 30 September 2016 at 4:36:12 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 24 November 2016 at 9:19:35 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 83!
-!requires: 'Cuis-Base' 42 2706 nil!
+!provides: 'Morphic-Misc1' 1 86!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -25,7 +25,7 @@ RadioButtonMorph class
 
 !classDefinition: #ImagePallet category: #'Morphic-Misc1'!
 PluggableScrollPane subclass: #ImagePallet
-	instanceVariableNames: 'nameImageCollection imageFilter'
+	instanceVariableNames: 'nameImageCollection imageFilter imageExtent calculatedExtent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Morphic-Misc1'!
@@ -374,7 +374,7 @@ I am a line from my start point to my end point.!
 !PointerLineMorph commentStamp: '<historical>' prior: 0!
 I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 16:33:12'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 17:05:24'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
@@ -383,7 +383,7 @@ addCustomMenuItems: aCustomMenu hand: aHandMorph
 		add: 'show drop target for me' action: #showDropTarget;
 		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
 		add: 'create a SignMorph for me' action: #signMorphForMe;
-		add: 'message window on me' action: #messageWindow! !
+		add: 'open a message window for me' action: #messageWindow! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/17/2016 10:08:23'!
 colorizeLayouts
@@ -410,33 +410,6 @@ containingLayout
 				ifTrue: [ ^ container ]
 				ifFalse: [ ^ owner containingLayout ]
 		]! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:31'!
-dropShadowForm
-	"Answer the shadow only for the BlockMorph"
-
-	|  srcForm destForm |
-	srcForm := self shadowForm.
-	destForm := srcForm copy.
-	destForm 
-		copy: (0@0 corner: srcForm extent) 
-		from: srcForm 
-		to: 0@0 - self dropShadowOffset 
-		rule: 4. "erase"
-	^ destForm
-! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:36:24'!
-dropShadowOffset
-
-	^ 4@6! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 12:33:53'!
-dropShadowShown
-
-	| dsMorph |
-	dsMorph := self valueOfProperty: #dropShadowMorph ifAbsent: [ ^false ].
-	^ self submorphs includes: dsMorph! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:09'!
 editMyLayoutSpec
@@ -484,54 +457,10 @@ frameNonLayouts: colors depth: depth
 		self submorphsDo: [ :m | m frameNonLayouts: colors depth: depth + 1 ].
 	].! !
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:57:48'!
-hasDropShadow
-	
-	^ self hasProperty: #dropShadowMorph! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:47:17'!
-hideDropShadow
-	
-	self valueOfProperty: #dropShadowMorph
-		 ifPresentDo: [ :dsMorph |
-			self removeMorph: dsMorph.
-			self removeProperty: #dropShadowMorph.
-			self redrawNeeded 
-	]! !
-
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 16:33:38'!
 messageWindow
 
 	^ MorphMessageBox openForMorph: self! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:09:16'!
-setDropShadowMorph
-	"private"
-
-	| dsMorph |
-	dsMorph := ImageMorph new image: self dropShadowForm.
-	dsMorph morphPosition: self dropShadowOffset.
-	self setProperty: #dropShadowMorph toValue: dsMorph.
-	self redrawNeeded.
-
-		
-! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:09:43'!
-shadowForm
-	"private"
-"
-	[ :i | (ImageMorph new)  image: i shadowForm ;  openInWorld.] value: ImageMorph new.
-"
-	| aCanvas stencilForm depth |
-	depth := Display depth.
-	aCanvas := BitBltCanvas depth: depth over: (0@0 corner: self morphExtent).
-	aCanvas image: (self imageForm: depth) at: 0@0.
-	self submorphs reverseDo: [ :m | aCanvas image: (m imageForm: depth) at: m morphPosition ].
-	stencilForm := aCanvas form. 
-	aCanvas := BitBltCanvas depth: depth over: (0@0 corner: self morphExtent). 
-	aCanvas stencil: stencilForm at: 0@0  color: (Color black alpha: 0.3).	 
-	^ aCanvas form! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:16:18'!
 shadowNonLayouts
@@ -542,17 +471,6 @@ shadowNonLayouts
 	" adding shadows to shadows to shadows to..."
 	self submorphsDo: [ :s | s shadowNonLayouts ].
 	(self isKindOf: LayoutMorph) ifFalse: [ self showDropShadow ]! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:46:55'!
-showDropShadow
-	
-	self 
-		valueOfProperty: #dropShadowMorph
-		ifAbsent: [
-			self setDropShadowMorph.
-			self addMorphBack: (self valueOfProperty: #dropShadowMorph).
-			self redrawNeeded 
-		]! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:21'!
 showDropTarget
@@ -589,13 +507,6 @@ signMorphForMe
 	"Add a SignMorph for me in the active hand"
 
 	(SignMorph forObject: self) openInHand ! !
-
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 13:43:29'!
-toggleDropShadow
-	
-	self hasDropShadow 
-		ifTrue: [ self hideDropShadow ] 
-		ifFalse: [self showDropShadow ]! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/16/2016 15:14:17'!
 unShadowNonLayouts
@@ -904,6 +815,17 @@ ofSize: numPixels
 
 	^ self new ofSize: numPixels! !
 
+!ImagePallet methodsFor: 'private' stamp: 'KenD 11/23/2016 14:19:14'!
+calculatedExtent
+
+	^ calculatedExtent! !
+
+!ImagePallet methodsFor: 'private' stamp: 'KenD 11/24/2016 09:07:36'!
+calculatedExtent: aPointExtent
+
+	calculatedExtent := aPointExtent.
+	self morphExtent: calculatedExtent ! !
+
 !ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 9/14/2013 16:04'!
 collection: aNameImageCollection
 	"The default filter is the identity function"
@@ -911,10 +833,10 @@ collection: aNameImageCollection
 	self collection: aNameImageCollection filter: [ :any | any ] 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 16:38'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 11/24/2016 09:18:42'!
 collection: aNameImageCollection filter: imageSelector
 
-	| numImages imageExtent spaceWidth imageWidth maxWidth numAcross imageHeight numDown layoutExtent |
+	| numImages maxWidth numAcross numDown spacedExtent |
 	nameImageCollection := aNameImageCollection.
 	imageFilter := imageSelector.
 	
@@ -922,22 +844,48 @@ collection: aNameImageCollection filter: imageSelector
 	numImages isZero ifTrue: [Error signal: 'I require a non-empty collection to display!!'].
 	numImages> 1000 ifTrue: [Error signal: 'Collection too large to display safely'].
 	"@@FIXME: assumes all images same size@@"
-	imageExtent := (self processImage: (aNameImageCollection anyOne value)) morphExtent.
+	self imageExtent: 
+		(self processImage: (aNameImageCollection anyOne value)) morphExtent.
 
-	spaceWidth := 2. "Pixels between images"
 	maxWidth := (DisplayScreen actualScreenSize x) // 1.6.
-	imageWidth := (imageExtent x) + spaceWidth.
-	numAcross := (((maxWidth - spaceWidth) // imageWidth) max: 1) min: numImages.
+	spacedExtent := imageExtent + self spaceWidth.
+
+	numAcross := (((maxWidth - self spaceWidth) // spacedExtent x) 
+						max: 1) min: numImages.
 	numDown := (numImages / numAcross) ceiling.
 	((numDown < 3) and: [numAcross > 40])
 		ifTrue: [ numAcross := 40. numDown := (numImages / numAcross) ceiling.].
-	imageHeight := (imageExtent y) + spaceWidth.
-	layoutExtent := (imageWidth * numAcross) @ (imageHeight * numDown).
-	
-	self layoutImages: numAcross extent: layoutExtent.
-	self morphExtent: layoutExtent.
+"
+Transcript show: 'numAcross: ', (numAcross asString), '  numDown: ', (numDown asString)
+	; newLine.
+"
+	self calculatedExtent:  (
+			((self imageWidth + self spaceWidth) * numAcross)
+							@ ((self imageHeight + self spaceWidth) * numDown)
+							) + self spaceWidth. "frame"
+"
+Transcript show: 'calculatedExtent: ', (self calculatedExtent asString)
+	; newLine.
+"
+	self layoutImages: numAcross extent: self calculatedExtent.
+
 
 ! !
+
+!ImagePallet methodsFor: 'accessing' stamp: 'KenD 11/23/2016 19:40:19'!
+imageExtent: aPointExtent
+
+	imageExtent := aPointExtent ! !
+
+!ImagePallet methodsFor: 'accessing' stamp: 'KenD 11/23/2016 19:39:55'!
+imageHeight
+
+	^ imageExtent y! !
+
+!ImagePallet methodsFor: 'accessing' stamp: 'KenD 11/23/2016 19:39:46'!
+imageWidth
+
+	^ imageExtent x! !
 
 !ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 3/19/2016 18:59'!
 initialize
@@ -950,24 +898,28 @@ initialize
 		layoutSpec: LayoutSpec useAll;
 		yourself! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 1/28/2016 16:33'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 11/24/2016 09:09:42'!
 layoutImages: numAcross extent: layoutExtent
 
 	"Lay out images in self"
 	| column nextRow count rowLayoutSpec |
-	count := -1.
 	rowLayoutSpec := LayoutSpec 
 							fixedWidth: layoutExtent x  
-							proportionalHeight: 1.0 
+							fixedHeight: self imageHeight
 							minorDirectionPadding: #left.
 							
-	column := LayoutMorph newColumn separation: 2.
-	self nameImageCollection do: [ :nameImageAssoc || name image imageMorph |
-		      name := nameImageAssoc key.
+	column := LayoutMorph newColumn.
+	column separation:    self spaceWidth;
+			 morphExtent: self calculatedExtent.
+
+	count := -1.
+	self nameImageCollection do: [ :nameImageAssoc |
+			| name image imageMorph |
+		     name  := nameImageAssoc key.
 			image := nameImageAssoc value.
 			count := count + 1.  "Row count"
 			(count \\ numAcross) isZero ifTrue: [ "Start a new Row"
-				nextRow := PalletLayoutMorph newRow separation: 2.
+				nextRow := PalletLayoutMorph newRow separation: self spaceWidth.
 				nextRow layoutSpec: rowLayoutSpec.
 				column addMorph: nextRow.
 			].
@@ -979,15 +931,19 @@ layoutImages: numAcross extent: layoutExtent
 	((nextRow submorphs size) > 0) ifTrue: [ nextRow shrinkWrap.].
 	column addMorph: nextRow. "add last row"
 	column layoutSpec: (LayoutSpec
-							proportionalWidth: 1.0 
+							fixedWidth: self imageWidth
 							fixedHeight: layoutExtent y 
-							minorDirectionPadding: #top)..
-	column morphExtent: layoutExtent.
+							minorDirectionPadding: #top).
 	self addToScroller: column.
 	self hideOrShowScrollBars.
 
 
 ! !
+
+!ImagePallet methodsFor: 'accessing' stamp: 'KenD 11/23/2016 14:21:53'!
+minimumExtent
+
+	^ self calculatedExtent ifNil: [1@1] ifNotNil: [ :ext | ext ] ! !
 
 !ImagePallet methodsFor: 'accessing' stamp: 'KenD 9/14/2013 16:33'!
 nameImageCollection
@@ -1000,6 +956,12 @@ processImage: anImage
 	^ imageFilter value: anImage
 
 	! !
+
+!ImagePallet methodsFor: 'private' stamp: 'KenD 11/23/2016 19:28:26'!
+spaceWidth
+	"Answer the space in pixels between images"
+	
+	^ 2! !
 
 !ImagePallet class methodsFor: 'instance creation' stamp: 'KenD 10/12/2013 17:24'!
 fromCollection: nameImageAssociations
@@ -1016,12 +978,12 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 1/28/2016 15:42'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 20:46:11'!
 largerIcons
 "
 	ImagePallet largerIcons.
 "
-	| ip sw iconsCollection savedExtent sortedCollection extraExtent |
+	| ip sw iconsCollection sortedCollection |
 	iconsCollection := OrderedCollection new. 
 	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'. 
 			'mimetypes'. 'places'. 'smalltalk'. 'status'. } 
@@ -1038,7 +1000,6 @@ largerIcons
 				Association key: (assoc key) value: assoc value
 			])
 			imageFilter: [:form | ImageMorph new image: (form magnifyTo: 32 @ 32)].
-	savedExtent := ip morphExtent.
 
 	sw := Panel new.
 	sw addMorph: ip.
@@ -1046,29 +1007,29 @@ largerIcons
 	sw setLabel: 'Pick an Icon';
 	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
-	extraExtent := ScrollBar scrollbarThickness
-					 @ (ScrollBar scrollbarThickness + 6 + sw boxExtent y).
-	sw morphExtent: (savedExtent + extraExtent). "openInWorld resets extent" ! !
+	sw morphExtent: sw minimumExtent. "openInWorld resets extent" 
+	^ sw! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 1/28/2016 16:39'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/24/2016 08:52:03'!
 namedColors
-"
-	self useCSS3ColorDict.                  
-	self useXKCDColorDict.
-	self useSmallColorDict.
-	self useCrayonColorDict.
+"	'Pick a ColorPallet'
+	ImagePallet useCSS3ColorDict.                  
+	ImagePallet useXKCDColorDict.
+	ImagePallet useSmallColorDict.
+	ImagePallet useCrayonColorDict.
+	'Open a view on it'
 	ImagePallet namedColors.
 "
-	| ip sw sortedColors a b savedExtent extraExtent |
+	| pallet imagePanel sortedColors  |
 	sortedColors := SortedCollection sortBlock: 
-		 [ :aAssoc :bAssoc |
+		 [ :aAssoc :bAssoc | | a b |
 			a := aAssoc value.
 			b := bAssoc value.
 			(a hue < b hue) or: [(a hue = b hue) and: [a saturation < b saturation ]]
 		].
 	Color colorNamesDict associationsDo: [ :assoc | sortedColors add: assoc ].
 	
-	ip := ImagePallet 
+	pallet := ImagePallet 
 			fromCollection: sortedColors
 			imageFilter: [:color | | dropColorMorph |
 				dropColorMorph := DropColorMorph new.
@@ -1076,29 +1037,24 @@ namedColors
 					color: color;
 					yourself
 			].
-	savedExtent := ip morphExtent.
-"Transcript nextPutAll: 'SavedExtent ', (savedExtent asString); newLine."
-	sw := Panel new.
-	ip color: sw windowColor paler.
-	sw addMorph: ip;
+
+	imagePanel := Panel new.
+	pallet color: imagePanel windowColor paler.
+	imagePanel addMorph: pallet;
 		setLabel: 'Pick a Color';
 	     showButtonsNamed: #( close collapse ).
-	extraExtent := ScrollBar scrollbarThickness + 2
-					 @ (ScrollBar scrollbarThickness + 2 + sw titleMorph height).
-	sw morphExtent: (savedExtent + extraExtent). 
-	ip hideOrShowScrollBars.
-	sw openInWorld. 
+	pallet hideOrShowScrollBars.
+	imagePanel openInWorld. 
 	"openInWorld resets extent"
-	sw morphExtent: (savedExtent + extraExtent).  "openInWorld resets extent"
-"Transcript nextPutAll: 'MorphExtent ', ((savedExtent+ extraExtent) asString); newLine."
-	^ sw! !
+	imagePanel morphExtent: (imagePanel minimumExtent).  "openInWorld resets extent"
+	^ imagePanel! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 12/5/2015 14:55'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 20:43:03'!
 namedIcons
 "
 	ImagePallet namedIcons.
 "
-	| ip sw iconsCollection sortedCollection savedExtent extraExtent |
+	| ip sw iconsCollection sortedCollection |
 	iconsCollection := OrderedCollection new. 
 	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'.
 	  'mimetypes'. 'places'. 'smalltalk'. 'status'. } do: [ :category |
@@ -1112,7 +1068,6 @@ namedIcons
 				Association key: (assoc key) value: assoc value
 			])
 			imageFilter: [:form | ImageMorph new image: form].
-	savedExtent := ip morphExtent.
 
 	sw := Panel new.
 	sw addMorph: ip.
@@ -1120,31 +1075,35 @@ namedIcons
 	sw setLabel: 'Pick an Icon';
 	showButtonsNamed: #( close collapse ).
 	sw openInWorld.
-	extraExtent := ScrollBar scrollbarThickness + 4
-					 @ (ScrollBar scrollbarThickness + 4 + sw boxExtent y).
-	sw 	morphExtent: savedExtent + extraExtent.   "openInWorld algorithm resets extent"! !
+	sw 	morphExtent: sw minimumExtent.   "openInWorld algorithm resets extent"
+	^ sw! !
 
 !ImagePallet class methodsFor: 'instance creation' stamp: 'KenD 9/13/2013 16:10'!
 new
 
 	Error signal: self name asString, ' requires a collection of name->image associations to instantiate'! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 16:09'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 15:09:28'!
 useCSS3ColorDict
-
+"
+	ImagePallet useCSS3ColorDict.
+"
 	Feature require: 'CSS3-NamedColors'.
 	Color setColorNamesDict: Color css3ColorDictionary.! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 5/28/2015 16:56'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 15:10:34'!
 useCrayonColorDict
 "
-	self useCrayonColorDict.
+	ImagePallet useCrayonColorDict.
 "
 	Feature require: 'Crayon-NamedColors'.
 	Color setColorNamesDict: Color crayonColorDictionary.! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 16:14'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 15:10:51'!
 useNBSISCCColorDict
+"
+	ImagePallet useNBSISCCColorDict.
+"
 
 	Feature require: 'NBSISCC-NamedColors'.
 	Color setColorNamesDict: Color nbsisccColorDictionary.! !
@@ -1156,9 +1115,11 @@ useSmallColorDict
 "
 	Color setColorNamesDict: Color defaultColorNamesDictionary.! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 9/15/2013 16:12'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 15:11:25'!
 useXKCDColorDict
-
+"
+	ImagePallet useXKCDColorDict.
+"
 	Feature require: 'XKCD-NamedColors'.
 	Color setColorNamesDict: Color xkcdColorDictionary.! !
 
@@ -1168,12 +1129,12 @@ initialize
 	super initialize.
 	self morphExtent: self minimumExtent.! !
 
-!MorphMessageBox methodsFor: 'geometry' stamp: 'KenD 9/30/2016 15:24:28'!
+!MorphMessageBox methodsFor: 'geometry' stamp: 'KenD 9/30/2016 17:06:54'!
 minimumExtent
 
-	^ 440@50! !
+	^ 700@(self boxExtent y * 2.3)! !
 
-!MorphMessageBox class methodsFor: 'instance creation' stamp: 'KenD 9/30/2016 16:30:32'!
+!MorphMessageBox class methodsFor: 'instance creation' stamp: 'KenD 9/30/2016 16:59:14'!
 openForMorph: aMorph
 "
 	MorphMessageBox openForMorph: EllipseMorph initializedInstance.
@@ -1189,6 +1150,8 @@ openForMorph: aMorph
 		"deselectAndPlaceCursorAt: (morphName size + 2) ."
 	(win model  bindingOf: morphName) value: aMorph.
 	win changed: #actualContents.
+	win activateAndSendTopToBack: true.
+	self runningWorld activeHand newMouseFocus: win.
 	^win! !
 
 !DropTargetMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:33'!
@@ -1666,6 +1629,20 @@ minPaneHeightForReframe
 minPaneWidthForReframe
 
 	^ ScrollBar scrollbarThickness * 3! !
+
+!Panel methodsFor: 'geometry' stamp: 'KenD 11/24/2016 09:12:17'!
+minimumExtent
+	"Subclasses may want to override me"
+	
+	| minTitleExtent minLayoutExtent  |
+	
+	minTitleExtent    := titleMorph    minimumExtent.
+	minLayoutExtent := layoutMorph minimumExtent.
+	
+	^ ((minTitleExtent x max: minLayoutExtent x)
+		@ (minTitleExtent y + minLayoutExtent y))
+		+ (6@4) "Frame space"
+	! !
 
 !Panel methodsFor: 'change reporting' stamp: 'KenD 4/24/2015 18:20'!
 morphExtent: newExtent
@@ -3451,7 +3428,7 @@ allowsSubmorphDrag
 
 	^ true! !
 
-!PalletLayoutMorph methodsFor: 'layout' stamp: 'KenD 10/17/2013 16:51'!
+!PalletLayoutMorph methodsFor: 'layout' stamp: 'KenD 11/24/2016 08:31:32'!
 shrinkWrap
 	"Resize self to minimally contain submorphs with specified separation"
 	
@@ -3471,7 +3448,7 @@ shrinkWrap
 			self layoutSpec: 
 					(LayoutSpec 
 							fixedWidth: width
-							proportionalHeight: 1.0 
+							fixedHeight: height
 							minorDirectionPadding: #left)
 		]
 		ifFalse: [ " vertical  (a column)"
@@ -3487,7 +3464,7 @@ shrinkWrap
 					into: [ :subTotal :m |  subTotal + (m morphExtent y) + sep ]).
 			self layoutSpec: 
 					(LayoutSpec 
-							proportionalWidth: 1.0 
+							fixedWidth: width 
 							fixedHeight: height
 							minorDirectionPadding: #top)
 		].
@@ -3801,32 +3778,32 @@ initialize
 	self morphPosition: 0@0;
 	      separation: self buttonSeparation.! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 12:25'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 11/23/2016 14:51:32'!
 minimumButtonsExtent
 
 	| width height |
-	height := self boxExtent y.
+	height := self boxExtent y + 4.
 	width := (self boxExtent x + self buttonSeparation x)
 				* (self buttonNamesShown size).
 	^ width @ height! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 10/30/2015 08:12'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 11/23/2016 14:52:05'!
 minimumExtent
 
 	| minButtonExt minTitleExt |
 	minButtonExt :=  self minimumButtonsExtent.
-	minTitleExt := self minimumTitleExtent.
+	minTitleExt    := self minimumTitleExtent.
 	^ (minButtonExt x + minTitleExt x) 
-     	@ (minButtonExt y max: minTitleExt y)! !
+     	   @ (minButtonExt y max: minTitleExt y)! !
 
-!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/26/2015 15:13'!
+!WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 11/23/2016 14:52:41'!
 minimumTitleExtent
 	"My titleString can shrink a bit but not completely"
 	| font |
 	font := Preferences windowTitleFont.
 
 	"Keep space for 8 characters"
-	^ (8 * (font widthOf: $A)) @ font height
+	^ (8 * (font widthOf: $A)) @ (4 + font height)
 	! !
 
 !WindowTitleMorph methodsFor: 'geometry' stamp: 'KenD 8/25/2015 19:45'!
