@@ -13,6 +13,7 @@ Basic morphs used by various packages
 - DropColorMorph
 - DropTargetMorph
 - EditPanel
+- FontMorph used to display and select a font
 - FrameMorph
 - FramedLayoutMorph
 - ImagePallet
