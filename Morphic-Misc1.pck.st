@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:07:08 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:21:14 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 87!
+!provides: 'Morphic-Misc1' 1 88!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -246,6 +246,11 @@ I am a very simple radio button.!
 !ImagePallet commentStamp: '<historical>' prior: 0!
 I Display a pallet of widgets to grab a copy of to drop on something else
 
+See my class examples:
+	ImagePallet namedColors.
+	ImagePallet namedIcons.
+ 	ImagePallet strikeFonts.
+	ImagePallet largerIcons.
 !
 
 !MorphMessageBox commentStamp: '<historical>' prior: 0!
@@ -1098,10 +1103,14 @@ new
 
 	Error signal: self name asString, ' requires a collection of name->image associations to instantiate'! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/29/2016 12:05:09'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/29/2016 12:21:07'!
 strikeFonts
 "
 	ImagePallet strikeFonts.
+	
+	More StrikeFonts can be imported via 
+		Feature require:  #'SF2-Import'.
+	See Cuis-Smalltalk-SF2-Import file README.md for usage.
 "
 	| ip sw fontsCollection maxExtent |
 	fontsCollection := OrderedCollection new. 
