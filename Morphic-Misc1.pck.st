@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 24 November 2016 at 9:19:35 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:07:08 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 86!
+!provides: 'Morphic-Misc1' 1 87!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -101,6 +101,16 @@ EditPanel subclass: #LayoutSpecEditPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'LayoutSpecEditPanel class' category: #'Morphic-Misc1'!
 LayoutSpecEditPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #FontMorph category: #'Morphic-Misc1'!
+BorderedRectMorph subclass: #FontMorph
+	instanceVariableNames: 'labelMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'FontMorph class' category: #'Morphic-Misc1'!
+FontMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FrameMorph category: #'Morphic-Misc1'!
@@ -282,6 +292,11 @@ LayoutMorphEditPanel open: (LayoutMorph newRow).!
 I am a simple editor for a LayoutSpec.
 
 !
+
+!FontMorph commentStamp: '<historical>' prior: 0!
+My instances display 'AbBbCc $123' using my specified font an emphysis.
+
+I am used to display a font, e.g. in a FontPallet.!
 
 !FrameMorph commentStamp: '<historical>' prior: 0!
 I appear as an empty frame!
@@ -1082,6 +1097,39 @@ namedIcons
 new
 
 	Error signal: self name asString, ' requires a collection of name->image associations to instantiate'! !
+
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/29/2016 12:05:09'!
+strikeFonts
+"
+	ImagePallet strikeFonts.
+"
+	| ip sw fontsCollection maxExtent |
+	fontsCollection := OrderedCollection new. 
+	AbstractFont availableFonts do: [ :aFontFamily |
+		aFontFamily keysAndValuesDo: [ :aSize :aFont |
+			fontsCollection add: 
+				(Association 
+					key: aFont name
+					value: (FontMorph font: aFont))
+		]
+	].
+
+	maxExtent := 0@0.
+	fontsCollection do: [ :assoc | maxExtent := maxExtent max: assoc value morphExtent ].
+	fontsCollection do: [ :assoc | assoc value morphExtent: maxExtent  ].
+	
+	ip := ImagePallet 
+			fromCollection: fontsCollection 
+			imageFilter: [ :fm | fm ].
+
+	sw := Panel new.
+	sw addMorph: ip.
+	ip color: sw windowColor paler.
+	sw setLabel: 'Pick a Font';
+	showButtonsNamed: #( close collapse ).
+	sw openInWorld.
+	sw 	morphExtent: sw minimumExtent.   "openInWorld algorithm resets extent"
+	^ sw! !
 
 !ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 15:09:28'!
 useCSS3ColorDict
@@ -2962,6 +3010,122 @@ widthSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
+
+!FontMorph methodsFor: 'geometry' stamp: 'KenD 11/29/2016 10:02:54'!
+adjustExtent 
+	"Some aspect of my font has changed. Don't shrink beyond minimum"
+
+	self morphExtent: (self morphExtent max: self minimumExtent)! !
+
+!FontMorph methodsFor: 'initialization' stamp: 'KenD 11/29/2016 09:54:03'!
+defaultColor
+	^ super defaultColor muchLighter ! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:53:07'!
+emphasis
+
+	^ self labelMorph emphasis ! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:53:02'!
+emphasis: emphasisCode
+
+	^ self labelMorph emphasis: emphasisCode ! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:52:57'!
+font
+
+	^ self labelMorph font! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:52:52'!
+font: aFont
+
+	self labelMorph font: aFont.
+	self adjustExtent! !
+
+!FontMorph methodsFor: 'initialization' stamp: 'KenD 11/29/2016 10:08:49'!
+font: aFont emphasis: emphasisCode
+
+	self font: aFont emphasis: emphasisCode string: self class defaultString ! !
+
+!FontMorph methodsFor: 'initialization' stamp: 'KenD 11/29/2016 10:54:13'!
+font: aFont emphasis: emphasisCode string: aString
+	"I am a BorderedRectMorph showing a LabelMorph.
+	Make it so."
+	
+	labelMorph := LabelMorph new
+				initWithContents: aString 
+				font: aFont 
+				emphasis: emphasisCode.
+	self morphExtent: self minimumExtent.
+	self addMorph: labelMorph.
+	labelMorph morphPosition: self labelMorphOffset.! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:56:44'!
+label
+
+	^ self labelMorph contents! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:26:47'!
+labelMorph
+
+	^ labelMorph! !
+
+!FontMorph methodsFor: 'geometry' stamp: 'KenD 11/29/2016 10:26:35'!
+labelMorphOffset
+	"LabelMorph is offset by combinedBorder"
+	| combinedBorder |
+	combinedBorder := self labelMorph extentBorder + self borderWidth.
+	
+	^ combinedBorder@combinedBorder.! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:53:25'!
+minimumExtent
+
+	^ (2 * self borderWidth) + self labelMorph minimumExtent! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 09:59:09'!
+morphExtent: aPoint 
+	"Set the receiver's extent to value provided. Honor my minimumExtent."
+
+	super morphExtent: (aPoint max: self minimumExtent)! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:56:09'!
+string
+
+	^ self labelMorph contents! !
+
+!FontMorph methodsFor: 'accessing' stamp: 'KenD 11/29/2016 10:56:17'!
+string: aString
+
+	self labelMorph contents: aString.
+	self adjustExtent ! !
+
+!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 09:25:45'!
+defaultEmphasis
+	"Answer the emphasis code  to display in the typical case"
+
+	^  AbstractFont normalCode! !
+
+!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 10:08:34'!
+defaultString
+	"Answer a string to display in the typical case"
+
+	^  'AbBbCc $123'! !
+
+!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 10:08:53'!
+font: aFont
+
+	^ self new font: aFont emphasis: self defaultEmphasis string: self defaultString! !
+
+!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 10:08:56'!
+font: aFont emphasis: emphasisCode
+
+	^ self new font: aFont emphasis: emphasisCode string: self defaultString ! !
+
+!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 09:21:59'!
+font: aFont emphasis: emphasisCode string: aString
+
+	^ self new font: aFont emphasis: emphasisCode string: aString! !
 
 !FrameMorph methodsFor: 'accessing' stamp: 'KenD 9/16/2013 14:58'!
 borderWidth
