@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 12:21:14 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 9:38:08 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 88!
+!provides: 'Morphic-Misc1' 1 90!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -301,7 +301,12 @@ I am a simple editor for a LayoutSpec.
 !FontMorph commentStamp: '<historical>' prior: 0!
 My instances display 'AbBbCc $123' using my specified font an emphysis.
 
-I am used to display a font, e.g. in a FontPallet.!
+I am used to display a font, e.g. in a FontPallet.
+
+
+(FontMorph font: AbstractFont default) openInHand.
+
+ImagePallet strikeFonts.!
 
 !FrameMorph commentStamp: '<historical>' prior: 0!
 I appear as an empty frame!
@@ -1103,7 +1108,7 @@ new
 
 	Error signal: self name asString, ' requires a collection of name->image associations to instantiate'! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/29/2016 12:21:07'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/29/2016 15:41:26'!
 strikeFonts
 "
 	ImagePallet strikeFonts.
@@ -1128,9 +1133,7 @@ strikeFonts
 	fontsCollection do: [ :assoc | assoc value morphExtent: maxExtent  ].
 	
 	ip := ImagePallet 
-			fromCollection: fontsCollection 
-			imageFilter: [ :fm | fm ].
-
+			fromCollection: fontsCollection.
 	sw := Panel new.
 	sw addMorph: ip.
 	ip color: sw windowColor paler.
