@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2984] on 29 November 2016 at 9:38:08 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:19:12 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 90!
-!requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!provides: 'Morphic-Misc1' 1 91!
 !requires: 'Cuis-Base' 50 2984 nil!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3293,6 +3293,24 @@ borderColor: aColor
 	borderColor = aColor ifFalse: [
 		borderColor _ aColor.
 		self redrawNeeded]! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/5/2016 14:44:20'!
+borderStyle
+
+	^ borderStyle! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/5/2016 14:48:46'!
+borderStyle: aSymbol
+
+	( #(simple raised inset) includes: aSymbol )
+		ifFalse: [ self error: 'Border Style must be one of #simple #raised or #inset; got: ', aSymbol printString ].
+		
+	borderStyle := aSymbol.! !
+
+!BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/5/2016 14:37:30'!
+borderWidth
+
+	^ borderWidth! !
 
 !BorderedImageMorph methodsFor: 'accessing' stamp: 'KenD 12/25/2013 13:40'!
 borderWidth: anInteger
