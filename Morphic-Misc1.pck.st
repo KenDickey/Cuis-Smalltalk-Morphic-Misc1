@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2986] on 5 December 2016 at 3:19:12 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:05:48 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 91!
-!requires: 'Cuis-Base' 50 2984 nil!
+!provides: 'Morphic-Misc1' 1 92!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -896,6 +896,11 @@ Transcript show: 'calculatedExtent: ', (self calculatedExtent asString)
 
 
 ! !
+
+!ImagePallet methodsFor: 'accessing' stamp: 'KenD 12/6/2016 19:04:41'!
+getMenu
+
+	^ nil! !
 
 !ImagePallet methodsFor: 'accessing' stamp: 'KenD 11/23/2016 19:40:19'!
 imageExtent: aPointExtent
@@ -3112,6 +3117,11 @@ string: aString
 	self labelMorph contents: aString.
 	self adjustExtent ! !
 
+!FontMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 18:56:31'!
+valueWhenDropped
+
+	^ self font! !
+
 !FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 09:25:45'!
 defaultEmphasis
 	"Answer the emphasis code  to display in the typical case"
@@ -3445,6 +3455,11 @@ rejectDropMorphEvent: evt
 	
 	self world ifNotNil: [ :w | w activeHand removeMorph: self ]
 ! !
+
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 18:55:26'!
+valueWhenDropped
+
+	^ self color! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:52'!
 wantsToBeDroppedInto: aMorph
@@ -4201,6 +4216,11 @@ rejectDropMorphEvent: dropEvent
 	self hide; delete.
 	self world ifNotNil: [ :w | w activeHand removeMorph: self ].
 ! !
+
+!SignMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/6/2016 18:53:56'!
+valueWhenDropped
+
+	^ self object ! !
 
 !SignMorph class methodsFor: 'instance creation' stamp: 'KenD 10/5/2013 16:54'!
 contents: someString
