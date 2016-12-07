@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 7 December 2016 at 8:37:02 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 7 December 2016 at 1:47:35 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 93!
+!provides: 'Morphic-Misc1' 1 94!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -459,7 +459,7 @@ I am a line from my start point to my end point.!
 !PointerLineMorph commentStamp: '<historical>' prior: 0!
 I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/30/2016 17:05:24'!
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/7/2016 13:45:42'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
@@ -468,7 +468,11 @@ addCustomMenuItems: aCustomMenu hand: aHandMorph
 		add: 'show drop target for me' action: #showDropTarget;
 		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
 		add: 'create a SignMorph for me' action: #signMorphForMe;
-		add: 'open a message window for me' action: #messageWindow! !
+		add: 'open a message window for me' action: #messageWindow.
+	(Smalltalk includesKey: #VisualPropertyEditor)
+		ifTrue: [ aCustomMenu add: 'open visual properties menu' 
+								   action: #openVisualPropertyEditor 
+		].! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 9/17/2016 10:08:23'!
 colorizeLayouts
