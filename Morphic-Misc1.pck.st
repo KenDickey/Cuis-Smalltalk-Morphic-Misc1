@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 6 December 2016 at 7:05:48 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 7 December 2016 at 8:37:02 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 92!
+!provides: 'Morphic-Misc1' 1 93!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -31,6 +31,46 @@ PluggableScrollPane subclass: #ImagePallet
 	category: 'Morphic-Misc1'!
 !classDefinition: 'ImagePallet class' category: #'Morphic-Misc1'!
 ImagePallet class
+	instanceVariableNames: ''!
+
+!classDefinition: #PickAColorPallet category: #'Morphic-Misc1'!
+ImagePallet subclass: #PickAColorPallet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PickAColorPallet class' category: #'Morphic-Misc1'!
+PickAColorPallet class
+	instanceVariableNames: ''!
+
+!classDefinition: #PickAFontPallet category: #'Morphic-Misc1'!
+ImagePallet subclass: #PickAFontPallet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PickAFontPallet class' category: #'Morphic-Misc1'!
+PickAFontPallet class
+	instanceVariableNames: ''!
+
+!classDefinition: #PickAIconPallet category: #'Morphic-Misc1'!
+ImagePallet subclass: #PickAIconPallet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PickAIconPallet class' category: #'Morphic-Misc1'!
+PickAIconPallet class
+	instanceVariableNames: ''!
+
+!classDefinition: #PickALargerIconPallet category: #'Morphic-Misc1'!
+ImagePallet subclass: #PickALargerIconPallet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PickALargerIconPallet class' category: #'Morphic-Misc1'!
+PickALargerIconPallet class
 	instanceVariableNames: ''!
 
 !classDefinition: #MorphMessageBox category: #'Morphic-Misc1'!
@@ -252,6 +292,26 @@ See my class examples:
  	ImagePallet strikeFonts.
 	ImagePallet largerIcons.
 !
+
+!PickAColorPallet commentStamp: '<historical>' prior: 0!
+I am just a way of getting an initializedInstance from the New Morph.. menu..  
+
+See my class side.!
+
+!PickAFontPallet commentStamp: '<historical>' prior: 0!
+I am just a way of getting an initializedInstance from the New Morph.. menu..  
+
+See my class side.!
+
+!PickAIconPallet commentStamp: '<historical>' prior: 0!
+I am just a way of getting an initializedInstance from the New Morph.. menu..  
+
+See my class side.!
+
+!PickALargerIconPallet commentStamp: '<historical>' prior: 0!
+I am just a way of getting an initializedInstance from the New Morph.. menu..  
+
+See my class side.!
 
 !MorphMessageBox commentStamp: '<historical>' prior: 0!
 I am a Workspace specialized to send a message to a Morph.!
@@ -1187,6 +1247,50 @@ useXKCDColorDict
 "
 	Feature require: 'XKCD-NamedColors'.
 	Color setColorNamesDict: Color xkcdColorDictionary.! !
+
+!PickAColorPallet class methodsFor: 'new-morph participation' stamp: 'KenD 12/7/2016 08:28:49'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ true! !
+
+!PickAColorPallet class methodsFor: 'instance creation' stamp: 'KenD 12/7/2016 08:24:49'!
+initializedInstance
+
+	^ super namedColors! !
+
+!PickAFontPallet class methodsFor: 'new-morph participation' stamp: 'KenD 12/7/2016 08:34:13'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ true! !
+
+!PickAFontPallet class methodsFor: 'instance creation' stamp: 'KenD 12/7/2016 08:35:13'!
+initializedInstance
+
+	^ super strikeFonts! !
+
+!PickAIconPallet class methodsFor: 'new-morph participation' stamp: 'KenD 12/7/2016 08:29:03'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ true! !
+
+!PickAIconPallet class methodsFor: 'instance creation' stamp: 'KenD 12/7/2016 08:27:02'!
+initializedInstance
+
+	^ super namedIcons ! !
+
+!PickALargerIconPallet class methodsFor: 'new-morph participation' stamp: 'KenD 12/7/2016 08:29:12'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ true! !
+
+!PickALargerIconPallet class methodsFor: 'instance creation' stamp: 'KenD 12/7/2016 08:27:27'!
+initializedInstance
+
+	^ super largerIcons ! !
 
 !MorphMessageBox methodsFor: 'initialization' stamp: 'KenD 9/30/2016 15:28:45'!
 initialize
@@ -3122,13 +3226,13 @@ valueWhenDropped
 
 	^ self font! !
 
-!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 09:25:45'!
+!FontMorph class methodsFor: 'defaults' stamp: 'KenD 11/29/2016 09:25:45'!
 defaultEmphasis
 	"Answer the emphasis code  to display in the typical case"
 
 	^  AbstractFont normalCode! !
 
-!FontMorph class methodsFor: 'instance creation' stamp: 'KenD 11/29/2016 10:08:34'!
+!FontMorph class methodsFor: 'defaults' stamp: 'KenD 11/29/2016 10:08:34'!
 defaultString
 	"Answer a string to display in the typical case"
 
@@ -3148,6 +3252,11 @@ font: aFont emphasis: emphasisCode
 font: aFont emphasis: emphasisCode string: aString
 
 	^ self new font: aFont emphasis: emphasisCode string: aString! !
+
+!FontMorph class methodsFor: 'defaults' stamp: 'KenD 12/7/2016 08:19:24'!
+initializedInstance
+
+	^ self font: AbstractFont default! !
 
 !FrameMorph methodsFor: 'accessing' stamp: 'KenD 9/16/2013 14:58'!
 borderWidth
