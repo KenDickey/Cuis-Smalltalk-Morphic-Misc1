@@ -1,4 +1,4 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2996] on 7 December 2016 at 3:30:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 10 December 2016 at 12:23:20 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
 !provides: 'Morphic-Misc1' 1 96!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
@@ -459,18 +459,104 @@ I am a line from my start point to my end point.!
 !PointerLineMorph commentStamp: '<historical>' prior: 0!
 I am a LineMorph which has a "pointer" morph which I maintain in position at my endpoint.!
 
-!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/7/2016 15:22:37'!
+!String methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 11:56:12'!
+asTextEmphasis
+
+	^ TextEmphasis fromChoiceString: self! !
+
+!String methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 12:11:13'!
+asTextEmphasisCode
+
+	^ TextEmphasis codeForChoice: self! !
+
+!TextEmphasis methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 12:21:17'!
+asUIString
+	"Return a string for UI text display"
+	
+	^ self class stringForCode: self emphasisCode! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 08:43:02'!
+choices
+
+	^ #(normal bold italic underline struckThrough superscript subscript withST80Glyphs)! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 09:04:20'!
+codeForChoice: aStringOrSymbol
+	"Take emphasis choices and return a code.
+	e.g. 'bold+italic' -> 3"
+
+	| collectedChoices |
+	collectedChoices := aStringOrSymbol findTokens: $+.
+	(collectedChoices size < 1)
+		ifTrue: [ self error: 'Bad choice for TextEmphasis: ', aStringOrSymbol asString ].
+	(collectedChoices allSatisfy: [ :choice | self choices includes: choice ])
+		ifFalse: [ self error: 'Bad choice for TextEmphasis: ', aStringOrSymbol asString ].
+		
+	^ collectedChoices 
+				inject: 0 
+				into: [:sum :choice | sum + (self privateCodeForChoice: choice) ]
+	! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 11:52:54'!
+fromChoiceString: aStringOrSymbol
+	"Answer an instance of me"
+	
+	^ self new emphasisCode: (self codeForChoice: aStringOrSymbol)! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 09:02:18'!
+privateCodeForChoice: aStringOrSymbol
+	"Take emphasis choice and return a code.  E.g. 'bold' -> 1
+	Here, a multi-choice, like  'bold+italic', is an error.
+	aStringOrSymbol MUST be in self choices"
+
+	| indexLessTwo |
+	indexLessTwo
+		:= ((self choices indexOf: aStringOrSymbol
+					 ifAbsent: [ self error: 
+						'Bad choice for TextEmphasis: ', aStringOrSymbol asString ])
+			- 2 ).
+	^ (indexLessTwo < 0)
+		ifTrue: [ 0 ]
+		ifFalse: [ 1 bitShift: indexLessTwo ]
+		
+	! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 11:46:59'!
+stringForCode: emphasisCode
+	"Answer combined choices with $+.
+	E.g. 3 -> 'bold+italic' "
+
+	| stringResult |
+	(emphasisCode isZero)
+		ifTrue: [ ^ #normal asString ].
+
+	stringResult := nil. 
+	1 to: 7 do: [ :bitPos |
+		((emphasisCode bitAt: bitPos) isZero)
+			ifFalse: [ 
+				(stringResult isNil)
+					ifTrue: [ stringResult := self choices at: bitPos + 1 ]
+					ifFalse: [ stringResult := stringResult
+										, '+'
+										,  (self choices at: bitPos + 1) 
+					]
+			]
+	].
+	
+	^ stringResult! !
+
+!Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/7/2016 13:45:42'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
 	"Add morph-specific items to the given menu which was invoked by the given hand.  This method provides is invoked both from the halo-menu and from the control-menu regimes."
 
 	aCustomMenu 
 		addLine;
-		add: 'show Drop Target for me' action: #showDropTarget;
-		add: 'edit my LayoutSpec' action: #editMyLayoutSpec;
+		add: 'show drop target for me' action: #showDropTarget;
+		add: 'edit my layoutSpec' action: #editMyLayoutSpec;
 		add: 'create a SignMorph for me' action: #signMorphForMe;
-		add: 'open a Message Window for me' action: #messageWindow.
+		add: 'open a message window for me' action: #messageWindow.
 	(Smalltalk includesKey: #VisualPropertyEditor)
-		ifTrue: [ aCustomMenu add: 'open Visual Properties menu' 
+		ifTrue: [ aCustomMenu add: 'open visual properties menu' 
 								   action: #openVisualPropertyEditor 
 		].! !
 
