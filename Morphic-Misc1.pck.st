@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #2995] on 10 December 2016 at 12:23:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 8:32:03 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 96!
+!provides: 'Morphic-Misc1' 1 97!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -544,6 +544,11 @@ stringForCode: emphasisCode
 	].
 	
 	^ stringResult! !
+
+!AbstractFont class methodsFor: '*morphic-misc1' stamp: 'KenD 12/11/2016 08:31:08'!
+availableFonts
+
+	^ AvailableFonts ! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/7/2016 13:45:42'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
