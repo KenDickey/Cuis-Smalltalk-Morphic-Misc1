@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 8:32:03 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 11:42:54 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 97!
+!provides: 'Morphic-Misc1' 1 98!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -3577,6 +3577,16 @@ morphExtent
 
 	^ self minimumExtent + borderWidth + borderWidth ! !
 
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 09:01:13'!
+XmouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
+
+	(self morphContainsPoint: localEventPosition)
+		ifTrue: [ 
+				self runningWorld activeHand attachMorph:
+					 (DropColorMorph fromColor: self color)
+		]
+! !
+
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 11/30/2013 20:07'!
 aboutToBeGrabbedBy: aHand
 	"The receiver is being grabbed by a hand.
@@ -3631,10 +3641,10 @@ fromColor: aColor
 		image: (self color icon magnifyTo: 32@32)
 	! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:53'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/11/2016 11:40:59'!
 handlesMouseDown: buttonEvent
 
-	^ true
+	^ false
 ! !
 
 !DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
@@ -3642,16 +3652,6 @@ initialize
 
 	super initialize.
 	self setProperty: #DropActionMorph toValue: #setColor! !
-
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/28/2013 09:58'!
-mouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
-
-	(self morphContainsPoint: localEventPosition)
-		ifTrue: [ 
-				self runningWorld activeHand attachMorph:
-					 (DropColorMorph fromColor: self color)
-		]
-! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
 rejectDropMorphEvent: evt
