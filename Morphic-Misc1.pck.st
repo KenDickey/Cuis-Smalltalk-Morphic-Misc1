@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 11 December 2016 at 12:57:15 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 12 December 2016 at 3:17:14 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 99!
+!provides: 'Morphic-Misc1' 1 100!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -5071,13 +5071,14 @@ endPointMorph
 	
 	^ endPointMorph! !
 
-!PointerLineMorph methodsFor: 'accessing' stamp: 'KenD 9/15/2016 16:36:14'!
+!PointerLineMorph methodsFor: 'accessing' stamp: 'KenD 12/12/2016 15:15:59'!
 endPointMorph: aMorph
 	
 	self endPointMorph ifNotNil: [ :pointer | self removeMorph: pointer ].
 	endPointMorph := aMorph.
-	self endPointMorph morphPosition: self rect corner.
-	self addMorphFront: aMorph ! !
+	self addMorphFront: aMorph.
+	self updateEndPoint.
+! !
 
 !PointerLineMorph methodsFor: 'initialization' stamp: 'KenD 9/15/2016 16:40:58'!
 initialize
