@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 7:25:29 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 7:56:34 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 103!
+!provides: 'Morphic-Misc1' 1 104!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -3648,10 +3648,11 @@ initialize
 	super initialize.
 	self setProperty: #DropActionMorph toValue: #setColor:! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 19:43:45'!
 rejectDropMorphEvent: evt
 	"Rejected drop of me.  Remove me from the hand."
 	
+	self hide; delete.
 	self world ifNotNil: [ :w | w activeHand removeMorph: self ]
 ! !
 
@@ -3660,7 +3661,7 @@ valueWhenDropped
 
 	^ self color! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 19:15:27'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 19:49:17'!
 wantsToBeDroppedInto: aMorph
 	"I wish to be dropped on a DropTargeMorph"
 
@@ -3670,7 +3671,7 @@ wantsToBeDroppedInto: aMorph
 	(aMorph valueOfProperty: #dropAction ifAbsent: [ nil ])
 		ifNotNil: [ :dropAction | 
 					dropAction value: aMorph value: self color. 
-					self delete. 
+					self rejectDropMorphEvent: nil. 
 				 ].
 				
 	^ false  "Default is to be rejected after doing the drop action"! !
