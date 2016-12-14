@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 12 December 2016 at 3:23:19 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 6:41:55 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 101!
+!provides: 'Morphic-Misc1' 1 102!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -2235,13 +2235,18 @@ colorArea: newColorArea
 
 	colorArea := newColorArea! !
 
-!LayoutMorphEditPanel methodsFor: 'private' stamp: 'KenD 9/17/2016 13:42:51'!
+!LayoutMorphEditPanel methodsFor: 'private' stamp: 'KenD 12/13/2016 18:27:22'!
 colorMorph
 	"Answer a framed color swatch"
 	
-	| swatch imageMorph frameMorph |
-	swatch := self editModel color iconOrThumbnailOfSize: 64.
-	imageMorph := ImageMorph new :: image: swatch.
+	| imageMorph frameMorph |
+	imageMorph := DropColorMorph fromColor: self editModel color.
+	imageMorph image: (self editModel color icon magnifyTo: 64@64). "NB: not resizable"
+	imageMorph setProperty:  #'allowsMorphDrop' toValue: true.
+	imageMorph setProperty: #dropAction toValue: [ :aMorph :colorValue |
+		(colorValue isKindOf: Color)
+		ifTrue: [ self modelColor: colorValue ]. "else ignore"
+	].
 	frameMorph := FrameMorph new ::
 		morphExtent: 68@68;
 		borderColor: Color black; 
@@ -2249,8 +2254,12 @@ colorMorph
 		yourself.
 	frameMorph addMorph: imageMorph.
 	imageMorph morphPosition: 2@2.
+	
+	"Make color swatch draggable"
+	frameMorph setProperty: #allowsSubmorphDrag toValue: true.
+
 	^ frameMorph
-	! !
+! !
 
 !LayoutMorphEditPanel methodsFor: 'initialization' stamp: 'KenD 9/17/2016 13:08:30'!
 defaultExtent
@@ -3631,11 +3640,11 @@ fromColor: aColor
 		image: (self color icon magnifyTo: 32@32)
 	! !
 
-!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/24/2013 17:03'!
+!DropColorMorph methodsFor: 'initialization' stamp: 'KenD 12/13/2016 17:54:27'!
 initialize
 
 	super initialize.
-	self setProperty: #DropActionMorph toValue: #setColor! !
+	self setProperty: #DropActionMorph toValue: #setColor:! !
 
 !DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 20:03'!
 rejectDropMorphEvent: evt
@@ -3649,12 +3658,14 @@ valueWhenDropped
 
 	^ self color! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/3/2013 19:52'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 18:28:51'!
 wantsToBeDroppedInto: aMorph
 	"I wish to be dropped on a DropTargeMorph"
 
 	(aMorph isKindOf: DropTargetMorph)
 		ifTrue: [ self dropAction: aMorph ].
+	(aMorph valueOfProperty: #dropAction ifAbsent: [ nil ])
+		ifNotNil: [ :dropAction | dropAction value: aMorph value: self color ].
 	^ false  "Always be rejected after doing the drop action"! !
 
 !DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 7/24/2015 11:20'!
