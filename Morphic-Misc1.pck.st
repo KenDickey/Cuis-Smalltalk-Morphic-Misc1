@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 6:41:55 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 7:25:29 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 102!
+!provides: 'Morphic-Misc1' 1 103!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -2235,7 +2235,7 @@ colorArea: newColorArea
 
 	colorArea := newColorArea! !
 
-!LayoutMorphEditPanel methodsFor: 'private' stamp: 'KenD 12/13/2016 18:27:22'!
+!LayoutMorphEditPanel methodsFor: 'private' stamp: 'KenD 12/13/2016 19:18:31'!
 colorMorph
 	"Answer a framed color swatch"
 	
@@ -2243,10 +2243,12 @@ colorMorph
 	imageMorph := DropColorMorph fromColor: self editModel color.
 	imageMorph image: (self editModel color icon magnifyTo: 64@64). "NB: not resizable"
 	imageMorph setProperty:  #'allowsMorphDrop' toValue: true.
-	imageMorph setProperty: #dropAction toValue: [ :aMorph :colorValue |
-		(colorValue isKindOf: Color)
-		ifTrue: [ self modelColor: colorValue ]. "else ignore"
-	].
+	imageMorph setProperty: #dropAction 
+				   toValue: [ :aMorph :colorValue |
+								(colorValue isKindOf: Color)
+									ifTrue: [ self modelColor: colorValue ]. 
+									"else ignore"
+							].
 	frameMorph := FrameMorph new ::
 		morphExtent: 68@68;
 		borderColor: Color black; 
@@ -3658,15 +3660,20 @@ valueWhenDropped
 
 	^ self color! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 18:28:51'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 19:15:27'!
 wantsToBeDroppedInto: aMorph
 	"I wish to be dropped on a DropTargeMorph"
 
 	(aMorph isKindOf: DropTargetMorph)
 		ifTrue: [ self dropAction: aMorph ].
+		
 	(aMorph valueOfProperty: #dropAction ifAbsent: [ nil ])
-		ifNotNil: [ :dropAction | dropAction value: aMorph value: self color ].
-	^ false  "Always be rejected after doing the drop action"! !
+		ifNotNil: [ :dropAction | 
+					dropAction value: aMorph value: self color. 
+					self delete. 
+				 ].
+				
+	^ false  "Default is to be rejected after doing the drop action"! !
 
 !DropColorMorph class methodsFor: 'instance creation' stamp: 'KenD 7/24/2015 11:20'!
 fromColor: aColor
