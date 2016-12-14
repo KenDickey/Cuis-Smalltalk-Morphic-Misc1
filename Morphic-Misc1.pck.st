@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 13 December 2016 at 7:56:34 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 14 December 2016 at 9:30:00 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 104!
+!provides: 'Morphic-Misc1' 1 105!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
