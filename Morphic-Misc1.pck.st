@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 14 December 2016 at 4:46:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 17 December 2016 at 4:09:53 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 108!
-!requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!provides: 'Morphic-Misc1' 1 109!
 !requires: 'Cuis-Base' 50 2984 nil!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -141,6 +141,16 @@ EditPanel subclass: #LayoutSpecEditPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'LayoutSpecEditPanel class' category: #'Morphic-Misc1'!
 LayoutSpecEditPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #MultiSelectMenu category: #'Morphic-Misc1'!
+MenuMorph subclass: #MultiSelectMenu
+	instanceVariableNames: 'choices seed result'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'MultiSelectMenu class' category: #'Morphic-Misc1'!
+MultiSelectMenu class
 	instanceVariableNames: ''!
 
 !classDefinition: #FontMorph category: #'Morphic-Misc1'!
@@ -358,6 +368,26 @@ I am a simple editor for a LayoutSpec.
 
 !
 
+!MultiSelectMenu commentStamp: '<historical>' prior: 0!
+I am used to relate a set of names to an integer incoding, where each  symbolic name is realted to a bit.
+
+My instances present the selections to a user with Accept/Cancel.
+
+Cancel returns the seed (which is used to set the initial values), Accept returns the new ORed value.
+
+When the value ranked zero is selected, the other 'bits' are delselected.
+
+For example, TextEmphasis codes are a bit ORing of values:
+ 2r00000000  0  normal
+ 2r00000001	 1	bold
+ 2r00000010	 2	itallic
+ 2r00000100	 4	underlined		
+ 2r00001000	 8	struck out       
+ 2r00010000	16 Superscript 
+ 2r00100000	32 Subscript      
+ 2r01000000	64 	with ST-80 Glyphs
+ !
+
 !FontMorph commentStamp: '<historical>' prior: 0!
 My instances display 'AbBbCc $123' using my specified font an emphysis.
 
@@ -502,6 +532,25 @@ fromChoiceString: aStringOrSymbol
 	"Answer an instance of me"
 	
 	^ self new emphasisCode: (self codeForChoice: aStringOrSymbol)! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/17/2016 09:58:25'!
+fromUser
+
+	self fromUser: 0
+	! !
+
+!TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/17/2016 16:08:14'!
+fromUser: defaultChoiceCode
+	"Put up a menu and answer an instance of me"
+"
+	(TextEmphasis fromUser: 3) asUIString.
+"
+	| emphasisCode |
+	emphasisCode :=  (MultiSelectMenu 
+							choices: TextEmphasis choices
+							seed: defaultChoiceCode 
+							title: 'Text Emphasis') invokeModal. 
+	^ self new emphasisCode: emphasisCode ! !
 
 !TextEmphasis class methodsFor: '*morphic-misc1' stamp: 'KenD 12/10/2016 09:02:18'!
 privateCodeForChoice: aStringOrSymbol
@@ -3238,6 +3287,174 @@ widthSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
+
+!MultiSelectMenu methodsFor: 'events-processing' stamp: 'KenD 12/17/2016 14:36:43'!
+accept
+
+	self modalSelection: self result! !
+
+!MultiSelectMenu methodsFor: 'events-processing' stamp: 'KenD 12/17/2016 14:33:01'!
+cancel
+
+	self modalSelection: self seed! !
+
+!MultiSelectMenu methodsFor: 'accessing' stamp: 'KenD 12/17/2016 13:31:57'!
+choices
+
+	^ choices ! !
+
+!MultiSelectMenu methodsFor: 'initialization' stamp: 'KenD 12/17/2016 15:14:08'!
+choices: aSymbolCollection seed: initialValue
+
+	super initialize.
+	self stayUp: true.
+	choices := aSymbolCollection.
+	seed := initialValue.
+	result := seed.
+	"Add my selections" 
+	self choices do: [ :nameSymbol |
+		self add: (self tagFromSeedFor: nameSymbol)
+			  target: self 
+			  selector: #toggle: 
+			  argument: nameSymbol.
+	].
+	self updateZeroMarker.
+		
+	self addLine.
+	
+	self add: 'ACCEPT' 
+		  target: self 
+		  selector: #accept.
+	self add: 'CANCEL' 
+		  target: self 
+		  selector: #cancel.
+! !
+
+!MultiSelectMenu methodsFor: 'initialization' stamp: 'KenD 12/17/2016 14:35:16'!
+choices: aSymbolCollection seed: initialValue title: aString
+
+	self choices: aSymbolCollection seed: initialValue.
+	self addTitle: aString.! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 15:49:12'!
+clearAllButZero
+	"Set 'zero' selector to '<on>' => everyone else is '<off>'"
+
+	| zeroName |
+	zeroName := self choices at: 1.
+	self submorphsDo: [ :item |
+		((item isKindOf: MenuItemMorph) and: [ self choices includes: item contents ])
+		ifTrue: [ (item contents = zeroName)
+				ifFalse: [ item contents: '<off>', item contents ]
+				ifTrue:  [ item contents: '<on>' , item contents ]. "zero marker"
+		]
+	]  
+! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 15:12:07'!
+clearForZero
+	"Set 'zero' selector to '<on>'"
+
+	| zeroName zeroItem |
+	zeroName := self choices at: 1.
+	zeroItem := self submorphs detect:
+		[ :item | (item isKindOf: MenuItemMorph) and: [ item contents = zeroName ] ].
+	zeroItem contents: '<off>' , zeroName asString.! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 15:34:11'!
+itemFor: nameSymbol
+
+	^ self submorphs detect: [ :item |
+			(item isKindOf: MenuItemMorph) 
+				and: [ item contents = nameSymbol ]
+	  ]! !
+
+!MultiSelectMenu methodsFor: 'accessing' stamp: 'KenD 12/17/2016 14:36:58'!
+result
+
+	^ result ! !
+
+!MultiSelectMenu methodsFor: 'accessing' stamp: 'KenD 12/17/2016 14:37:13'!
+result: newResult
+
+	result := newResult ! !
+
+!MultiSelectMenu methodsFor: 'accessing' stamp: 'KenD 12/17/2016 13:32:09'!
+seed
+
+	^ seed ! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 15:12:15'!
+setForZero
+	"Set 'zero' selector to '<on>'"
+
+	| zeroName zeroItem |
+	zeroName := self choices at: 1.
+	zeroItem := self submorphs detect:
+		[ :item | (item isKindOf: MenuItemMorph) and: [ item contents = zeroName ] ].
+	zeroItem contents: '<on>' , zeroName asString.! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 14:08:36'!
+tagFromSeedFor: nameSymbol
+	"Answer nameSymbol preceeded by '<on>' or '<off>'"
+
+	| index bit |
+	index := self choices indexOf: nameSymbol.
+	bit := index - 1.
+	
+	^ ((seed bitAt: bit) isZero)
+		ifTrue:   [ '<off>' , nameSymbol asString ]
+		ifFalse:  [ '<on>'  , nameSymbol asString ]! !
+
+!MultiSelectMenu methodsFor: 'events-processing' stamp: 'KenD 12/17/2016 15:59:22'!
+toggle: nameSymbol
+
+	| index bit |
+	index := self choices indexOf: nameSymbol.
+	bit := index - 1.
+	
+	(index = 1)
+	ifTrue:  [  
+		self result: 0.
+		self clearAllButZero.
+	]
+	ifFalse: [ | menuItem bitClear |
+		menuItem := self itemFor: nameSymbol.
+		bitClear := (self result bitAt: bit) isZero.
+		bitClear 
+			ifTrue: [ "Set bit"
+				self result: (self result bitAt: bit put: 1).
+				menuItem contents: ('<on>', menuItem contents).
+			]
+			ifFalse: [ "Clear bit"
+				self result: (self result bitAt: bit put: 0).
+				menuItem contents: ('<off>', menuItem contents).
+			] 
+	].
+	
+	self updateZeroMarker.! !
+
+!MultiSelectMenu methodsFor: 'private' stamp: 'KenD 12/17/2016 15:24:12'!
+updateZeroMarker
+	"If no choices checked, set zero'th choice, else clear it"
+
+	(self result isZero)
+		ifTrue:  [ self clearAllButZero ]
+		ifFalse: [ self clearForZero ].! !
+
+!MultiSelectMenu class methodsFor: 'instance creation' stamp: 'KenD 12/17/2016 14:01:56'!
+choices: aSymbolCollection seed: initialValue
+"
+	(MultiSelectMenu choices: TextEmphasis choices seed: 3) openInHand.
+"
+	^ self new choices: aSymbolCollection seed: initialValue! !
+
+!MultiSelectMenu class methodsFor: 'instance creation' stamp: 'KenD 12/17/2016 14:39:40'!
+choices: aSymbolCollection seed: initialValue title: aString
+"
+	(MultiSelectMenu choices: TextEmphasis choices seed: 3 title: 'Text Emphasis') invokeModal inspect.
+"
+	^ self new choices: aSymbolCollection seed: initialValue title: aString ! !
 
 !FontMorph methodsFor: 'geometry' stamp: 'KenD 11/29/2016 10:02:54'!
 adjustExtent 
