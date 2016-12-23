@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 2:23:46 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 2:46:43 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 117!
+!provides: 'Morphic-Misc1' 1 118!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -1640,11 +1640,6 @@ showHaloButtonClicked
 			contents: aMorph printString , ' not shown in world')
 				popUpForHand: self  world activeHand
 	]! !
-
-!DropTargetMorph methodsFor: 'user interface' stamp: 'KenD 9/15/2016 18:05:22'!
-showLayouts
-
-	! !
 
 !DropTargetMorph methodsFor: 'access' stamp: 'KenD 7/4/2015 15:53'!
 targetMorph
@@ -4144,7 +4139,7 @@ aboutToGrab: aMorph
 
 	^ self class fromColor: aMorph color   "Pick up a copy of me"! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 5/10/2015 15:21'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 14:40:29'!
 dropAction: aDropTargetMorph
 	"Set a color"
 
@@ -4164,7 +4159,8 @@ dropAction: aDropTargetMorph
 			(selection = 1) ifFalse: [ "1 -> Cancel"
 				aDropTargetMorph targetMorph 
 						perform: (colorSetters at: selection - 1) 
-						with: self color
+						with: self color;
+						triggerEvent: #propertyChanged.
 			]
 		].
 
@@ -4197,7 +4193,7 @@ valueWhenDropped
 
 	^ self color! !
 
-!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/13/2016 19:49:17'!
+!DropColorMorph methodsFor: 'dropping/grabbing' stamp: 'KenD 12/23/2016 14:39:49'!
 wantsToBeDroppedInto: aMorph
 	"I wish to be dropped on a DropTargeMorph"
 
@@ -4206,7 +4202,7 @@ wantsToBeDroppedInto: aMorph
 		
 	(aMorph valueOfProperty: #dropAction ifAbsent: [ nil ])
 		ifNotNil: [ :dropAction | 
-					dropAction value: aMorph value: self color. 
+					dropAction value: aMorph value: self color.
 					self rejectDropMorphEvent: nil. 
 				 ].
 				
