@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 10:09:11 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 2:23:46 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 116!
-!requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!provides: 'Morphic-Misc1' 1 117!
 !requires: 'Cuis-Base' 50 2984 nil!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -2760,7 +2760,7 @@ showHaloButtonClicked
 				popUpForHand: self  world activeHand
 	]! !
 
-!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 9/17/2016 12:36:10'!
+!LayoutMorphEditPanel methodsFor: 'event handling' stamp: 'KenD 12/23/2016 14:21:11'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -2774,6 +2774,7 @@ updateMasterFromCopy
 	original calculateMinimumExtent; layoutSubmorphs; redrawNeeded.
 	original owner ifNotNil: [ :container | container layoutSubmorphs; redrawNeeded ].
 	self editModel: nil.
+	original triggerEvent: #propertyChanged.
 	
 	self stayUp 
 		ifFalse: [ self delete ] 
@@ -3303,7 +3304,7 @@ showHaloButtonClicked
 
 	self showHalo! !
 
-!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 9/18/2016 09:30:26'!
+!LayoutSpecEditPanel methodsFor: 'event handling' stamp: 'KenD 12/23/2016 14:21:51'!
 updateMasterFromCopy
 	"Update model from editModel"
 	
@@ -3325,6 +3326,7 @@ updateMasterFromCopy
 	"My containing LayoutMorph may need to recalculate & redisplay"
 	original morph containingLayout 
 		ifNotNil: [ :layoutMorph | layoutMorph calculateMinimumExtent; layoutSubmorphs; redrawNeeded ].
+	original triggerEvent: #propertyChanged.
 	
 	self stayUp 
 		ifFalse: [ self delete ] 
