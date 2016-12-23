@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 9:26:12 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 10:09:11 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 115!
+!provides: 'Morphic-Misc1' 1 116!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -3381,10 +3381,10 @@ initialize
 	super initialize.
 	self buildMorphicWindow.! !
 
-!ValueEntryPanel methodsFor: 'geometry' stamp: 'KenD 12/22/2016 18:52:51'!
+!ValueEntryPanel methodsFor: 'geometry' stamp: 'KenD 12/23/2016 10:08:32'!
 minimumExtent
 
-	^ 380@160! !
+	^ 380@100! !
 
 !ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 18:34:07'!
 newButtonArea
@@ -3555,25 +3555,29 @@ default: aString label: stringName
 		  morphExtent: (self morphExtent max: self minimumExtent).
 ! !
 
-!StringEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 16:58:53'!
+!StringEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/23/2016 10:07:06'!
 initialize
 
 	"inits before #initialize usied in #buildMorphicWindow"
 	stringEditMorph := OneLineEditorMorph contents: '' .
-	stringEditMorph layoutSpec: (LayoutSpec new proportionalWidth: 1).
+	stringEditMorph layoutSpec: 
+		(LayoutSpec 
+			proportionalWidth: 1 
+			fixedHeight: Preferences windowTitleFont height ).
 	super initialize.
 ! !
 
-!StringEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 16:24:04'!
+!StringEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/23/2016 10:00:43'!
 newEntryArea
 
 	| entryLayout |
-	entryLayout := LayoutMorph newRow.
+	entryLayout := FramedLayoutMorph newRow.
 	entryLayout 
 		separation: self defaultSeparation;
 		padding: #left;
 		addMorph: stringEditMorph ; "set in #initialize"
-		color: (Color transparent).
+		color: Color transparent;
+		borderColor: Color black.
 	
 	^ entryLayout ! !
 
