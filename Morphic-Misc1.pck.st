@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 22 December 2016 at 6:55:34 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 23 December 2016 at 9:26:12 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 114!
+!provides: 'Morphic-Misc1' 1 115!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -800,6 +800,16 @@ unShadowNonLayouts
 	"Remove submorph dropShadows"
 	(self isKindOf: LayoutMorph) ifFalse: [ self hideDropShadow ].
 	self submorphsDo: [ :s | s unShadowNonLayouts ].! !
+
+!PluggableButtonMorph methodsFor: '*morphic-misc1' stamp: 'KenD 12/23/2016 09:19:33'!
+font
+
+	^ self fontToUse! !
+
+!PluggableButtonMorph methodsFor: '*morphic-misc1' stamp: 'KenD 12/23/2016 09:22:52'!
+font: someFont
+
+	PopUpMenu inform: 'You can''t set this'! !
 
 !LayoutMorph methodsFor: '*morphic-misc1' stamp: 'KenD 12/24/2013 15:22'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
@@ -3751,6 +3761,12 @@ choices: aSymbolCollection seed: initialValue title: aString
 	(MultiSelectMenu choices: TextEmphasis choices seed: 3 title: 'Text Emphasis') invokeModal inspect.
 "
 	^ self new choices: aSymbolCollection seed: initialValue title: aString ! !
+
+!MultiSelectMenu class methodsFor: 'new-morph participation' stamp: 'KenD 12/23/2016 09:13:31'!
+includeInNewMorphMenu
+	"Return true for all classes that can be instantiated from the menu"
+	
+	^ false! !
 
 !FontMorph methodsFor: 'geometry' stamp: 'KenD 11/29/2016 10:02:54'!
 adjustExtent 
