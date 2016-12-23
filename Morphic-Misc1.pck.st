@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 3:59:26 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:04:25 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 111!
+!provides: 'Morphic-Misc1' 1 112!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -161,6 +161,16 @@ ValueEntryPanel subclass: #PointEntryPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'PointEntryPanel class' category: #'Morphic-Misc1'!
 PointEntryPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #StringEntryPanel category: #'Morphic-Misc1'!
+ValueEntryPanel subclass: #StringEntryPanel
+	instanceVariableNames: 'stringEditMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'StringEntryPanel class' category: #'Morphic-Misc1'!
+StringEntryPanel class
 	instanceVariableNames: ''!
 
 !classDefinition: #MultiSelectMenu category: #'Morphic-Misc1'!
@@ -397,6 +407,9 @@ I am a panel for filling in a Point value.
 My xEntryMorph and yEntryMorph hold the current points x@y value.
 
 !
+
+!StringEntryPanel commentStamp: '<historical>' prior: 0!
+I allow a user to edit a string!
 
 !MultiSelectMenu commentStamp: '<historical>' prior: 0!
 I am used to relate a set of names to an integer incoding, where each  symbolic name is realted to a bit.
@@ -3444,6 +3457,62 @@ example1
 new
 
 	^ self basicNew initialize default: 0@0 label: 'Point Value'.! !
+
+!StringEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 16:14:05'!
+accept
+	
+	self delete.
+	self model 
+		ifNotNil: [ :model | 
+			model propertyValue: stringEditMorph contents 
+		].! !
+
+!StringEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:02:20'!
+default: aString label: stringName
+
+	stringEditMorph contents: aString.
+	self setLabel: stringName;
+		  morphExtent: (self morphExtent max: self minimumExtent).
+! !
+
+!StringEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 16:58:53'!
+initialize
+
+	"inits before #initialize usied in #buildMorphicWindow"
+	stringEditMorph := OneLineEditorMorph contents: '' .
+	stringEditMorph layoutSpec: (LayoutSpec new proportionalWidth: 1).
+	super initialize.
+! !
+
+!StringEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 16:24:04'!
+newEntryArea
+
+	| entryLayout |
+	entryLayout := LayoutMorph newRow.
+	entryLayout 
+		separation: self defaultSeparation;
+		padding: #left;
+		addMorph: stringEditMorph ; "set in #initialize"
+		color: (Color transparent).
+	
+	^ entryLayout ! !
+
+!StringEntryPanel methodsFor: 'accessing' stamp: 'KenD 12/22/2016 16:11:42'!
+stringEditMorph
+
+	^ stringEditMorph ! !
+
+!StringEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 16:09:00'!
+default: aString label: stringName
+
+	(aString isKindOf: String) ifFalse: [ self error: 'I require a String: ' , aString printString ].
+
+	^ self basicNew initialize default: aString label: stringName ! !
+
+!StringEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 16:09:23'!
+new
+
+	^ self basicNew initialize default: '' label: 'String Value'.! !
 
 !MultiSelectMenu methodsFor: 'events-processing' stamp: 'KenD 12/17/2016 14:36:43'!
 accept
