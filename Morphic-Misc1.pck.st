@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:04:25 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:24:34 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 112!
+!provides: 'Morphic-Misc1' 1 113!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -161,6 +161,16 @@ ValueEntryPanel subclass: #PointEntryPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'PointEntryPanel class' category: #'Morphic-Misc1'!
 PointEntryPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #PositiveIntegerEntryPanel category: #'Morphic-Misc1'!
+ValueEntryPanel subclass: #PositiveIntegerEntryPanel
+	instanceVariableNames: 'numberEntryMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PositiveIntegerEntryPanel class' category: #'Morphic-Misc1'!
+PositiveIntegerEntryPanel class
 	instanceVariableNames: ''!
 
 !classDefinition: #StringEntryPanel category: #'Morphic-Misc1'!
@@ -407,6 +417,9 @@ I am a panel for filling in a Point value.
 My xEntryMorph and yEntryMorph hold the current points x@y value.
 
 !
+
+!PositiveIntegerEntryPanel commentStamp: '<historical>' prior: 0!
+I edit positive integers!
 
 !StringEntryPanel commentStamp: '<historical>' prior: 0!
 I allow a user to edit a string!
@@ -3457,6 +3470,56 @@ example1
 new
 
 	^ self basicNew initialize default: 0@0 label: 'Point Value'.! !
+
+!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 17:20:56'!
+accept
+	
+	self delete.
+	self model 
+		ifNotNil: [ :model | 
+			model propertyValue: numberEntryMorph value 
+		].! !
+
+!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 17:13:32'!
+default: aNumber label: aString
+
+	numberEntryMorph setValue: aNumber.
+	self setLabel: aString.
+! !
+
+!PositiveIntegerEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:15:00'!
+initialize
+
+	"inits before #initialize usied in #buildMorphicWindow".
+	numberEntryMorph := (SimpleNumberEntryMorph integerDefault: 0 maxNumChars: 8).
+	super initialize.
+! !
+
+!PositiveIntegerEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 17:15:30'!
+newEntryArea
+
+	| entryLayout |
+	entryLayout := LayoutMorph newRow.
+	entryLayout 
+		separation: self defaultSeparation;
+		padding: #center;
+		addMorph: numberEntryMorph ; "set in #initialize"
+		color: (Color transparent).
+	
+	^ entryLayout ! !
+
+!PositiveIntegerEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 17:11:29'!
+default: aNumber label: aString
+
+	(aNumber isKindOf: Integer) ifFalse: [ self error: 'I require a Positive Integer: ' , aNumber printString ].
+	(aNumber >= 0) ifFalse: [ self error: 'I require a Positive Integer: ' , aNumber printString ].
+
+	^ self basicNew initialize default: aNumber label: aString! !
+
+!PositiveIntegerEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 17:10:16'!
+new
+
+	^ self basicNew initialize default: 0 label: 'Positive Integer Value'.! !
 
 !StringEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 16:14:05'!
 accept
