@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 18 December 2016 at 3:41:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 3:59:26 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 110!
+!provides: 'Morphic-Misc1' 1 111!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -141,6 +141,26 @@ EditPanel subclass: #LayoutSpecEditPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'LayoutSpecEditPanel class' category: #'Morphic-Misc1'!
 LayoutSpecEditPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #ValueEntryPanel category: #'Morphic-Misc1'!
+Panel subclass: #ValueEntryPanel
+	instanceVariableNames: 'kind'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'ValueEntryPanel class' category: #'Morphic-Misc1'!
+ValueEntryPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #PointEntryPanel category: #'Morphic-Misc1'!
+ValueEntryPanel subclass: #PointEntryPanel
+	instanceVariableNames: 'xEntryMorph yEntryMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'PointEntryPanel class' category: #'Morphic-Misc1'!
+PointEntryPanel class
 	instanceVariableNames: ''!
 
 !classDefinition: #MultiSelectMenu category: #'Morphic-Misc1'!
@@ -365,6 +385,16 @@ LayoutMorphEditPanel open: (LayoutMorph newRow).!
 
 !LayoutSpecEditPanel commentStamp: '<historical>' prior: 0!
 I am a simple editor for a LayoutSpec.
+
+!
+
+!ValueEntryPanel commentStamp: '<historical>' prior: 0!
+I am an abstract class for editing simple values.!
+
+!PointEntryPanel commentStamp: '<historical>' prior: 0!
+I am a panel for filling in a Point value.
+
+My xEntryMorph and yEntryMorph hold the current points x@y value.
 
 !
 
@@ -2083,11 +2113,11 @@ widgetsColor: aColor
 	self color: self textBackgroundColor.
 	self adoptWidgetsColor: widgetsColor! !
 
-!Panel methodsFor: 'GUI building' stamp: 'KenD 1/28/2016 14:36'!
+!Panel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 14:16:03'!
 windowColor
 	"Some default"
 	
-	^ Theme current background  "model class windowColor"! !
+	^ Theme current transcript  "model class windowColor"! !
 
 !Panel methodsFor: 'events' stamp: 'KenD 4/28/2015 13:42'!
 windowMenuButtonClicked
@@ -3287,6 +3317,133 @@ widthSelectionSymbol
 				ifNotNil: [ #Fixed ]
 		]
 		ifNotNil: [ #Proportional ].! !
+
+!ValueEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 14:05:30'!
+accept
+
+	self delete.
+	self model accept.! !
+
+!ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 14:24:09'!
+buildMorphicWindow
+
+	self layoutMorph 
+		separation: self defaultSeparation;
+		addMorph: self newEntryArea;
+		addMorph: self newButtonArea;
+		padding: #center;
+		color: (Color white)! !
+
+!ValueEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 15:24:13'!
+cancel
+
+	self delete! !
+
+!ValueEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/21/2016 15:22:30'!
+initialize
+
+	super initialize.
+	self buildMorphicWindow.! !
+
+!ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 14:24:31'!
+newButtonArea
+	"Add ACCEPT and CANCEL buttons"
+
+	| buttonArea |
+	buttonArea := LayoutMorph newRow.
+	buttonArea 
+		separation: 8@0;
+		addMorph: (PluggableButtonMorph 
+				model: self 
+				action:  #accept
+				label: 'Accept')
+			layoutSpec: (LayoutSpec 
+							proportionalWidth: 0.4
+							proportionalHeight:  1 
+							minorDirectionPadding: #center);
+		addMorph: (PluggableButtonMorph 
+				model: self 
+				action:  #cancel
+				label: 'Cancel')
+			layoutSpec: (LayoutSpec 
+							proportionalWidth: 0.4
+							proportionalHeight:  1 
+							minorDirectionPadding: #center);
+		padding: #center;
+		color: (Color transparent).
+		
+	^ buttonArea ! !
+
+!ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 13:59:32'!
+newEntryArea
+
+	self subclassResponsibility ! !
+
+!PointEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 14:47:17'!
+accept
+	
+	self delete.
+	self model 
+		ifNotNil: [ :model | 
+			model propertyValue: 
+				(xEntryMorph value @ yEntryMorph value) 
+		].! !
+
+!PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 13:31:54'!
+default: aPoint label: aString
+
+	xEntryMorph setValue: aPoint x.
+	yEntryMorph setValue: aPoint y.
+	self setLabel: aString.
+! !
+
+!PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 15:41:35'!
+initialize
+
+	"inits before #initialize usied in #buildMorphicWindow"
+	xEntryMorph := (SimpleNumberEntryMorph floatDefault: 0.0 maxNumChars: 8).
+	yEntryMorph := (SimpleNumberEntryMorph floatDefault: 0.0 maxNumChars: 8).
+	super initialize.
+! !
+
+!PointEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 14:24:56'!
+newEntryArea
+
+	| entryLayout |
+	entryLayout := LayoutMorph newRow.
+	entryLayout 
+		separation: self defaultSeparation;
+		padding: #center;
+		addMorph: xEntryMorph; "set in #initialize"
+		addMorph: (LabelMorph new :: contents: '@' );
+		addMorph: yEntryMorph;
+		color: (Color transparent).
+	
+	^ entryLayout ! !
+
+!PointEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 12:45:43'!
+default: aPoint label: aString
+
+	(aPoint isKindOf: Point) ifFalse: [ self error: 'I require a Point: ' , aPoint printString ].
+
+	^ self basicNew initialize default: aPoint label: aString! !
+
+!PointEntryPanel class methodsFor: 'examples' stamp: 'KenD 12/21/2016 15:27:25'!
+example1
+"
+	PointEntryPanel example1.
+"
+
+	^  self
+		default: 10@200
+		label: 'Point Value' ::
+		openInWorld: self runningWorld;
+		yourself! !
+
+!PointEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 12/22/2016 14:02:51'!
+new
+
+	^ self basicNew initialize default: 0@0 label: 'Point Value'.! !
 
 !MultiSelectMenu methodsFor: 'events-processing' stamp: 'KenD 12/17/2016 14:36:43'!
 accept
@@ -4939,6 +5096,20 @@ circleDegreesRounded
 			]
 			toString: [ :n | n printString ]! !
 
+!SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 12/22/2016 15:44:43'!
+floatDefault: aReal  maxNumChars: numChars
+	"Any real number"
+	
+	(aReal isKindOf: Number) 
+		ifFalse: [ self error: 'Expected an real number : ' , aReal printString ].
+
+	^ self new
+			legalChars: '12345.67890'  
+		     numCharsToHold: numChars
+			value: aReal 
+			validator: [ :str |  [ str asNumber ] on: Error do: [ -1 ] ] 
+			toString:  [ :n | n printString ]! !
+
 !SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 11/23/2013 20:01'!
 hexEntryOfSize: numChars
 	"Answer 0.FF* or nil"
@@ -4974,6 +5145,20 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	
 	^ false! !
+
+!SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 12/21/2016 14:57:59'!
+integerDefault: anInteger  maxNumChars: numChars
+	"Any Integer"
+	
+	(anInteger isKindOf: Integer) 
+		ifFalse: [ self error: 'Expected an Integer : ' , anInteger printString ].
+
+	^ self new
+			legalChars: '1234567890'  
+		     numCharsToHold: numChars
+			value: anInteger 
+			validator: [ :str |  [ str asNumber ] on: Error do: [ -1 ] ] 
+			toString:  [ :n | n printString ]! !
 
 !SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 12/16/2013 17:20'!
 integerRangeFrom: min to: max maxNumChars: numChars
