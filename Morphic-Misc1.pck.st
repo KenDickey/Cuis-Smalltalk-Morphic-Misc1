@@ -1,8 +1,8 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3002] on 22 December 2016 at 5:24:34 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 22 December 2016 at 6:55:34 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 113!
-!requires: 'Cuis-Base' 50 2984 nil!
+!provides: 'Morphic-Misc1' 1 114!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!requires: 'Cuis-Base' 50 2984 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
 CursorWithMask subclass: #AddedCursors
 	instanceVariableNames: ''
@@ -3365,13 +3365,18 @@ cancel
 
 	self delete! !
 
-!ValueEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/21/2016 15:22:30'!
+!ValueEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 18:39:51'!
 initialize
 
 	super initialize.
 	self buildMorphicWindow.! !
 
-!ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 14:24:31'!
+!ValueEntryPanel methodsFor: 'geometry' stamp: 'KenD 12/22/2016 18:52:51'!
+minimumExtent
+
+	^ 380@160! !
+
+!ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 18:34:07'!
 newButtonArea
 	"Add ACCEPT and CANCEL buttons"
 
@@ -3383,17 +3388,17 @@ newButtonArea
 				model: self 
 				action:  #accept
 				label: 'Accept')
-			layoutSpec: (LayoutSpec 
-							proportionalWidth: 0.4
-							proportionalHeight:  1 
+			layoutSpec: (LayoutSpec new ::
+							proportionalWidth: 0.4 minimum: 100;
+							proportionalHeight:  1;
 							minorDirectionPadding: #center);
 		addMorph: (PluggableButtonMorph 
 				model: self 
 				action:  #cancel
 				label: 'Cancel')
-			layoutSpec: (LayoutSpec 
-							proportionalWidth: 0.4
-							proportionalHeight:  1 
+			layoutSpec: (LayoutSpec new ::
+							proportionalWidth: 0.4 minimum: 100;
+							proportionalHeight:  1;
 							minorDirectionPadding: #center);
 		padding: #center;
 		color: (Color transparent).
@@ -3415,12 +3420,13 @@ accept
 				(xEntryMorph value @ yEntryMorph value) 
 		].! !
 
-!PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 13:31:54'!
+!PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 18:02:45'!
 default: aPoint label: aString
 
 	xEntryMorph setValue: aPoint x.
 	yEntryMorph setValue: aPoint y.
-	self setLabel: aString.
+	self setLabel: aString;
+	 	 morphExtent: (self morphExtent max: self minimumExtent).
 ! !
 
 !PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 15:41:35'!
@@ -3480,11 +3486,12 @@ accept
 			model propertyValue: numberEntryMorph value 
 		].! !
 
-!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 17:13:32'!
+!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 18:03:24'!
 default: aNumber label: aString
 
 	numberEntryMorph setValue: aNumber.
-	self setLabel: aString.
+	self setLabel: aString;
+		 morphExtent: (self morphExtent max: self minimumExtent).
 ! !
 
 !PositiveIntegerEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:15:00'!
