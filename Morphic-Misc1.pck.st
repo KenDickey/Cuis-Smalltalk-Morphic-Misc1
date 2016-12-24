@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3007] on 23 December 2016 at 4:10:37 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3000] on 23 December 2016 at 4:58:52 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 119!
+!provides: 'Morphic-Misc1' 1 120!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -3378,10 +3378,10 @@ initialize
 	super initialize.
 	self buildMorphicWindow.! !
 
-!ValueEntryPanel methodsFor: 'geometry' stamp: 'KenD 12/23/2016 10:08:32'!
+!ValueEntryPanel methodsFor: 'geometry' stamp: 'KenD 12/23/2016 16:58:08'!
 minimumExtent
 
-	^ 380@100! !
+	^ 12@4 * self boxExtent! !
 
 !ValueEntryPanel methodsFor: 'GUI building' stamp: 'KenD 12/22/2016 18:34:07'!
 newButtonArea
