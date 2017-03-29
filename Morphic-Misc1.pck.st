@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3068] on 24 March 2017 at 3:27:47 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3071] on 29 March 2017 at 3:22:16 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 122!
+!provides: 'Morphic-Misc1' 1 123!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -131,6 +131,16 @@ Panel subclass: #ValueEntryPanel
 	category: 'Morphic-Misc1'!
 !classDefinition: 'ValueEntryPanel class' category: #'Morphic-Misc1'!
 ValueEntryPanel class
+	instanceVariableNames: ''!
+
+!classDefinition: #CharacterEntryPanel category: #'Morphic-Misc1'!
+ValueEntryPanel subclass: #CharacterEntryPanel
+	instanceVariableNames: 'characterEditMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Morphic-Misc1'!
+!classDefinition: 'CharacterEntryPanel class' category: #'Morphic-Misc1'!
+CharacterEntryPanel class
 	instanceVariableNames: ''!
 
 !classDefinition: #PointEntryPanel category: #'Morphic-Misc1'!
@@ -415,6 +425,9 @@ I am a simple editor for a LayoutSpec.
 
 !ValueEntryPanel commentStamp: '<historical>' prior: 0!
 I am an abstract class for editing simple values.!
+
+!CharacterEntryPanel commentStamp: '<historical>' prior: 0!
+I provide for editing/changing a single character.!
 
 !PointEntryPanel commentStamp: '<historical>' prior: 0!
 I am a panel for filling in a Point value.
@@ -3563,6 +3576,62 @@ newEntryArea
 
 	self subclassResponsibility ! !
 
+!CharacterEntryPanel methodsFor: 'events' stamp: 'KenD 3/29/2017 14:01:16'!
+accept
+	
+	self delete.
+	self model 
+		ifNotNil: [ :model | 
+			model propertyValue: (self characterEditMorph value at: 1) 
+		].! !
+
+!CharacterEntryPanel methodsFor: 'accessing' stamp: 'KenD 3/29/2017 13:37:21'!
+characterEditMorph
+
+	^ characterEditMorph! !
+
+!CharacterEntryPanel methodsFor: 'initialization' stamp: 'KenD 3/29/2017 13:49:22'!
+default: aChar label: aString
+
+	characterEditMorph setValue: aChar.
+	self setLabel: aString;
+		 morphExtent: (self morphExtent max: self minimumExtent).
+! !
+
+!CharacterEntryPanel methodsFor: 'initialization' stamp: 'KenD 3/29/2017 13:46:05'!
+initialize
+
+	"inits before #initialize usied in #buildMorphicWindow".
+	characterEditMorph := (SimpleNumberEntryMorph singleCharSelection: $c).
+	super initialize.
+! !
+
+!CharacterEntryPanel methodsFor: 'initialization' stamp: 'KenD 3/29/2017 13:46:50'!
+newEntryArea
+
+	| entryLayout |
+	entryLayout := LayoutMorph newRow.
+	entryLayout 
+		separation: self defaultSeparation;
+		padding: #center;
+		addMorph: characterEditMorph ; "set in #initialize"
+		color: (Color transparent).
+	
+	^ entryLayout ! !
+
+!CharacterEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 3/29/2017 13:36:23'!
+default: aChar label: stringName
+
+	(aChar isKindOf: Character) 
+		ifFalse: [ self error: 'I require a Character: ' , aChar printString ].
+
+	^ self basicNew initialize default: aChar asString label: stringName ! !
+
+!CharacterEntryPanel class methodsFor: 'instance creation' stamp: 'KenD 3/29/2017 13:35:15'!
+new
+
+	^ self basicNew initialize default: 'c' label: 'Character Value'.! !
+
 !PointEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 14:47:17'!
 accept
 	
@@ -3639,7 +3708,7 @@ accept
 			model propertyValue: numberEntryMorph value 
 		].! !
 
-!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 12/22/2016 18:03:24'!
+!PositiveIntegerEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 18:03:24'!
 default: aNumber label: aString
 
 	numberEntryMorph setValue: aNumber.
@@ -5515,6 +5584,19 @@ rgbOneOf
 					ifFalse: [ nil ]
 			]
 			toString: [ :n | n printString ]! !
+
+!SimpleNumberEntryMorph class methodsFor: 'examples' stamp: 'KenD 3/29/2017 13:56:25'!
+singleCharSelection: aChar
+	"Really a character editor"
+
+	^ self new
+			legalChars: '1234567890',
+						'abcdefghijklmnopqrstuvwxyz',
+						'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 
+		     numCharsToHold: 1 
+			value: aChar 
+			validator: [ :str | str  ]
+			toString: [ :c | c asString ]! !
 
 !LineMorph methodsFor: 'private' stamp: 'KenD 9/27/2013 15:36'!
 basicExtent: aPoint
