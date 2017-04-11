@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3071] on 29 March 2017 at 3:22:16 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3075] on 11 April 2017 at 4:15:55 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 123!
+!provides: 'Morphic-Misc1' 1 125!
 !requires: 'Cuis-Base' 50 2984 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !classDefinition: #AddedCursors category: #'Morphic-Misc1'!
@@ -567,12 +567,6 @@ asTextEmphasis
 asTextEmphasisCode
 
 	^ TextEmphasis codeForChoice: self! !
-
-!AbstractFont class methodsFor: '*morphic-misc1' stamp: 'KenD 12/14/2016 16:45:34'!
-availableFonts
-
-	^ AvailableFonts 
-! !
 
 !Morph methodsFor: '*morphic-misc1' stamp: 'KenD 12/7/2016 13:45:42'!
 addCustomMenuItems: aCustomMenu hand: aHandMorph
@@ -5207,20 +5201,24 @@ fontToUse
 
 	^ Preferences standardListFont ! !
 
-!SimpleNumberEntryMorph methodsFor: 'events' stamp: 'KenD 12/2/2013 16:31'!
+!SimpleNumberEntryMorph methodsFor: 'events' stamp: 'KenD 4/11/2017 16:15:01'!
 keyStroke: aKeyboardEvent
 	"Check for legal char if in ASCII range, else let super so it"
 	
-	(aKeyboardEvent isKeystroke) ifTrue: [ | keyChar |
-		keyChar := aKeyboardEvent keyCharacter.
-		((keyChar asciiValue between: 32 and: 126) "space .. ~"
-			and: [((self entryChars includes: keyChar) not)
-					or: [self contents size >= self numCharsToHold]])
-			ifTrue: [ "reject"
-				self flash.
-				^ self
-			]
-	].
+	(aKeyboardEvent isKeystroke) 
+		ifTrue: [ | keyChar |
+			keyChar := aKeyboardEvent keyCharacter.
+			(self entryChars includes: keyChar)
+				ifFalse: [ "reject"
+					self flash.
+					^ self
+				]
+				ifTrue: [ "Allow selection replacement"
+						((self hasSelection not) 
+						and: [self contents size >= self numCharsToHold])
+							ifTrue: [ self flash. ^ self ]
+				]
+		].
 
 	super keyStroke: aKeyboardEvent! !
 
