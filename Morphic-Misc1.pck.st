@@ -1,8 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3260] on 14 February 2018 at 2:21:54 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3319] on 12 May 2018 at 5:42:03 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 126!
+!provides: 'Morphic-Misc1' 1 127!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 3260 nil!
+!requires: 'Color-Aux' 1 3 nil!
 SystemOrganization addCategory: #'Morphic-Misc1'!
 
 
