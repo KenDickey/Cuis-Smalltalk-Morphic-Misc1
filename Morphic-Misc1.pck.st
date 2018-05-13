@@ -3,7 +3,7 @@
 !provides: 'Morphic-Misc1' 1 127!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 3260 nil!
-!requires: 'Color-Aux' 1 3 nil!
+!requires: 'Color-Extras' 1 4 nil!
 SystemOrganization addCategory: #'Morphic-Misc1'!
 
 
