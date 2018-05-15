@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3319] on 12 May 2018 at 5:42:03 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3329] on 15 May 2018 at 12:13:10 am'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 127!
-!requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!provides: 'Morphic-Misc1' 1 128!
 !requires: 'Cuis-Base' 50 3260 nil!
 !requires: 'Color-Extras' 1 4 nil!
+!requires: 'Morphic-Widgets-Extras' 1 3 nil!
 SystemOrganization addCategory: #'Morphic-Misc1'!
 
 
@@ -442,7 +442,7 @@ I edit positive integers!
 I allow a user to edit a string!
 
 !MultiSelectMenu commentStamp: '<historical>' prior: 0!
-I am used to relate a set of names to an integer incoding, where each  symbolic name is realted to a bit.
+I am used to relate a set of names to an integer incoding, where each  symbolic name is realated to a bit.
 
 My instances present the selections to a user with Accept/Cancel.
 
@@ -3407,7 +3407,7 @@ seed
 
 	^ seed ! !
 
-!MultiSelectMenu methodsFor: 'initialization' stamp: 'KenD 12/17/2016 15:14:08'!
+!MultiSelectMenu methodsFor: 'initialization' stamp: 'KenD 5/15/2018 00:10:12'!
 choices: aSymbolCollection seed: initialValue
 
 	super initialize.
@@ -3419,7 +3419,7 @@ choices: aSymbolCollection seed: initialValue
 	self choices do: [ :nameSymbol |
 		self add: (self tagFromSeedFor: nameSymbol)
 			  target: self 
-			  selector: #toggle: 
+			  action: #toggle: 
 			  argument: nameSymbol.
 	].
 	self updateZeroMarker.
@@ -3428,10 +3428,10 @@ choices: aSymbolCollection seed: initialValue
 	
 	self add: 'ACCEPT' 
 		  target: self 
-		  selector: #accept.
+		  action: #accept.
 	self add: 'CANCEL' 
 		  target: self 
-		  selector: #cancel.
+		  action: #cancel.
 ! !
 
 !MultiSelectMenu methodsFor: 'initialization' stamp: 'KenD 12/17/2016 14:35:16'!
