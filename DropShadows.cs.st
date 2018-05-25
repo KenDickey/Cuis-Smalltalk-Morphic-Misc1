@@ -150,9 +150,9 @@ addToggleItemsToHaloMenu: aMenu
 		(stickinessString toggleStickiness 'whether I should be resistant to a drag done by mousing down on me')
 		(lockedString lockUnlockMorph 'when "locked", I am inert to all user interactions')
 		(dropShadowString toggleDropShadow 'whether I show a drop shadow')
-	) do: [ :trip | 
-			aMenu addUpdating: trip first action: trip second.
-			aMenu balloonTextForLastItem: trip third ]! !
+	) do: [ :trip |  |item|
+			item := aMenu addUpdating: trip first action: trip second.
+			item setProperty:  #balloonText  toValue: trip third ]! !
 
 
 !RectangleLikeMorph methodsFor: 'geometry' stamp: 'KenD 9/29/2016 15:17:37'!
