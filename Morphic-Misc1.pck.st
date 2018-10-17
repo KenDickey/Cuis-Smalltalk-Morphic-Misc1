@@ -1,9 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3329] on 15 May 2018 at 12:13:10 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3470] on 17 October 2018 at 11:23:02 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 128!
-!requires: 'Cuis-Base' 50 3260 nil!
-!requires: 'Color-Extras' 1 4 nil!
+!provides: 'Morphic-Misc1' 1 129!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
+!requires: 'Cuis-Base' 50 3470 nil!
+!requires: 'Color-Extras' 1 4 nil!
 SystemOrganization addCategory: #'Morphic-Misc1'!
 
 
@@ -982,23 +982,26 @@ includeInNewMorphMenu
 	"Return true for all classes that can be instantiated from the menu"
 	^ false! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 20:46:11'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2018 23:22:06'!
 largerIcons
 "
 	ImagePallet largerIcons.
 "
-	| ip sw iconsCollection sortedCollection |
-	iconsCollection := OrderedCollection new. 
+	| ip sw sortedCollection someIcons |
+	
+	sortedCollection := SortedCollection sortBlock: [ :a :b | a key < b key].
+
 	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'. 
 			'mimetypes'. 'places'. 'smalltalk'. 'status'. } 
 		do: [ :category |
-			iconsCollection addAll: (Theme content get: {'Theme'. '16x16'. category}) array.
-	].
-	iconsCollection addAll: 
-		(Theme content get: {'Theme'. '14x14'. 'buttons'}) array.
-	sortedCollection := SortedCollection sortBlock: [ :a :b | a key < b key].
-	sortedCollection addAll: (iconsCollection select: [ :assoc | assoc isNil not]).
-	
+			someIcons := Theme content from: 'Theme' get: {'16x16'. category}.
+			someIcons ifNotNil: [someIcons associationsDo: [:assoc| sortedCollection add: assoc]].
+		].
+
+	someIcons := (Theme content from: 'Theme' get: {'14x14'. 'buttons'}).
+	someIcons ifNotNil: [someIcons associationsDo: [:assoc| sortedCollection add: assoc]].
+"	sortedCollection addAll: (iconsCollection select: [ :assoc | assoc isNil not]).
+"	
 	ip := ImagePallet 
 			fromCollection: (sortedCollection collect: [ :assoc | 
 				Association key: (assoc key) value: assoc value
@@ -1053,7 +1056,7 @@ namedColors
 	imagePanel morphExtent: (imagePanel minimumExtent).  "openInWorld resets extent"
 	^ imagePanel! !
 
-!ImagePallet class methodsFor: 'examples' stamp: 'KenD 11/23/2016 20:43:03'!
+!ImagePallet class methodsFor: 'examples' stamp: 'KenD 10/17/2018 22:58:59'!
 namedIcons
 "
 	ImagePallet namedIcons.
@@ -1062,7 +1065,7 @@ namedIcons
 	iconsCollection := OrderedCollection new. 
 	{ 'actions'. 'apps'. 'categories'. 'devices'. 'emblems'. 'emotes'.
 	  'mimetypes'. 'places'. 'smalltalk'. 'status'. } do: [ :category |
-		iconsCollection addAll: (Theme content get: {'Theme'. '16x16'. category}) array.
+		iconsCollection addAll: (Theme content from: 'Theme' get: {'16x16'. category}) array.
 	].
 	sortedCollection := SortedCollection sortBlock: [ :a :b | a key < b key].
 	sortedCollection addAll: (iconsCollection select: [ :assoc | assoc isNil not]).
