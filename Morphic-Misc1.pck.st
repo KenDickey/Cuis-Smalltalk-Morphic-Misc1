@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3644] on 7 March 2019 at 2:10:23 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3649] on 10 March 2019 at 2:48:06 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 130!
+!provides: 'Morphic-Misc1' 1 131!
 !requires: 'Color-Extras' 1 4 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 3644 nil!
@@ -1330,7 +1330,7 @@ collection: aNameImageCollection
 	self collection: aNameImageCollection filter: [ :any | any ] 
 ! !
 
-!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 11/24/2016 09:18:42'!
+!ImagePallet methodsFor: 'initialize-release' stamp: 'KenD 3/10/2019 14:45:28'!
 collection: aNameImageCollection filter: imageSelector
 
 	| numImages maxWidth numAcross numDown spacedExtent |
@@ -1344,7 +1344,7 @@ collection: aNameImageCollection filter: imageSelector
 	self imageExtent: 
 		(self processImage: (aNameImageCollection anyOne value)) morphExtent.
 
-	maxWidth := (DisplayScreen actualScreenSize x) // 1.6.
+	maxWidth := (DisplayScreen actualScreenSize x) // 1.2.
 	spacedExtent := imageExtent + self spaceWidth.
 
 	numAcross := (((maxWidth - self spaceWidth) // spacedExtent x) 
