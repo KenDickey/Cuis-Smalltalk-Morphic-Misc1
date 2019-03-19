@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3649] on 10 March 2019 at 2:48:06 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3655] on 18 March 2019 at 5:15:03 pm'!
 'Description Various basic morphs used by several packages -- KenD'!
-!provides: 'Morphic-Misc1' 1 131!
+!provides: 'Morphic-Misc1' 1 132!
 !requires: 'Color-Extras' 1 4 nil!
 !requires: 'Morphic-Widgets-Extras' 1 3 nil!
 !requires: 'Cuis-Base' 50 3644 nil!
@@ -3561,6 +3561,14 @@ accept
 			model propertyValue: (self characterEditMorph value at: 1) 
 		].! !
 
+!CharacterEntryPanel methodsFor: 'events' stamp: 'KenD 3/18/2019 17:04:32'!
+valueWhenDropped
+	
+	self model 
+		ifNotNil: [ :m | 
+			m propertyValue: (self characterEditMorph value at: 1) 
+		] ifNil: [ '_' ].! !
+
 !CharacterEntryPanel methodsFor: 'accessing' stamp: 'KenD 3/29/2017 13:37:21'!
 characterEditMorph
 
@@ -3617,6 +3625,15 @@ accept
 			model propertyValue: 
 				(xEntryMorph value @ yEntryMorph value) 
 		].! !
+
+!PointEntryPanel methodsFor: 'events' stamp: 'KenD 3/18/2019 17:03:19'!
+valueWhenDropped
+
+	self model 
+		ifNotNil: [ :m | 
+			m propertyValue: 
+				(xEntryMorph value @ yEntryMorph value) 
+		] ifNil: [ 0@0 ]! !
 
 !PointEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 18:02:45'!
 default: aPoint label: aString
@@ -3684,6 +3701,14 @@ accept
 			model propertyValue: numberEntryMorph value 
 		].! !
 
+!PositiveIntegerEntryPanel methodsFor: 'events' stamp: 'KenD 3/18/2019 17:02:36'!
+valueWhenDropped
+	
+	^ self model  
+		ifNotNil: [ :m | 
+			m propertyValue: numberEntryMorph value 
+		] ifNil: [ 0 ]! !
+
 !PositiveIntegerEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 18:03:24'!
 default: aNumber label: aString
 
@@ -3734,6 +3759,15 @@ accept
 		ifNotNil: [ :model | 
 			model propertyValue: stringEditMorph contents 
 		].! !
+
+!StringEntryPanel methodsFor: 'events' stamp: 'KenD 3/18/2019 17:01:36'!
+valueWhenDropped
+	
+	^ self model 
+		ifNotNil: [ :m | 
+			m propertyValue: stringEditMorph contents 
+		] 
+		ifNil: [ '' ]! !
 
 !StringEntryPanel methodsFor: 'initialization' stamp: 'KenD 12/22/2016 17:02:20'!
 default: aString label: stringName
